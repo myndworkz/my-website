@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - Myndworkz Ltd</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Navigation Bar with Logo -->
+    <header>
+        <nav>
+            <ul>
+                <li><a href="index.html"><img src="images/logo.png" alt="Myndworkz Logo" class="logo"></a></li>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="services.html">Services</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Contact Section -->
+    <section class="contact-section">
+        <h1>Contact Us</h1>
+        <p>You can reach us at <a href="mailto:bryn.williams@myndworkz.uk">bryn.williams@myndworkz.uk</a>, by phone at <a href="tel:+41772183196">+41 7721 83196</a>, or fill in your details in the form below, and we will be in touch as soon as we can.</p>
+
+        <!-- Contact Form -->
+        <form action="https://formspree.io/f/your-form-id" method="POST" class="contact-form">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="message">Message:</label>
+            <textarea id="message" name="message" rows="4" required></textarea>
+
+            <button type="submit" class="btn">Send Message</button>
+        </form>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2023 Myndworkz Ltd. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>
