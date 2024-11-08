@@ -103,7 +103,8 @@ body {
 
 .image-box img {
     max-width: 100%;
-    border-radius: 10px;
+    height: auto;
+	border-radius: 10px;
 }
 
 /* Credentials Section Styling */
