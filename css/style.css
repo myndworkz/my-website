@@ -82,6 +82,69 @@ body {
     background: #e60023;
 }
 
+/* About Page Styling */
+.about-section {
+    max-width: 1000px;
+    margin: 2rem auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    padding: 1rem;
+}
+
+.about-content .text-box {
+    flex: 1;
+}
+
+.about-content .image-box {
+    flex: 1;
+    text-align: center;
+}
+
+.image-box img {
+    max-width: 100%;
+    border-radius: 10px;
+}
+
+/* Credentials Section Styling */
+.credentials-section {
+    text-align: center;
+    padding: 2rem 1rem;
+    background: #f4f4f4;
+    max-width: 700px;
+    margin: 2rem auto;
+}
+
+.credentials-section ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.credentials-section ul li {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+/* CV Download Button */
+.cv-download {
+    text-align: center;
+    margin-top: 1rem;
+}
+
+.cv-download .btn {
+    padding: 0.75rem 2rem;
+    background: #ff414d;
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 5px;
+    transition: background 0.3s;
+}
+
+.cv-download .btn:hover {
+    background: #e60023;
+}
 
 /* Navigation Bar */
 header {
