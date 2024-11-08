@@ -106,7 +106,60 @@ body {
     height: auto;
 	border-radius: 10px;
 }
+
 /* Services Section Styling */
+.services-section {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.services-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+}
+
+.text-box {
+    flex: 1;
+    min-width: 300px;
+    padding-right: 1rem;
+}
+
+.text-box h1 {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+.text-box h2 {
+    font-size: 1.5rem;
+    color: #ff414d;
+    margin-bottom: 0.5rem;
+}
+
+.text-box p {
+    font-size: 1rem;
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+.image-box {
+    flex: 1;
+    min-width: 300px;
+    text-align: center;
+}
+
+.image-box img {
+    max-width: 100%;
+    border-radius: 10px;
+    height: auto;
+}
+
 .services-section {
     max-width: 800px;
     margin: 2rem auto;
