@@ -113,9 +113,27 @@ body {
     margin: 2rem auto;
     padding: 1rem;
     display: flex;
+    align-items: flex-start; /* Align items at the top */
+    gap: 2rem;
     flex-wrap: wrap;
-    align-items: center;
 }
+
+.text-box {
+    flex: 1 1 60%; /* Takes up 60% of the width on larger screens */
+    min-width: 300px;
+}
+
+.image-box {
+    flex: 1 1 40%; /* Takes up 40% of the width on larger screens */
+    text-align: center;
+}
+
+.image-box img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+}
+
 
 .services-content {
     display: flex;
