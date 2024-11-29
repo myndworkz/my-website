@@ -12,22 +12,36 @@
         <nav>
             <ul>
                 <li><a href="index.html">Home</a></li>
-                <li><a href="lessons.html">Lessons</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropbtn">Lessons</a>
+                    <div class="dropdown-content">
+                        <a href="lesson-portal.html">Catherine's Busy Day</a>
+                        <a href="university-lesson.html">First Day at University</a>
+                    </div>
+                </li>
                 <li><a href="about.html">About</a></li>
                 <li><a href="contact.html">Contact</a></li>
             </ul>
         </nav>
     </header>
 
-    <!-- Lesson Links -->
+    <!-- Lessons Grid -->
     <main>
-        <section>
-            <h1>Lesson Library</h1>
-            <ul>
-                <li><a href="lesson-portal.html">Catherine's Busy Day</a></li>
-                <li><a href="university-lesson.html">First Day at University</a></li>
-            </ul>
-        </section>
+        <h1>Lessons</h1>
+        <div class="lessons-container">
+            <div class="lesson-card">
+                <img src="images/catherines-busy-day-thumbnail.jpg" alt="Catherine's Busy Day">
+                <h3>Catherine's Busy Day</h3>
+                <p>Learn about routines and actions happening right now with Catherine's story.</p>
+                <a href="lesson-portal.html">View Lesson</a>
+            </div>
+            <div class="lesson-card">
+                <img class="placeholder-img" src="images/placeholder.jpg" alt="Placeholder Image">
+                <h3>First Day at University</h3>
+                <p>Explore greetings, introductions, and academic conversations.</p>
+                <a href="university-lesson.html">View Lesson</a>
+            </div>
+        </div>
     </main>
 
     <!-- Footer -->
