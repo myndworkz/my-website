@@ -5,6 +5,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Catherine's Busy Day</title>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Additional Page Styling */
+        .main-image, .text-image {
+            display: block;
+            margin: 20px auto;
+            border-radius: 8px;
+        }
+
+        .main-image {
+            width: 50%; /* Smaller main image */
+        }
+
+        .text-image {
+            width: 100%;
+            max-width: 800px; /* Ensure text image scales properly */
+        }
+
+        .comprehension-section {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .downloads-section {
+            text-align: right;
+            margin-top: 20px;
+        }
+
+        .downloads-section a {
+            display: inline-block;
+            margin: 5px 0;
+            padding: 10px 15px;
+            background-color: #0073e6;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .downloads-section a:hover {
+            background-color: #005bb5;
+        }
+    </style>
 </head>
 <body>
     <!-- Navigation Bar -->
@@ -21,16 +62,17 @@
 
     <!-- Lesson Content -->
     <main>
-        <h1>Catherine's Busy Day</h1>
+        <h1 style="color: #0073e6;">Catherine's Busy Day</h1>
 
         <!-- Resized Main Image -->
-        <img src="Catherines busy day.png" alt="Catherine's Activities" style="width:50%; display:block; margin:20px auto;">
+        <img src="Catherines busy day.png" alt="Catherine's Activities" class="main-image">
 
         <!-- Added Text Image -->
-        <img src="Catherine's Busy Day.jpg" alt="Catherine's Busy Day Text" style="width:50%; display:block; margin:20px auto;">
+        <img src="Catherine's Busy Day.jpeg" alt="Catherine's Busy Day Text" class="text-image">
 
-        <section>
-            <h2>Comprehension Questions</h2>
+        <!-- Comprehension Questions -->
+        <section class="comprehension-section">
+            <h2 style="color: #0073e6;">Comprehension Questions</h2>
             <ol>
                 <li>What is Catherine doing at the start of the story?</li>
                 <li>What does Catherine do every morning?</li>
@@ -39,15 +81,11 @@
             </ol>
         </section>
 
-        <section>
-            <h2>Worksheet</h2>
-            <p>Download the worksheet to complete exercises based on Catherine's Busy Day:</p>
-            <a href="C5G2 Materials Form Fill.docx" class="btn" download>Download Worksheet</a>
-        </section>
-
-        <section>
-            <h2>Download Materials</h2>
-            <a href="Catherines Busy day.pptx" class="btn" download>Download PowerPoint</a>
+        <!-- Download Links -->
+        <section class="downloads-section">
+            <h2 style="color: #0073e6;">Download Materials</h2>
+            <a href="C5G2 Materials Form Fill.docx" download>Download Worksheet</a>
+            <a href="Catherines Busy day.pptx" download>Download PowerPoint</a>
         </section>
     </main>
 
