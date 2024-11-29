@@ -5,6 +5,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>First Day at University</title>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Additional Page Styling */
+        .main-image, .text-image {
+            display: block;
+            margin: 20px auto;
+            border-radius: 8px;
+        }
+
+        .main-image {
+            width: 50%; /* Smaller main image */
+        }
+
+        .comprehension-section {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .downloads-section {
+            text-align: right;
+            margin-top: 20px;
+        }
+
+        .downloads-section a {
+            display: inline-block;
+            margin: 5px 0;
+            padding: 10px 15px;
+            background-color: #0073e6;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .downloads-section a:hover {
+            background-color: #005bb5;
+        }
+    </style>
 </head>
 <body>
     <!-- Navigation Bar -->
@@ -21,10 +57,14 @@
 
     <!-- Lesson Content -->
     <main>
-        <h1>First Day at University</h1>
-        <img class="placeholder-img" src="images/hug.jpg" alt="University of Geneva">
-        <section>
-            <h2>Comprehension Questions</h2>
+        <h1 style="color: #0073e6;">First Day at University</h1>
+
+        <!-- Placeholder Image -->
+        <img class="main-image" src="./images/HUG.png" alt="University of Geneva">
+
+        <!-- Comprehension Questions -->
+        <section class="comprehension-section">
+            <h2 style="color: #0073e6;">Comprehension Questions</h2>
             <ol>
                 <li>Who are the three people in the conversation, and how are they introduced?</li>
                 <li>What problem did Malik face on his first day?</li>
@@ -35,8 +75,10 @@
                 <li>What event does Sophia invite them to attend?</li>
             </ol>
         </section>
-        <section>
-            <h2>Audio Lesson</h2>
+
+        <!-- Audio Embed -->
+        <section class="downloads-section">
+            <h2 style="color: #0073e6;">Audio Lesson</h2>
             <iframe class="murf-embed" width="560" height="102" 
                     src="https://murf.ai/embeds/index.html?embedId=m42jigtw" 
                     allowfullscreen title="Murf Embed Player"></iframe>
