@@ -48,7 +48,13 @@
         <nav>
             <ul>
                 <li><a href="index.html">Home</a></li>
-                <li><a href="lessons.html">Lessons</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropbtn">Lessons</a>
+                    <div class="dropdown-content">
+                        <a href="lesson-portal.html">Catherine's Busy Day</a>
+                        <a href="university-lesson.html">First Day at University</a>
+                    </div>
+                </li>
                 <li><a href="about.html">About</a></li>
                 <li><a href="contact.html">Contact</a></li>
             </ul>
@@ -59,8 +65,17 @@
     <main>
         <h1 style="color: #0073e6;">First Day at University</h1>
 
+        <!-- Audio Embed -->
+        <section class="downloads-section">
+            <h2 style="color: #0073e6;">Audio Lesson</h2>
+            <iframe class="murf-embed" width="560" height="102" 
+                    src="https://murf.ai/embeds/index.html?embedId=m42jigtw" 
+                    allowfullscreen title="Murf Embed Player"></iframe>
+            <script src="https://murf.ai/embeds/widget.js"></script>
+        </section>
+
         <!-- Placeholder Image -->
-        <img class="main-image" src="./images/HUG.png" alt="University of Geneva">
+        <img class="main-image" src="./images/placeholder.jpg" alt="Placeholder Image">
 
         <!-- Comprehension Questions -->
         <section class="comprehension-section">
@@ -74,15 +89,6 @@
                 <li>What clubs do Malik, Amina, and Sophia want to join?</li>
                 <li>What event does Sophia invite them to attend?</li>
             </ol>
-        </section>
-
-        <!-- Audio Embed -->
-        <section class="downloads-section">
-            <h2 style="color: #0073e6;">Audio Lesson</h2>
-            <iframe class="murf-embed" width="560" height="102" 
-                    src="https://murf.ai/embeds/index.html?embedId=m42jigtw" 
-                    allowfullscreen title="Murf Embed Player"></iframe>
-            <script src="https://murf.ai/embeds/widget.js"></script>
         </section>
     </main>
 
