@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Type Game</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        .word { display: inline-block; margin: 10px; padding: 10px; border: 1px solid #ccc; cursor: pointer; }
+        .correct { background-color: lightgreen; }
+        .incorrect { background-color: lightcoral; }
+    </style>
+</head>
+<body>
+    <h1>Identify the Nouns</h1>
+    <div id="wordList"></div>
+    <p id="score">Score: 0</p>
+    <script>
+        const words = [
+            { word: "apple", type: "noun" },
+            { word: "run", type: "verb" },
+            { word: "beautiful", type: "adjective" },
+            { word: "she", type: "pronoun" }
+        ];
+
+        let score = 0;
+
+        function displayWords() {
+            const wordList = document.getElementById('wordList');
+            wordList.innerHTML = '';
+            words.forEach(({ word, type }) => {
+                const wordElement = document.createElement('div');
+                wordElement.textContent = word;
+                wordElement.className = 'word';
+                wordElement.onclick = () => checkAnswer(type, wordElement);
+                wordList.appendChild(wordElement);
+            });
+        }
+
+        function checkAnswer(type, element) {
+            if (type === 'noun') {
+                score++;
+                element.className += ' correct';
+            } else {
+                score--;
+                element.className += ' incorrect';
+            }
+            document.getElementById('score').textContent = `Score: ${score}`;
+            setTimeout(displayWords, 1000); // Reload words after 1 second
+        }
+
+        displayWords();
+    </script>
+</body>
+</html>
