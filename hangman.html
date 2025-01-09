@@ -3,116 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hangman Game</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #FFFFFF;
-            color: #000000;
-            text-align: center;
-        }
-
-        header {
-            background-color: #FF0000;
-            color: #FFFFFF;
-            padding: 20px;
-        }
-
-        header h1 {
-            margin: 0;
-            font-size: 2.5em;
-        }
-
-        #game-area {
-            padding: 20px;
-            margin: 20px auto;
-            max-width: 800px;
-            border: 3px solid #FF0000;
-            border-radius: 10px;
-        }
-
-        #assistant {
-            position: relative;
-            margin: 20px auto;
-            width: 200px;
-            height: 200px;
-            background: url('UpdatedTopHat.png') no-repeat center;
-            background-size: contain;
-            animation: idleAnimation 2s infinite;
-        }
-
-        @keyframes idleAnimation {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        #speech-bubble {
-            display: none;
-            position: absolute;
-            bottom: 120px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 10px 20px;
-            border: 3px solid #FF0000;
-            border-radius: 10px;
-            background-color: #FFFFFF;
-            font-size: 1.2em;
-            max-width: 300px;
-        }
-
-        #word-display {
-            font-size: 2em;
-            margin: 20px;
-        }
-
-        #letters {
-            margin: 20px;
-        }
-
-        .letter {
-            display: inline-block;
-            padding: 10px;
-            margin: 5px;
-            font-size: 1.5em;
-            background-color: #FF0000;
-            color: #FFFFFF;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .letter:hover {
-            transform: scale(1.1);
-        }
-
-        .letter.inactive {
-            background-color: #CCCCCC;
-            pointer-events: none;
-        }
-    </style>
+    <title>Hangman - Myndworkz</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+    <!-- Navigation Bar -->
     <header>
-        <h1>Hangman Game</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li class="dropdown">
+                    <span class="dropbtn">Games</span>
+                    <div class="dropdown-content">
+                        <a href="hangman.html">Hangman</a>
+                    </div>
+                </li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
     </header>
 
-    <div id="game-area">
-        <!-- Assistant Section -->
-        <div id="assistant">
-            <div id="speech-bubble"></div>
+    <!-- Hangman Game Section -->
+    <section class="game-section">
+        <h1>Hangman Game</h1>
+        <div id="game-area">
+            <!-- Assistant Section -->
+            <div id="assistant">
+                <div id="speech-bubble"></div>
+            </div>
+
+            <!-- Word Display -->
+            <div id="word-display">_ _ _ _ _</div>
+
+            <!-- Letter Buttons -->
+            <div id="letters"></div>
+
+            <p id="feedback"></p>
         </div>
+    </section>
 
-        <!-- Word Display -->
-        <div id="word-display">_ _ _ _ _</div>
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Myndworkz Ltd. All rights reserved.</p>
+    </footer>
 
-        <!-- Letter Buttons -->
-        <div id="letters"></div>
-
-        <p id="feedback"></p>
-    </div>
-
+    <!-- Hangman Script -->
     <script>
         const words = ["apple", "banana", "orange", "grapes", "lemon"]; // Word list
         const maxAttempts = 6;
@@ -122,15 +58,13 @@
         let usedLetters = [];
 
         // Load audio files
-       const audioFiles = {
-    correct: new Audio('https://myndworkz.uk/my-website/WellDone.mp3'),
-    incorrect: new Audio('https://myndworkz.uk/my-website/OhNoTryAgain.mp3'),
-    encouragement: new Audio('https://myndworkz.uk/my-website/KeepGoing.mp3'),
-    gameWon: new Audio('https://myndworkz.uk/my-website/CongratulationsYouWon.mp3'),
-    gameLost: new Audio('https://myndworkz.uk/my-website/GameOver.mp3'),
-    ready: new Audio('https://myndworkz.uk/my-website/ReadyForTheNextRound.mp3')
-};
-
+        const audioFiles = {
+            correct: new Audio('https://myndworkz.uk/my-website/WellDone.mp3'),
+            incorrect: new Audio('https://myndworkz.uk/my-website/OhNoTryAgain.mp3'),
+            encouragement: new Audio('https://myndworkz.uk/my-website/KeepGoing.mp3'),
+            gameWon: new Audio('https://myndworkz.uk/my-website/CongratulationsYouWon.mp3'),
+            gameLost: new Audio('https://myndworkz.uk/my-website/GameOver.mp3'),
+            ready: new Audio('https://myndworkz.uk/my-website/ReadyForTheNextRound.mp3')
         };
 
         function initializeGame() {
