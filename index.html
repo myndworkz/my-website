@@ -5,67 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Myndworkz - Personalised Learning Experiences</title>
     <link rel="stylesheet" href="css/style.css">
-    <style>
-        /* Inline CSS for dropdown functionality */
-        nav ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            background-color: #FF0000;
-        }
-
-        nav ul li {
-            position: relative;
-        }
-
-        nav ul li a, .dropbtn {
-            display: block;
-            padding: 14px 20px;
-            color: white;
-            text-decoration: none;
-            text-align: center;
-        }
-
-        nav ul li:hover > a {
-            background-color: #000000;
-        }
-
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            background-color: #FF0000;
-            min-width: 160px;
-            z-index: 1;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        .dropdown-content a {
-            color: white;
-            padding: 12px 16px;
-            text-decoration: none;
-            display: block;
-            text-align: left;
-        }
-
-        .dropdown-content a:hover {
-            background-color: #000000;
-        }
-
-        .dropdown:hover .dropdown-content {
-            display: block;
-        }
-    </style>
+    <script>
+        // JavaScript for dropdowns on mobile
+        document.addEventListener('DOMContentLoaded', () => {
+            const dropdowns = document.querySelectorAll('.dropdown');
+            dropdowns.forEach(dropdown => {
+                dropdown.addEventListener('click', () => {
+                    const content = dropdown.querySelector('.dropdown-content');
+                    content.style.display = content.style.display === 'block' ? 'none' : 'block';
+                });
+            });
+        });
+    </script>
 </head>
 <body>
-
     <!-- Navigation Bar -->
     <header>
         <nav>
             <ul>
                 <!-- Lessons Dropdown -->
                 <li class="dropdown">
-                    <a href="#" class="dropbtn">Lessons</a>
+                    <a href="lesson-portal.html" class="dropbtn">Lessons</a>
                     <div class="dropdown-content">
                         <a href="lesson-portal.html">Catherine's Busy Day</a>
                         <a href="university-lesson.html">First Day at University</a>
@@ -75,7 +35,7 @@
 
                 <!-- Games Dropdown -->
                 <li class="dropdown">
-                    <a href="#" class="dropbtn">Games</a>
+                    <a href="hangman.html" class="dropbtn">Games</a>
                     <div class="dropdown-content">
                         <a href="hangman.html">Hangman</a>
                     </div>
@@ -93,10 +53,11 @@
             <h1 class="myndworkz-title">myndworkz</h1>
             <h2>Welcome!</h2>
             <p>
-            <div>
-                <a href="services.html" class="btn">Learn more about my teaching</a>
-                <a href="philosophy.html" class="btn">Learn more about public philosophy</a>
-            </div>
+                <div>
+                    <a href="services.html" class="btn">Learn more about my teaching</a>
+                    <a href="philosophy.html" class="btn">Learn more about public philosophy</a>
+                </div>
+            </p>
         </div>
     </section>
 
@@ -119,6 +80,5 @@
     <footer>
         <p>&copy; 2024 Myndworkz Ltd. All rights reserved.</p>
     </footer>
-
 </body>
 </html>
