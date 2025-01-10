@@ -34,10 +34,10 @@
             </div>
 
             <!-- Word Display -->
-            <div id="word-display">_ _ _ _ _</div>
+            <div id="word-display" class="word-display">_ _ _ _ _</div>
 
             <!-- Letter Buttons -->
-            <div id="letters"></div>
+            <div id="letters" class="letters-container"></div>
 
             <p id="feedback"></p>
         </div>
@@ -48,16 +48,15 @@
         <p>&copy; 2024 Myndworkz Ltd. All rights reserved.</p>
     </footer>
 
-    <!-- Hangman Script -->
     <script>
-        const words = ["apple", "banana", "orange", "grapes", "lemon"]; // Word list
+        // Hangman script (unchanged)
+        const words = ["apple", "banana", "orange", "grapes", "lemon"];
         const maxAttempts = 6;
         let selectedWord = words[Math.floor(Math.random() * words.length)].toUpperCase();
         let guessedWord = Array(selectedWord.length).fill('_');
         let attemptsLeft = maxAttempts;
         let usedLetters = [];
 
-        // Load audio files
         const audioFiles = {
             correct: new Audio('https://myndworkz.uk/my-website/WellDone.mp3'),
             incorrect: new Audio('https://myndworkz.uk/my-website/OhNoTryAgain.mp3'),
@@ -70,7 +69,7 @@
         function initializeGame() {
             document.getElementById('word-display').textContent = guessedWord.join(' ');
             generateLetterButtons();
-            audioFiles.ready.play(); // Play "Ready for the next round" at the start
+            audioFiles.ready.play();
         }
 
         function generateLetterButtons() {
@@ -78,7 +77,7 @@
             lettersDiv.innerHTML = '';
             const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
             alphabet.split('').forEach(letter => {
-                const button = document.createElement('div');
+                const button = document.createElement('button');
                 button.textContent = letter;
                 button.className = 'letter';
                 button.onclick = () => handleGuess(letter);
