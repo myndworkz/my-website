@@ -176,6 +176,7 @@
             checkGameOver();
         }
         }
+        }
 
         function updateGuessedWord(letter) {
             for (let i = 0; i < selectedWord.length; i++) {
@@ -214,6 +215,8 @@
                 setTimeout(() => { speechBubble.style.display = 'none'; }, 3000);
                 audioFiles.gameLost.play();
             }
+        }
+            }
         }, 3000);
                 audioFiles.gameWon.play();
             } else if (attemptsLeft === 0) {
@@ -223,6 +226,7 @@
         }
 
         initializeGame();
+        audioFiles.ready.play(); // Play "Ready for the next round" at the start
     </script>
 </body>
 </html>
