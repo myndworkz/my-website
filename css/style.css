@@ -56,22 +56,35 @@ nav ul li a, .dropbtn {
     display: block;
 }
 
-/* Center Alignment */
-.game-section {
-    text-align: center;
+/* Game Container */
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 80px); /* Full height minus header/footer */
     padding: 20px;
+    text-align: center;
+}
+
+.game-section h1 {
+    margin-bottom: 20px;
 }
 
 #game-area {
     margin: 0 auto;
     max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
     position: relative;
 }
 
 /* Animated Assistant */
 #assistant {
     position: relative;
-    margin: 0 auto 20px;
+    margin-bottom: 20px;
     width: 100px;
     height: 100px;
 }
@@ -146,6 +159,7 @@ footer {
     padding: 1rem;
     background: #333;
     color: white;
+    width: 100%;
 }
 
 /* Responsive Styling */

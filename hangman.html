@@ -24,25 +24,27 @@
         </nav>
     </header>
 
-    <!-- Hangman Game Section -->
-    <section class="game-section">
-        <h1>Hangman Game</h1>
-        <div id="game-area">
-            <!-- Animated Assistant -->
-            <div id="assistant">
-                <img src="images/top-hat.png" alt="Top Hat" class="top-hat">
-                <div id="speech-bubble"></div>
+    <!-- Game Container -->
+    <div class="container">
+        <section class="game-section">
+            <h1>Hangman Game</h1>
+            <div id="game-area">
+                <!-- Animated Assistant -->
+                <div id="assistant">
+                    <img src="images/top-hat.png" alt="Top Hat" class="top-hat">
+                    <div id="speech-bubble"></div>
+                </div>
+
+                <!-- Word Display -->
+                <div id="word-display" class="word-display">_ _ _ _ _</div>
+
+                <!-- Letter Buttons -->
+                <div id="letters" class="letters-container"></div>
+
+                <p id="feedback"></p>
             </div>
-
-            <!-- Word Display -->
-            <div id="word-display" class="word-display">_ _ _ _ _</div>
-
-            <!-- Letter Buttons -->
-            <div id="letters" class="letters-container"></div>
-
-            <p id="feedback"></p>
-        </div>
-    </section>
+        </section>
+    </div>
 
     <!-- Footer -->
     <footer>
