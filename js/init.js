@@ -40,11 +40,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function initializeGame() {
-        wordDisplay.textContent = guessedWord.join(' ');
-        generateLetterButtons();
-        ctx.clearRect(0, 0, stickmanCanvas.width, stickmanCanvas.height);
-        audioFiles.ready.play();
-    }
+    wordDisplay.textContent = guessedWord.join(' ');
+    generateLetterButtons(lettersContainer); // Pass lettersContainer
+    ctx.clearRect(0, 0, stickmanCanvas.width, stickmanCanvas.height);
+    audioFiles.ready.play();
+}
+
 
     initializeGame();
 });

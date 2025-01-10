@@ -1,4 +1,4 @@
-function generateLetterButtons() {
+function generateLetterButtons(lettersContainer) {
     const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     lettersContainer.innerHTML = '';
     alphabet.split('').forEach(letter => {
