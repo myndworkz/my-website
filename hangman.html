@@ -1,4 +1,3 @@
-<!-- Updated hangman.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,105 +6,43 @@
     <title>Hangman - Myndworkz</title>
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/games.css">
+    <style>
+        .top-hat.spin {
+            animation: spin 1s linear;
+        }
+        .top-hat.wobble {
+            animation: wobble 1s ease-in-out;
+        }
 
-    <!-- JavaScript Files -->
-    <script src="js/init.js"></script>
-    <script src="js/buttons.js"></script>
-    <script src="js/gameplay.js"></script>
-<style>
-            .top-hat.spin {
-                animation: spin 1s linear;
-            }
-            .top-hat.wobble {
-                animation: wobble 1s ease-in-out;
-            }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
 
-            @keyframes spin {
-                0% { transform: rotate(0deg); }
-                100% { transform: rotate(360deg); }
-            }
+        @keyframes wobble {
+            0% { transform: rotate(0deg); }
+            25% { transform: rotate(-15deg); }
+            50% { transform: rotate(15deg); }
+            75% { transform: rotate(-10deg); }
+            100% { transform: rotate(0deg); }
+        }
 
-            @keyframes wobble {
-                0% { transform: rotate(0deg); }
-                25% { transform: rotate(-15deg); }
-                50% { transform: rotate(15deg); }
-                75% { transform: rotate(-10deg); }
-                100% { transform: rotate(0deg); }
-            }
         #speech-bubble {
-                display: none;
-                position: absolute;
-                top: -50px;
-                left: 50%;
-                transform: translateX(-50%);
-                padding: 10px;
-                border: 1px solid #000;
-                border-radius: 5px;
-                background: white;
-                color: black;
-                font-size: 1rem;
-                text-align: center;
-                z-index: 10;
-            }
-        </style>
-        <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log("DOM fully loaded and parsed");
-
-            const canvas = document.getElementById('stickman-canvas');
-            if (!canvas) {
-                console.error("Canvas not found in DOM");
-                return;
-            }
-
-            const ctx = canvas.getContext('2d');
-            if (!ctx) {
-                console.error("Failed to get canvas context");
-                return;
-            }
-
-            const lettersContainer = document.getElementById('letters');
-            if (!lettersContainer) {
-                console.error("Letters container not found in DOM");
-                return;
-            }
-
-            const wordDisplay = document.getElementById('word-display');
-            if (!wordDisplay) {
-                console.error("Word display not found in DOM");
-                return;
-            }
-
-            const startButton = document.createElement('button');
-            startButton.id = 'startGame';
-            startButton.textContent = 'Start Game';
-            startButton.style = 'display: block; margin: 20px auto; padding: 10px 20px; font-size: 1.2rem;';
-            document.body.insertBefore(startButton, document.body.firstChild);
-
-            startButton.addEventListener('click', () => {
-                console.log("Start Game button clicked");
-
-                // Initialize game logic here
-                wordDisplay.textContent = '_ _ _ _ _';
-                lettersContainer.innerHTML = '';
-
-                const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-                alphabet.split('').forEach(letter => {
-                    const button = document.createElement('button');
-                    button.textContent = letter;
-                    button.classList.add('letter');
-                    button.addEventListener('click', () => {
-                        console.log(`You clicked: ${letter}`);
-                        button.disabled = true;
-                    });
-                    lettersContainer.appendChild(button);
-                });
-
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                console.log("Game initialized");
-            });
-        });
-    </script>
+            display: none;
+            position: absolute;
+            top: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px;
+            border: 1px solid #000;
+            border-radius: 5px;
+            background: white;
+            color: black;
+            font-size: 1rem;
+            text-align: center;
+            z-index: 10;
+        }
+    </style>
 </head>
 <body>
     <!-- Navigation Bar -->
@@ -155,6 +92,45 @@
         <p>&copy; 2024 Myndworkz Ltd. All rights reserved.</p>
     </footer>
 
-    
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log("DOM fully loaded and parsed");
+
+            const startButton = document.createElement('button');
+            startButton.id = 'startGame';
+            startButton.textContent = 'Start Game';
+            startButton.style = 'display: block; margin: 20px auto; padding: 10px 20px; font-size: 1.2rem;';
+            document.body.insertBefore(startButton, document.body.firstChild);
+
+            startButton.addEventListener('click', () => {
+                console.log("Start Game button clicked");
+
+                const canvas = document.getElementById('stickman-canvas');
+                const ctx = canvas.getContext('2d');
+
+                const lettersContainer = document.getElementById('letters');
+                const wordDisplay = document.getElementById('word-display');
+
+                wordDisplay.textContent = '_ _ _ _ _';
+                lettersContainer.innerHTML = '';
+
+                const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                alphabet.split('').forEach(letter => {
+                    const button = document.createElement('button');
+                    button.textContent = letter;
+                    button.classList.add('letter');
+                    button.addEventListener('click', () => {
+                        console.log(`You clicked: ${letter}`);
+                        button.disabled = true;
+                    });
+                    lettersContainer.appendChild(button);
+                });
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                console.log("Game initialized");
+            });
+        });
+    </script>
 </body>
 </html>
