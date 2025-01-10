@@ -1,4 +1,3 @@
-<!-- Updated hangman.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,45 +7,51 @@
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/games.css">
 
-    
-<style>
-            .top-hat.spin {
-                animation: spin 1s linear;
-            }
-            .top-hat.wobble {
-                animation: wobble 1s ease-in-out;
-            }
+    <!-- JavaScript Files -->
+    <script src="js/init.js"></script>
+    <script src="js/buttons.js"></script>
+    <script src="js/gameplay.js"></script>
+    <style>
+        .top-hat.spin {
+            animation: spin 1s linear;
+        }
+        .top-hat.wobble {
+            animation: wobble 1s ease-in-out;
+        }
 
-            @keyframes spin {
-                0% { transform: rotate(0deg); }
-                100% { transform: rotate(360deg); }
-            }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
 
-            @keyframes wobble {
-                0% { transform: rotate(0deg); }
-                25% { transform: rotate(-15deg); }
-                50% { transform: rotate(15deg); }
-                75% { transform: rotate(-10deg); }
-                100% { transform: rotate(0deg); }
-            }
+        @keyframes wobble {
+            0% { transform: rotate(0deg); }
+            25% { transform: rotate(-15deg); }
+            50% { transform: rotate(15deg); }
+            75% { transform: rotate(-10deg); }
+            100% { transform: rotate(0deg); }
+        }
+
         #speech-bubble {
-                display: none;
-                position: absolute;
-                top: -50px;
-                left: 50%;
-                transform: translateX(-50%);
-                padding: 10px;
-                border: 1px solid #000;
-                border-radius: 5px;
-                background: white;
-                color: black;
-                font-size: 1rem;
-                text-align: center;
-                z-index: 10;
-            }
-        </style>
-    </head>
+            display: none;
+            position: absolute;
+            top: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px;
+            border: 1px solid #000;
+            border-radius: 5px;
+            background: white;
+            color: black;
+            font-size: 1rem;
+            text-align: center;
+            z-index: 10;
+        }
+    </style>
+</head>
 <body>
+    <button id="startGame" style="display: block; margin: 20px auto; padding: 10px 20px; font-size: 1.2rem; cursor: pointer;">Start Game</button>
+
     <!-- Navigation Bar -->
     <header>
         <nav>
@@ -93,14 +98,5 @@
     <footer>
         <p>&copy; 2024 Myndworkz Ltd. All rights reserved.</p>
     </footer>
-
-    
-<body>
-    <!-- Hangman Game Content -->
-
-    <script src="js/init.js"></script>
-    <script src="js/buttons.js"></script>
-    <script src="js/gameplay.js"></script>
 </body>
-
 </html>

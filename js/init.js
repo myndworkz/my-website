@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.getElementById("startGame").addEventListener("click", () => {
     const words = ["apple", "banana", "orange", "grapes", "lemon"];
     let selectedWord = words[Math.floor(Math.random() * words.length)].toUpperCase();
     let guessedWord = Array(selectedWord.length).fill('_');
@@ -43,14 +43,10 @@ document.addEventListener("DOMContentLoaded", () => {
         wordDisplay.textContent = guessedWord.join(' ');
         generateLetterButtons(lettersContainer);
         ctx.clearRect(0, 0, stickmanCanvas.width, stickmanCanvas.height);
-    }
-
-    // Wait for user interaction to play the ready sound
-    document.addEventListener("click", () => {
         audioFiles.ready.play().catch((error) => {
             console.error("Error playing ready sound:", error);
         });
-    }, { once: true });
+    }
 
     initializeGame();
 });
