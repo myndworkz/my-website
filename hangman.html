@@ -1,142 +1,70 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hangman - Myndworkz</title>
-	<link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/games.css">
-</head>
-<body>
-    <!-- Navigation Bar -->
-    <header>
-        <nav>
-            <ul>
-                <li><a href="index.html">Home</a></li>
-                <li class="dropdown">
-                    <span class="dropbtn">Games</span>
-                    <div class="dropdown-content">
-                        <a href="hangman.html">Hangman</a>
-                    </div>
-                </li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="contact.html">Contact</a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <!-- Game Container -->
-    <div class="container">
-        <section class="game-section">
-            <h1>Hangman Game</h1>
-            <div id="game-area">
-                <!-- Animated Assistant -->
-                <div id="assistant">
-                    <img src="images/top-hat.png" alt="Top Hat" class="top-hat">
-                    <div id="speech-bubble"></div>
-                </div>
-
-                <!-- Word Display -->
-                <div id="word-display" class="word-display">_ _ _ _ _</div>
-
-                <!-- Letter Buttons -->
-                <div id="letters" class="letters-container"></div>
-
-                <p id="feedback"></p>
-            </div>
-        </section>
-    </div>
-
-    <!-- Footer -->
-    <footer>
-        <p>&copy; 2024 Myndworkz Ltd. All rights reserved.</p>
-    </footer>
-
     <script>
-        // Hangman script (unchanged)
+        // Hangman JavaScript Implementation
         const words = ["apple", "banana", "orange", "grapes", "lemon"];
-        const maxAttempts = 6;
         let selectedWord = words[Math.floor(Math.random() * words.length)].toUpperCase();
         let guessedWord = Array(selectedWord.length).fill('_');
-        let attemptsLeft = maxAttempts;
+        let attemptsLeft = 6;
         let usedLetters = [];
 
-        const audioFiles = {
-            correct: new Audio('https://myndworkz.uk/my-website/WellDone.mp3'),
-            incorrect: new Audio('https://myndworkz.uk/my-website/OhNoTryAgain.mp3'),
-            encouragement: new Audio('https://myndworkz.uk/my-website/KeepGoing.mp3'),
-            gameWon: new Audio('https://myndworkz.uk/my-website/CongratulationsYouWon.mp3'),
-            gameLost: new Audio('https://myndworkz.uk/my-website/GameOver.mp3'),
-            ready: new Audio('https://myndworkz.uk/my-website/ReadyForTheNextRound.mp3')
-        };
+        const wordDisplay = document.getElementById('word-display');
+        const lettersContainer = document.getElementById('letters');
+        const feedback = document.getElementById('feedback');
+        const speechBubble = document.getElementById('speech-bubble');
 
         function initializeGame() {
-            document.getElementById('word-display').textContent = guessedWord.join(' ');
+            wordDisplay.textContent = guessedWord.join(' ');
             generateLetterButtons();
-            audioFiles.ready.play();
         }
 
         function generateLetterButtons() {
-            const lettersDiv = document.getElementById('letters');
-            lettersDiv.innerHTML = '';
             const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            lettersContainer.innerHTML = '';
             alphabet.split('').forEach(letter => {
                 const button = document.createElement('button');
                 button.textContent = letter;
-                button.className = 'letter';
-                button.onclick = () => handleGuess(letter);
-                lettersDiv.appendChild(button);
+                button.classList.add('letter');
+                button.onclick = () => handleGuess(letter, button);
+                lettersContainer.appendChild(button);
             });
         }
 
-        function handleGuess(letter) {
-            if (usedLetters.includes(letter)) return;
-            usedLetters.push(letter);
+        function handleGuess(letter, button) {
+            if (usedLetters.includes(letter) || attemptsLeft === 0) return;
 
-            const letterButtons = document.querySelectorAll('.letter');
-            letterButtons.forEach(button => {
-                if (button.textContent === letter) button.classList.add('inactive');
-            });
+            usedLetters.push(letter);
+            button.disabled = true;
+            button.classList.add('inactive');
 
             if (selectedWord.includes(letter)) {
                 updateGuessedWord(letter);
-                showFeedback("Well done!", "correct");
-                audioFiles.correct.play();
+                showFeedback("Correct!", true);
             } else {
                 attemptsLeft--;
-                showFeedback("Oh no, try again!", "incorrect");
-                audioFiles.incorrect.play();
-                if (attemptsLeft === 0) endGame(false);
+                showFeedback("Incorrect! Try again.", false);
             }
 
-            if (!guessedWord.includes('_')) endGame(true);
+            checkGameOver();
         }
 
         function updateGuessedWord(letter) {
             for (let i = 0; i < selectedWord.length; i++) {
-                if (selectedWord[i] === letter) guessedWord[i] = letter;
+                if (selectedWord[i] === letter) {
+                    guessedWord[i] = letter;
+                }
             }
-            document.getElementById('word-display').textContent = guessedWord.join(' ');
+            wordDisplay.textContent = guessedWord.join(' ');
         }
 
-        function showFeedback(message, reaction) {
-            const bubble = document.getElementById('speech-bubble');
-            bubble.textContent = message;
-            bubble.style.display = 'block';
-            setTimeout(() => {
-                bubble.style.display = 'none';
-            }, 2000);
+        function showFeedback(message, isCorrect) {
+            feedback.textContent = message;
+            feedback.style.color = isCorrect ? 'green' : 'red';
         }
 
-        function endGame(won) {
-            const lettersDiv = document.getElementById('letters');
-            lettersDiv.innerHTML = won
-                ? `<p style="color: green;">You won! The word was ${selectedWord}.</p>`
-                : `<p style="color: red;">Game over! The word was ${selectedWord}.</p>`;
-            if (won) {
-                audioFiles.gameWon.play();
-            } else {
-                audioFiles.gameLost.play();
+        function checkGameOver() {
+            if (!guessedWord.includes('_')) {
+                speechBubble.textContent = `You won! The word was ${selectedWord}.`;
+            } else if (attemptsLeft === 0) {
+                speechBubble.textContent = `Game over! The word was ${selectedWord}.`;
             }
         }
 

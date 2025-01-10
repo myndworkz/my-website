@@ -4,43 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Myndworkz - Personalised Learning Experiences</title>
-    <link rel="stylesheet" href="css/style.css">
-    <script>
-        // JavaScript for dropdowns on mobile
-        document.addEventListener('DOMContentLoaded', () => {
-            const dropdowns = document.querySelectorAll('.dropdown');
-            dropdowns.forEach(dropdown => {
-                dropdown.addEventListener('click', () => {
-                    const content = dropdown.querySelector('.dropdown-content');
-                    content.style.display = content.style.display === 'block' ? 'none' : 'block';
-                });
-            });
-        });
-    </script>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
     <!-- Navigation Bar -->
     <header>
         <nav>
             <ul>
-                <!-- Lessons Dropdown -->
+                <li><a href="index.html">Home</a></li>
                 <li class="dropdown">
-                    <a href="lesson-portal.html" class="dropbtn">Lessons</a>
+                    <span class="dropbtn">Lessons</span>
                     <div class="dropdown-content">
-                        <a href="lesson-portal.html">Catherine's Busy Day</a>
+                        <a href="catherine-busy-day.html">Catherine's Busy Day</a>
                         <a href="university-lesson.html">First Day at University</a>
                         <a href="sleep-routines.html">Sleep Routines</a>
                     </div>
                 </li>
-
-                <!-- Games Dropdown -->
                 <li class="dropdown">
-                    <a href="hangman.html" class="dropbtn">Games</a>
+                    <span class="dropbtn">Games</span>
                     <div class="dropdown-content">
                         <a href="hangman.html">Hangman</a>
                     </div>
                 </li>
-
                 <li><a href="about.html">About</a></li>
                 <li><a href="contact.html">Contact</a></li>
             </ul>
@@ -53,10 +38,8 @@
             <h1 class="myndworkz-title">myndworkz</h1>
             <h2>Welcome!</h2>
             <p>
-                <div>
-                    <a href="services.html" class="btn">Learn more about my teaching</a>
-                    <a href="philosophy.html" class="btn">Learn more about public philosophy</a>
-                </div>
+                <a href="services.html" class="btn">Learn more about my teaching</a>
+                <a href="philosophy.html" class="btn">Learn more about public philosophy</a>
             </p>
         </div>
     </section>
