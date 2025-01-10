@@ -29,4 +29,22 @@ document.addEventListener("DOMContentLoaded", () => {
         () => { ctx.moveTo(100, 125); ctx.lineTo(100, 200); ctx.stroke(); },
         () => { ctx.moveTo(100, 150); ctx.lineTo(70, 180); ctx.stroke(); },
         () => { ctx.moveTo(100, 150); ctx.lineTo(130, 180); ctx.stroke(); },
-        () => { ctx.moveTo(100
+        () => { ctx.moveTo(100, 200); ctx.lineTo(80, 250); ctx.stroke(); },
+        () => { ctx.moveTo(100, 200); ctx.lineTo(120, 250); ctx.stroke(); },
+    ];
+
+    function triggerHatAnimation(animationType) {
+        const topHat = document.querySelector('.top-hat');
+        topHat.classList.add(animationType);
+        setTimeout(() => topHat.classList.remove(animationType), 1000);
+    }
+
+    function initializeGame() {
+        wordDisplay.textContent = guessedWord.join(' ');
+        generateLetterButtons();
+        ctx.clearRect(0, 0, stickmanCanvas.width, stickmanCanvas.height);
+        audioFiles.ready.play();
+    }
+
+    initializeGame();
+});
