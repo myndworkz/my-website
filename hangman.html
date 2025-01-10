@@ -94,43 +94,109 @@
 
     <!-- JavaScript -->
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log("DOM fully loaded and parsed");
+    document.addEventListener('DOMContentLoaded', () => {
+        console.log("DOM fully loaded and parsed");
 
-            const startButton = document.createElement('button');
-            startButton.id = 'startGame';
-            startButton.textContent = 'Start Game';
-            startButton.style = 'display: block; margin: 20px auto; padding: 10px 20px; font-size: 1.2rem;';
-            document.body.insertBefore(startButton, document.body.firstChild);
+        const canvas = document.getElementById('stickman-canvas');
+        const ctx = canvas.getContext('2d');
+        const lettersContainer = document.getElementById('letters');
+        const wordDisplay = document.getElementById('word-display');
+        const speechBubble = document.getElementById('speech-bubble');
 
-            startButton.addEventListener('click', () => {
-                console.log("Start Game button clicked");
+        if (!canvas || !ctx || !lettersContainer || !wordDisplay) {
+            console.error("One or more required DOM elements are missing.");
+            return;
+        }
 
-                const canvas = document.getElementById('stickman-canvas');
-                const ctx = canvas.getContext('2d');
+        const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        const words = ["APPLE", "BANANA", "ORANGE"];
+        let selectedWord = "";
+        let guessedWord = [];
+        let attemptsLeft = 9;
 
-                const lettersContainer = document.getElementById('letters');
-                const wordDisplay = document.getElementById('word-display');
+        function initializeGame() {
+            console.log("Initializing game...");
+            selectedWord = words[Math.floor(Math.random() * words.length)];
+            guessedWord = Array(selectedWord.length).fill("_");
+            attemptsLeft = 9;
 
-                wordDisplay.textContent = '_ _ _ _ _';
-                lettersContainer.innerHTML = '';
+            wordDisplay.textContent = guessedWord.join(" ");
+            lettersContainer.innerHTML = "";
 
-                const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-                alphabet.split('').forEach(letter => {
-                    const button = document.createElement('button');
-                    button.textContent = letter;
-                    button.classList.add('letter');
-                    button.addEventListener('click', () => {
-                        console.log(`You clicked: ${letter}`);
-                        button.disabled = true;
-                    });
-                    lettersContainer.appendChild(button);
-                });
-
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                console.log("Game initialized");
+            alphabet.split("").forEach((letter) => {
+                const button = document.createElement("button");
+                button.textContent = letter;
+                button.classList.add("letter");
+                button.addEventListener("click", () => handleGuess(letter, button));
+                lettersContainer.appendChild(button);
             });
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            console.log("Game initialized.");
+        }
+
+        function handleGuess(letter, button) {
+            console.log(`You clicked: ${letter}`);
+            button.disabled = true;
+
+            if (selectedWord.includes(letter)) {
+                console.log("Correct guess!");
+                updateGuessedWord(letter);
+            } else {
+                console.log("Incorrect guess.");
+                attemptsLeft--;
+                drawStickmanPart();
+            }
+
+            checkGameOver();
+        }
+
+        function updateGuessedWord(letter) {
+            for (let i = 0; i < selectedWord.length; i++) {
+                if (selectedWord[i] === letter) {
+                    guessedWord[i] = letter;
+                }
+            }
+            wordDisplay.textContent = guessedWord.join(" ");
+        }
+
+        function drawStickmanPart() {
+            const parts = [
+                () => ctx.moveTo(50, 250) && ctx.lineTo(50, 50) && ctx.stroke(), // Vertical Pole
+                () => ctx.moveTo(50, 50) && ctx.lineTo(100, 50) && ctx.stroke(), // Horizontal Pole
+                () => ctx.moveTo(100, 50) && ctx.lineTo(100, 75) && ctx.stroke(), // Rope
+                () => ctx.beginPath() && ctx.arc(100, 100, 25, 0, Math.PI * 2) && ctx.stroke(), // Head
+                () => ctx.moveTo(100, 125) && ctx.lineTo(100, 200) && ctx.stroke(), // Body
+                () => ctx.moveTo(100, 150) && ctx.lineTo(70, 180) && ctx.stroke(), // Left Arm
+                () => ctx.moveTo(100, 150) && ctx.lineTo(130, 180) && ctx.stroke(), // Right Arm
+                () => ctx.moveTo(100, 200) && ctx.lineTo(80, 250) && ctx.stroke(), // Left Leg
+                () => ctx.moveTo(100, 200) && ctx.lineTo(120, 250) && ctx.stroke(), // Right Leg
+            ];
+            const part = parts[9 - attemptsLeft];
+            if (part) part();
+        }
+
+        function checkGameOver() {
+            if (!guessedWord.includes("_")) {
+                speechBubble.textContent = "You won!";
+                speechBubble.style.display = "block";
+                console.log("Game won!");
+            } else if (attemptsLeft <= 0) {
+                speechBubble.textContent = `Game over! The word was ${selectedWord}.`;
+                speechBubble.style.display = "block";
+                console.log("Game lost!");
+            }
+        }
+
+        const startButton = document.createElement('button');
+        startButton.id = 'startGame';
+        startButton.textContent = 'Start Game';
+        startButton.style = 'display: block; margin: 20px auto; padding: 10px 20px; font-size: 1.2rem;';
+        document.body.insertBefore(startButton, document.body.firstChild);
+
+        startButton.addEventListener("click", () => {
+            speechBubble.style.display = "none";
+            initializeGame();
         });
-    </script>
-</body>
-</html>
+    });
+</script>
