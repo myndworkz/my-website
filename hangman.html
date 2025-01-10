@@ -7,6 +7,11 @@
     <title>Hangman - Myndworkz</title>
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/games.css">
+
+    <!-- JavaScript Files -->
+    <script src="js/init.js"></script>
+    <script src="js/buttons.js"></script>
+    <script src="js/gameplay.js"></script>
 <style>
             .top-hat.spin {
                 animation: spin 1s linear;
@@ -92,165 +97,6 @@
         <p>&copy; 2024 Myndworkz Ltd. All rights reserved.</p>
     </footer>
 
-    <script>
-        // Hangman JavaScript Implementation with Stickman Drawing
-        const words = ["apple", "banana", "orange", "grapes", "lemon"];
-        let selectedWord = words[Math.floor(Math.random() * words.length)].toUpperCase();
-        let guessedWord = Array(selectedWord.length).fill('_');
-        let attemptsLeft = 9;
-        let usedLetters = [];
-
-        const wordDisplay = document.getElementById('word-display');
-        const lettersContainer = document.getElementById('letters');
-        const feedback = document.getElementById('feedback');
-        const speechBubble = document.getElementById('speech-bubble');
-        const stickmanCanvas = document.getElementById('stickman-canvas');
-        const ctx = stickmanCanvas.getContext('2d');
-
-        // Load Audio Files
-        const audioFiles = {
-            correct: new Audio('https://myndworkz.github.io/my-website/WellDone.mp3'),
-            incorrect: new Audio('https://myndworkz.github.io/my-website/OhNoTryAgain.mp3'),
-            encouragement: new Audio('https://myndworkz.github.io/my-website/KeepGoing.mp3'),
-            gameWon: new Audio('https://myndworkz.github.io/my-website/CongratulationsYouWon.mp3'),
-            gameLost: new Audio('https://myndworkz.github.io/my-website/GameOver.mp3'),
-            ready: new Audio('https://myndworkz.github.io/my-website/ReadyForTheNextRound.mp3')
-        };
-
-        const stickmanParts = [
-            () => { ctx.moveTo(50, 250); ctx.lineTo(50, 50); ctx.stroke(); }, // Vertical Pole
-            () => { ctx.moveTo(50, 50); ctx.lineTo(100, 50); ctx.stroke(); }, // Horizontal Pole
-            () => { ctx.moveTo(100, 50); ctx.lineTo(100, 75); ctx.stroke(); }, // Rope
-            () => { ctx.beginPath(); ctx.arc(100, 100, 25, 0, Math.PI * 2); ctx.stroke(); }, // Head
-            () => { ctx.moveTo(100, 125); ctx.lineTo(100, 200); ctx.stroke(); }, // Body
-            () => { ctx.moveTo(100, 150); ctx.lineTo(70, 180); ctx.stroke(); }, // Left Arm
-            () => { ctx.moveTo(100, 150); ctx.lineTo(130, 180); ctx.stroke(); }, // Right Arm
-            () => { ctx.moveTo(100, 200); ctx.lineTo(80, 250); ctx.stroke(); }, // Left Leg
-            () => { ctx.moveTo(100, 200); ctx.lineTo(120, 250); ctx.stroke(); }  // Right Leg
-        ];
-
-        function triggerHatAnimation(animationType) {
-            const topHat = document.querySelector('.top-hat');
-            topHat.classList.add(animationType);
-            setTimeout(() => topHat.classList.remove(animationType), 1000);
-        }
-
-        function initializeGame() {
-            wordDisplay.textContent = guessedWord.join(' ');
-            generateLetterButtons();
-            ctx.clearRect(0, 0, stickmanCanvas.width, stickmanCanvas.height);
-        }
-
-        function generateLetterButtons() {
-            const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            lettersContainer.innerHTML = '';
-            alphabet.split('').forEach(letter => {
-                const button = document.createElement('button');
-                button.textContent = letter;
-                button.classList.add('letter');
-                button.onclick = () => handleGuess(letter, button);
-                lettersContainer.appendChild(button);
-            });
-        });
-        });
-        }
-
-        function handleGuess(letter, button) {
-            if (usedLetters.includes(letter) || attemptsLeft === 0) return;
-
-            usedLetters.push(letter);
-            button.disabled = true;
-            button.classList.add('inactive');
-
-            if (selectedWord.includes(letter)) {
-                updateGuessedWord(letter);
-                showFeedback("Correct!", true);
-                triggerHatAnimation('spin');
-                audioFiles.correct.play();
-            } else {
-                attemptsLeft--;
-                drawStickmanPart();
-                showFeedback("Incorrect! Try again.", false);
-                triggerHatAnimation('wobble');
-                audioFiles.incorrect.play();
-            }
-
-            checkGameOver(attemptsLeft === 0);
-        }
-            }
-        } // Trigger game over
-            } else {
-                checkGameOver();
-            }
-        }
-        }
-        }
-        }
-
-        function updateGuessedWord(letter) {
-            for (let i = 0; i < selectedWord.length; i++) {
-                if (selectedWord[i] === letter) {
-                    guessedWord[i] = letter;
-                }
-            }
-            wordDisplay.textContent = guessedWord.join(' ');
-        }
-
-        function drawStickmanPart() {
-            const index = 9 - attemptsLeft;
-            const part = stickmanParts[index];
-            if (part) {
-                part();
-                if (index === stickmanParts.length - 1) {
-                    checkGameOver(true); // Trigger Game Over if last part is drawn
-                }
-            }
-        }
-
-        function showFeedback(message, isCorrect) {
-            feedback.textContent = message;
-            feedback.style.color = isCorrect ? 'green' : 'red';
-        }
-
-        function checkGameOver(lastPartDrawn = false) {
-            if (!guessedWord.includes('_')) {
-                speechBubble.textContent = `You won! The word was ${selectedWord}.`;
-                speechBubble.style.display = 'block';
-                setTimeout(() => { speechBubble.style.display = 'none'; }, 3000);
-                audioFiles.gameWon.play();
-            } else if (lastPartDrawn) {
-                speechBubble.textContent = `Game over! The word was ${selectedWord}.`;
-                speechBubble.style.display = 'block';
-                setTimeout(() => { speechBubble.style.display = 'none'; }, 3000);
-                audioFiles.gameLost.play();
-            }
-        }.`;
-                speechBubble.style.display = 'block';
-                setTimeout(() => { speechBubble.style.display = 'none'; }, 3000);
-                audioFiles.gameWon.play();
-            } else if (attemptsLeft === 0 && lastPartDrawn) {
-                speechBubble.textContent = `Game over! The word was ${selectedWord}.`;
-                speechBubble.style.display = 'block';
-                setTimeout(() => { speechBubble.style.display = 'none'; }, 3000);
-                audioFiles.gameLost.play();
-            }
-        }
-            }
-        }
-            }
-        }
-            }
-        }, 3000);
-                audioFiles.gameWon.play();
-            } else if (attemptsLeft === 0) {
-                speechBubble.textContent = `Game over! The word was ${selectedWord}.`;
-                audioFiles.gameLost.play();
-            }
-        }
-
-        initializeGame();
-        audioFiles.ready.play(); // Play "Ready for the next round" at the start // Play "Ready for the next round" at the start
-        audioFiles.ready.play(); // Play "Ready for the next round" at the start
-    </script>
+    
 </body>
 </html>
