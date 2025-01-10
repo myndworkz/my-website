@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function initializeGame() {
         wordDisplay.textContent = guessedWord.join(' ');
-        generateLetterButtons(lettersContainer); // Pass lettersContainer
+        generateLetterButtons(lettersContainer);
         ctx.clearRect(0, 0, stickmanCanvas.width, stickmanCanvas.height);
     }
 
@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
         audioFiles.ready.play().catch((error) => {
             console.error("Error playing ready sound:", error);
         });
-    }, { once: true }); // Ensures the listener is executed only once
+    }, { once: true });
 
     initializeGame();
 });
