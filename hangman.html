@@ -33,8 +33,7 @@
             display: none;
             position: absolute;
             top: auto; /* Dynamically adjusted */
-            left: 50%;
-            transform: translateX(-50%);
+            right: 20px; /* Place to the right of the stickman */
             padding: 10px;
             border: 1px solid #000;
             border-radius: 5px;
@@ -99,6 +98,11 @@
                 console.log(`You clicked: ${letter}`);
                 button.disabled = true;
 
+                if (attemptsLeft <= 0 || !guessedWord.includes("_")) {
+                    // Do not allow further guesses if game is over
+                    return;
+                }
+
                 if (selectedWord.includes(letter)) {
                     console.log("Correct guess!");
                     updateGuessedWord(letter);
@@ -110,8 +114,10 @@
                     attemptsLeft--;
                     drawStickmanPart();
                     triggerHatAnimation('wobble');
-                    const audioIncorrect = new Audio('https://myndworkz.github.io/my-website/OhNoTryAgain.mp3');
-                    audioIncorrect.play();
+                    if (attemptsLeft > 0) {
+                        const audioIncorrect = new Audio('https://myndworkz.github.io/my-website/OhNoTryAgain.mp3');
+                        audioIncorrect.play();
+                    }
                 }
 
                 checkGameOver();
@@ -148,17 +154,25 @@
                 if (!guessedWord.includes("_")) {
                     speechBubble.textContent = "You won!";
                     positionSpeechBubble();
+                    disableAllButtons();
                     console.log("Game won!");
                 } else if (attemptsLeft <= 0) {
                     speechBubble.textContent = `Game over! The word was ${selectedWord}.`;
                     positionSpeechBubble();
+                    disableAllButtons();
                     console.log("Game lost!");
                 }
+            }
+
+            function disableAllButtons() {
+                const buttons = document.querySelectorAll('.letter');
+                buttons.forEach(button => button.disabled = true);
             }
 
             function positionSpeechBubble() {
                 const assistantRect = assistant.getBoundingClientRect();
                 speechBubble.style.top = `${assistantRect.bottom + 10}px`;
+                speechBubble.style.right = `20px`;
                 speechBubble.style.display = "block";
             }
 
