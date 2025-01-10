@@ -1,3 +1,4 @@
+<!-- Updated hangman.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,7 +8,6 @@
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/games.css">
 
-    <!-- JavaScript Files -->
     <style>
         .top-hat.spin {
             animation: spin 1s linear;
@@ -28,10 +28,11 @@
             75% { transform: rotate(-10deg); }
             100% { transform: rotate(0deg); }
         }
+
         #speech-bubble {
             display: none;
             position: absolute;
-            top: 120px; /* Adjusted to move below the assistant */
+            top: auto; /* Dynamically adjusted */
             left: 50%;
             transform: translateX(-50%);
             padding: 10px;
@@ -53,8 +54,9 @@
             const lettersContainer = document.getElementById('letters');
             const wordDisplay = document.getElementById('word-display');
             const speechBubble = document.getElementById('speech-bubble');
+            const assistant = document.getElementById('assistant');
 
-            if (!canvas || !ctx || !lettersContainer || !wordDisplay) {
+            if (!canvas || !ctx || !lettersContainer || !wordDisplay || !assistant) {
                 console.error("One or more required DOM elements are missing.");
                 return;
             }
@@ -86,6 +88,13 @@
                 console.log("Game initialized.");
             }
 
+            function triggerHatAnimation(animationType) {
+                assistant.querySelector('.top-hat').classList.add(animationType);
+                setTimeout(() => {
+                    assistant.querySelector('.top-hat').classList.remove(animationType);
+                }, 1000);
+            }
+
             function handleGuess(letter, button) {
                 console.log(`You clicked: ${letter}`);
                 button.disabled = true;
@@ -93,12 +102,14 @@
                 if (selectedWord.includes(letter)) {
                     console.log("Correct guess!");
                     updateGuessedWord(letter);
+                    triggerHatAnimation('spin');
                     const audioCorrect = new Audio('https://myndworkz.github.io/my-website/WellDone.mp3');
                     audioCorrect.play();
                 } else {
                     console.log("Incorrect guess.");
                     attemptsLeft--;
                     drawStickmanPart();
+                    triggerHatAnimation('wobble');
                     const audioIncorrect = new Audio('https://myndworkz.github.io/my-website/OhNoTryAgain.mp3');
                     audioIncorrect.play();
                 }
@@ -136,13 +147,19 @@
             function checkGameOver() {
                 if (!guessedWord.includes("_")) {
                     speechBubble.textContent = "You won!";
-                    speechBubble.style.display = "block";
+                    positionSpeechBubble();
                     console.log("Game won!");
                 } else if (attemptsLeft <= 0) {
                     speechBubble.textContent = `Game over! The word was ${selectedWord}.`;
-                    speechBubble.style.display = "block";
+                    positionSpeechBubble();
                     console.log("Game lost!");
                 }
+            }
+
+            function positionSpeechBubble() {
+                const assistantRect = assistant.getBoundingClientRect();
+                speechBubble.style.top = `${assistantRect.bottom + 10}px`;
+                speechBubble.style.display = "block";
             }
 
             const startButton = document.createElement('button');
