@@ -40,12 +40,17 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function initializeGame() {
-    wordDisplay.textContent = guessedWord.join(' ');
-    generateLetterButtons(lettersContainer); // Pass lettersContainer
-    ctx.clearRect(0, 0, stickmanCanvas.width, stickmanCanvas.height);
-    audioFiles.ready.play();
-}
+        wordDisplay.textContent = guessedWord.join(' ');
+        generateLetterButtons(lettersContainer); // Pass lettersContainer
+        ctx.clearRect(0, 0, stickmanCanvas.width, stickmanCanvas.height);
+    }
 
+    // Wait for user interaction to play the ready sound
+    document.addEventListener("click", () => {
+        audioFiles.ready.play().catch((error) => {
+            console.error("Error playing ready sound:", error);
+        });
+    }, { once: true }); // Ensures the listener is executed only once
 
     initializeGame();
 });
