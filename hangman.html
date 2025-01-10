@@ -27,6 +27,21 @@
                 75% { transform: rotate(-10deg); }
                 100% { transform: rotate(0deg); }
             }
+        #speech-bubble {
+                display: none;
+                position: absolute;
+                top: -50px;
+                left: 50%;
+                transform: translateX(-50%);
+                padding: 10px;
+                border: 1px solid #000;
+                border-radius: 5px;
+                background: white;
+                color: black;
+                font-size: 1rem;
+                text-align: center;
+                z-index: 10;
+            }
         </style>
     </head>
 <body>
@@ -82,7 +97,7 @@
         const words = ["apple", "banana", "orange", "grapes", "lemon"];
         let selectedWord = words[Math.floor(Math.random() * words.length)].toUpperCase();
         let guessedWord = Array(selectedWord.length).fill('_');
-        let attemptsLeft = 8;
+        let attemptsLeft = 9;
         let usedLetters = [];
 
         const wordDisplay = document.getElementById('word-display');
@@ -160,6 +175,7 @@
 
             checkGameOver();
         }
+        }
 
         function updateGuessedWord(letter) {
             for (let i = 0; i < selectedWord.length; i++) {
@@ -171,8 +187,14 @@
         }
 
         function drawStickmanPart() {
-            const part = stickmanParts[6 - attemptsLeft];
-            if (part) part();
+            const index = 9 - attemptsLeft;
+            const part = stickmanParts[index];
+            if (part) {
+                part();
+                if (index === stickmanParts.length - 1) {
+                    checkGameOver(true); // Trigger Game Over if last part is drawn
+                }
+            }
         }
 
         function showFeedback(message, isCorrect) {
@@ -180,9 +202,19 @@
             feedback.style.color = isCorrect ? 'green' : 'red';
         }
 
-        function checkGameOver() {
+        function checkGameOver(lastPartDrawn = false) {
             if (!guessedWord.includes('_')) {
                 speechBubble.textContent = `You won! The word was ${selectedWord}.`;
+                speechBubble.style.display = 'block';
+                setTimeout(() => { speechBubble.style.display = 'none'; }, 3000);
+                audioFiles.gameWon.play();
+            } else if (attemptsLeft === 0 && lastPartDrawn) {
+                speechBubble.textContent = `Game over! The word was ${selectedWord}.`;
+                speechBubble.style.display = 'block';
+                setTimeout(() => { speechBubble.style.display = 'none'; }, 3000);
+                audioFiles.gameLost.play();
+            }
+        }, 3000);
                 audioFiles.gameWon.play();
             } else if (attemptsLeft === 0) {
                 speechBubble.textContent = `Game over! The word was ${selectedWord}.`;
