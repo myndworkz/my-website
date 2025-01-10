@@ -36,6 +36,9 @@
                     <div id="speech-bubble"></div>
                 </div>
 
+                <!-- SVG Stickman Canvas -->
+                <svg id="stickman-canvas" width="200" height="300" style="border:1px solid #000; margin: 20px 0;"></svg>
+
                 <!-- Word Display -->
                 <div id="word-display" class="word-display">_ _ _ _ _</div>
 
@@ -51,9 +54,9 @@
     <footer>
         <p>&copy; 2024 Myndworkz Ltd. All rights reserved.</p>
     </footer>
-	
-	    <script>
-        // Hangman JavaScript Implementation
+
+    <script>
+        // Hangman JavaScript Implementation with Sound Effects
         const words = ["apple", "banana", "orange", "grapes", "lemon"];
         let selectedWord = words[Math.floor(Math.random() * words.length)].toUpperCase();
         let guessedWord = Array(selectedWord.length).fill('_');
@@ -64,10 +67,39 @@
         const lettersContainer = document.getElementById('letters');
         const feedback = document.getElementById('feedback');
         const speechBubble = document.getElementById('speech-bubble');
+        const stickmanCanvas = document.getElementById('stickman-canvas');
+        const ctx = stickmanCanvas.getContext ? stickmanCanvas.getContext('2d') : null;
+
+        // Load Audio Files
+        const audioFiles = {
+            correct: new Audio('https://github.com/myndworkz/my-website/blob/main/WellDone.mp3'),
+            incorrect: new Audio('https://github.com/myndworkz/my-website/blob/main/OhNoTryAgain.mp3'),
+            encouragement: new Audio('https://github.com/myndworkz/my-website/blob/main/KeepGoing.mp3'),
+            gameWon: new Audio('https://github.com/myndworkz/my-website/blob/main/CongratulationsYouWon.mp3'),
+            gameLost: new Audio('https://github.com/myndworkz/my-website/blob/main/GameOver.mp3'),
+            ready: new Audio('https://github.com/myndworkz/my-website/blob/main/ReadyForTheNextRound.mp3')
+        };
+
+        const stickmanParts = [
+            () => ctx && ctx.moveTo(100, 250) && ctx.lineTo(100, 50), // Vertical Pole
+            () => ctx && ctx.moveTo(100, 50) && ctx.lineTo(150, 50), // Horizontal Pole
+            () => ctx && ctx.moveTo(150, 50) && ctx.lineTo(150, 75), // Rope
+            () => { // Head
+                ctx.beginPath();
+                ctx.arc(150, 100, 25, 0, Math.PI * 2);
+                ctx.stroke();
+            },
+            () => ctx && ctx.moveTo(150, 125) && ctx.lineTo(150, 200), // Body
+            () => ctx && ctx.moveTo(150, 150) && ctx.lineTo(120, 170), // Left Arm
+            () => ctx && ctx.moveTo(150, 150) && ctx.lineTo(180, 170), // Right Arm
+            () => ctx && ctx.moveTo(150, 200) && ctx.lineTo(130, 250), // Left Leg
+            () => ctx && ctx.moveTo(150, 200) && ctx.lineTo(170, 250)  // Right Leg
+        ];
 
         function initializeGame() {
             wordDisplay.textContent = guessedWord.join(' ');
             generateLetterButtons();
+            if (ctx) ctx.clearRect(0, 0, stickmanCanvas.width, stickmanCanvas.height);
         }
 
         function generateLetterButtons() {
@@ -92,9 +124,12 @@
             if (selectedWord.includes(letter)) {
                 updateGuessedWord(letter);
                 showFeedback("Correct!", true);
+                audioFiles.correct.play();
             } else {
                 attemptsLeft--;
+                drawStickmanPart();
                 showFeedback("Incorrect! Try again.", false);
+                audioFiles.incorrect.play();
             }
 
             checkGameOver();
@@ -109,6 +144,12 @@
             wordDisplay.textContent = guessedWord.join(' ');
         }
 
+        function drawStickmanPart() {
+            const part = stickmanParts[6 - attemptsLeft];
+            if (part) part();
+            if (ctx) ctx.stroke();
+        }
+
         function showFeedback(message, isCorrect) {
             feedback.textContent = message;
             feedback.style.color = isCorrect ? 'green' : 'red';
@@ -117,8 +158,10 @@
         function checkGameOver() {
             if (!guessedWord.includes('_')) {
                 speechBubble.textContent = `You won! The word was ${selectedWord}.`;
+                audioFiles.win.play();
             } else if (attemptsLeft === 0) {
                 speechBubble.textContent = `Game over! The word was ${selectedWord}.`;
+                audioFiles.lose.play();
             }
         }
 
