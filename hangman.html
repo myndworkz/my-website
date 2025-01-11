@@ -1,4 +1,3 @@
-<!-- Updated hangman.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -29,45 +28,61 @@
             100% { transform: rotate(0deg); }
         }
 
-        #speech-bubble {
-            display: none;
+        #speech-container {
             position: absolute;
-            top: auto; /* Dynamically adjusted */
-            right: 20px; /* Place to the right of the stickman */
-            padding: 10px;
-            border: 1px solid #000;
-            border-radius: 5px;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
             background: white;
-            color: black;
-            font-size: 1rem;
-            text-align: center;
+            border: 1px solid black;
+            border-radius: 8px;
+            padding: 10px;
+            max-width: 250px;
             z-index: 10;
+        }
+
+        #speech-text {
+            margin: 0;
+            padding: 0;
+            font-size: 1rem;
+            color: black;
+        }
+
+        .letter:disabled {
+            background-color: #ccc;
+            color: #666;
+            border: 1px solid #aaa;
+            cursor: not-allowed;
         }
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            console.log("DOM fully loaded and parsed");
-
             const canvas = document.getElementById('stickman-canvas');
             const ctx = canvas?.getContext('2d');
             const lettersContainer = document.getElementById('letters');
             const wordDisplay = document.getElementById('word-display');
-            const speechBubble = document.getElementById('speech-bubble');
             const assistant = document.getElementById('assistant');
+            const speechContainer = document.getElementById('speech-container');
+            const speechText = document.getElementById('speech-text');
 
-            if (!canvas || !ctx || !lettersContainer || !wordDisplay || !assistant) {
+            if (!canvas || !ctx || !lettersContainer || !wordDisplay || !assistant || !speechContainer || !speechText) {
                 console.error("One or more required DOM elements are missing.");
                 return;
             }
 
             const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
             const words = ["APPLE", "BANANA", "ORANGE"];
+            const audioCorrect = new Audio('https://myndworkz.github.io/my-website/WellDone.mp3');
+            const audioIncorrect = new Audio('https://myndworkz.github.io/my-website/OhNoTryAgain.mp3');
+            const audioWin = new Audio('https://myndworkz.github.io/my-website/CongratulationsYouWon.mp3');
+            const audioLose = new Audio('https://myndworkz.github.io/my-website/GameOver.mp3');
             let selectedWord = "";
             let guessedWord = [];
             let attemptsLeft = 9;
 
             function initializeGame() {
-                console.log("Initializing game...");
                 selectedWord = words[Math.floor(Math.random() * words.length)];
                 guessedWord = Array(selectedWord.length).fill("_");
                 attemptsLeft = 9;
@@ -84,7 +99,11 @@
                 });
 
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                console.log("Game initialized.");
+            }
+
+            function updateSpeechBubble(text) {
+                speechText.textContent = text;
+                speechContainer.style.display = "block";
             }
 
             function triggerHatAnimation(animationType) {
@@ -95,29 +114,19 @@
             }
 
             function handleGuess(letter, button) {
-                console.log(`You clicked: ${letter}`);
                 button.disabled = true;
 
                 if (attemptsLeft <= 0 || !guessedWord.includes("_")) {
-                    // Do not allow further guesses if game is over
                     return;
                 }
 
                 if (selectedWord.includes(letter)) {
-                    console.log("Correct guess!");
                     updateGuessedWord(letter);
                     triggerHatAnimation('spin');
-                    const audioCorrect = new Audio('https://myndworkz.github.io/my-website/WellDone.mp3');
-                    audioCorrect.play();
                 } else {
-                    console.log("Incorrect guess.");
                     attemptsLeft--;
                     drawStickmanPart();
                     triggerHatAnimation('wobble');
-                    if (attemptsLeft > 0) {
-                        const audioIncorrect = new Audio('https://myndworkz.github.io/my-website/OhNoTryAgain.mp3');
-                        audioIncorrect.play();
-                    }
                 }
 
                 checkGameOver();
@@ -152,28 +161,17 @@
 
             function checkGameOver() {
                 if (!guessedWord.includes("_")) {
-                    speechBubble.textContent = "You won!";
-                    positionSpeechBubble();
+                    updateSpeechBubble("You won!");
                     disableAllButtons();
-                    console.log("Game won!");
                 } else if (attemptsLeft <= 0) {
-                    speechBubble.textContent = `Game over! The word was ${selectedWord}.`;
-                    positionSpeechBubble();
+                    updateSpeechBubble(`Game over! The word was ${selectedWord}.`);
                     disableAllButtons();
-                    console.log("Game lost!");
                 }
             }
 
             function disableAllButtons() {
                 const buttons = document.querySelectorAll('.letter');
                 buttons.forEach(button => button.disabled = true);
-            }
-
-            function positionSpeechBubble() {
-                const assistantRect = assistant.getBoundingClientRect();
-                speechBubble.style.top = `${assistantRect.bottom + 10}px`;
-                speechBubble.style.right = `20px`;
-                speechBubble.style.display = "block";
             }
 
             const startButton = document.createElement('button');
@@ -183,14 +181,13 @@
             document.body.insertBefore(startButton, document.body.firstChild);
 
             startButton.addEventListener("click", () => {
-                speechBubble.style.display = "none";
+                speechContainer.style.display = "none";
                 initializeGame();
             });
         });
     </script>
 </head>
 <body>
-    <!-- Navigation Bar -->
     <header>
         <nav>
             <ul>
@@ -207,35 +204,24 @@
         </nav>
     </header>
 
-    <!-- Game Container -->
-    <div class="container">
-        <section class="game-section">
-            <h1>Hangman Game</h1>
-            <div id="game-area">
-                <!-- Animated Assistant -->
-                <div id="assistant">
-                    <img src="images/top-hat.png" alt="Top Hat" class="top-hat">
-                    <div id="speech-bubble"></div>
-                </div>
+    <div id="game-area">
+        <div id="assistant">
+            <img src="images/top-hat.png" alt="Top Hat" class="top-hat">
+        </div>
 
-                <!-- Canvas Stickman -->
-                <canvas id="stickman-canvas" width="200" height="300" style="border:1px solid #000; margin: 20px 0;"></canvas>
+        <canvas id="stickman-canvas" width="200" height="300" style="border:1px solid #000;"></canvas>
 
-                <!-- Word Display -->
-                <div id="word-display" class="word-display">_ _ _ _ _</div>
+        <div id="speech-container">
+            <p id="speech-text"></p>
+        </div>
 
-                <!-- Letter Buttons -->
-                <div id="letters" class="letters-container"></div>
+        <div id="letters"></div>
 
-                <p id="feedback"></p>
-            </div>
-        </section>
+        <div id="word-display"></div>
     </div>
 
-    <!-- Footer -->
     <footer>
         <p>&copy; 2024 Myndworkz Ltd. All rights reserved.</p>
     </footer>
-
 </body>
 </html>
