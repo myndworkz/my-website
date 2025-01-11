@@ -1,3 +1,4 @@
+<!-- Updated hangman.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -28,26 +29,19 @@
             100% { transform: rotate(0deg); }
         }
 
-        #speech-container {
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
-            margin-left: 20px;
-            position: relative;
-            width: 300px;
-            height: 150px;
-        }
-
-        #speech-bubble-svg {
-            display: none; /* Initially hidden */
-            margin-left: 20px;
-        }
-
-        .letter:disabled {
-            background-color: #ccc;
-            color: #666;
-            border: 1px solid #aaa;
-            cursor: not-allowed;
+        #speech-bubble {
+            display: none;
+            position: absolute;
+            top: auto; /* Dynamically adjusted */
+            right: 20px; /* Place to the right of the stickman */
+            padding: 10px;
+            border: 1px solid #000;
+            border-radius: 5px;
+            background: white;
+            color: black;
+            font-size: 1rem;
+            text-align: center;
+            z-index: 10;
         }
     </style>
     <script>
@@ -58,10 +52,8 @@
             const ctx = canvas?.getContext('2d');
             const lettersContainer = document.getElementById('letters');
             const wordDisplay = document.getElementById('word-display');
+            const speechBubble = document.getElementById('speech-bubble');
             const assistant = document.getElementById('assistant');
-            const speechBubbleSVG = document.getElementById('speech-bubble-svg');
-            const bubbleText = document.getElementById('bubble-text');
-            const bubbleBG = document.getElementById('bubble-bg');
 
             if (!canvas || !ctx || !lettersContainer || !wordDisplay || !assistant) {
                 console.error("One or more required DOM elements are missing.");
@@ -160,11 +152,13 @@
 
             function checkGameOver() {
                 if (!guessedWord.includes("_")) {
-                    updateSpeechBubble("You won!");
+                    speechBubble.textContent = "You won!";
+                    positionSpeechBubble();
                     disableAllButtons();
                     console.log("Game won!");
                 } else if (attemptsLeft <= 0) {
-                    updateSpeechBubble(`Game over! The word was ${selectedWord}.`);
+                    speechBubble.textContent = `Game over! The word was ${selectedWord}.`;
+                    positionSpeechBubble();
                     disableAllButtons();
                     console.log("Game lost!");
                 }
@@ -175,16 +169,11 @@
                 buttons.forEach(button => button.disabled = true);
             }
 
-            function updateSpeechBubble(text) {
-                bubbleText.textContent = text;
-                const textLength = bubbleText.getComputedTextLength();
-                const padding = 20;
-
-                speechBubbleSVG.setAttribute('width', textLength + padding * 2);
-                bubbleBG.setAttribute('width', textLength + padding * 2);
-                bubbleText.setAttribute('x', padding);
-
-                speechBubbleSVG.style.display = "block";
+            function positionSpeechBubble() {
+                const assistantRect = assistant.getBoundingClientRect();
+                speechBubble.style.top = `${assistantRect.bottom + 10}px`;
+                speechBubble.style.right = `20px`;
+                speechBubble.style.display = "block";
             }
 
             const startButton = document.createElement('button');
@@ -194,7 +183,7 @@
             document.body.insertBefore(startButton, document.body.firstChild);
 
             startButton.addEventListener("click", () => {
-                speechBubbleSVG.style.display = "none";
+                speechBubble.style.display = "none";
                 initializeGame();
             });
         });
@@ -211,3 +200,42 @@
                     <div class="dropdown-content">
                         <a href="hangman.html">Hangman</a>
                     </div>
+                </li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Game Container -->
+    <div class="container">
+        <section class="game-section">
+            <h1>Hangman Game</h1>
+            <div id="game-area">
+                <!-- Animated Assistant -->
+                <div id="assistant">
+                    <img src="images/top-hat.png" alt="Top Hat" class="top-hat">
+                    <div id="speech-bubble"></div>
+                </div>
+
+                <!-- Canvas Stickman -->
+                <canvas id="stickman-canvas" width="200" height="300" style="border:1px solid #000; margin: 20px 0;"></canvas>
+
+                <!-- Word Display -->
+                <div id="word-display" class="word-display">_ _ _ _ _</div>
+
+                <!-- Letter Buttons -->
+                <div id="letters" class="letters-container"></div>
+
+                <p id="feedback"></p>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Myndworkz Ltd. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>
