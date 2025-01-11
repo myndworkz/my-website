@@ -123,6 +123,7 @@
                 if (selectedWord.includes(letter)) {
                     updateGuessedWord(letter);
                     triggerHatAnimation('spin');
+					audioCorrect.play().catch(error => console.error('Audio play failed:', error)); // Play correct sound
                 } else {
                     attemptsLeft--;
                     drawStickmanPart();
@@ -160,14 +161,16 @@
             }
 
             function checkGameOver() {
-                if (!guessedWord.includes("_")) {
-                    updateSpeechBubble("You won!");
-                    disableAllButtons();
-                } else if (attemptsLeft <= 0) {
-                    updateSpeechBubble(`Game over! The word was ${selectedWord}.`);
-                    disableAllButtons();
-                }
-            }
+    if (!guessedWord.includes("_")) {
+        updateSpeechBubble("You won!");
+        audioWin.play().catch(error => console.error('Audio play failed:', error)); // Play win sound
+        disableAllButtons();
+    } else if (attemptsLeft <= 0) {
+        updateSpeechBubble(`Game over! The word was ${selectedWord}.`);
+        audioLose.play().catch(error => console.error('Audio play failed:', error)); // Play lose sound
+        disableAllButtons();
+    }
+}
 
             function disableAllButtons() {
                 const buttons = document.querySelectorAll('.letter');
