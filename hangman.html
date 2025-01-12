@@ -88,23 +88,24 @@
             let attemptsLeft = 9;
 
             function initializeGame() {
-                selectedWord = words[Math.floor(Math.random() * words.length)];
-                guessedWord = Array(selectedWord.length).fill("_");
-                attemptsLeft = 9;
+    selectedWord = words[Math.floor(Math.random() * words.length)];
+    guessedWord = Array(selectedWord.length).fill("_");
+    attemptsLeft = 9;
 
-                wordDisplay.textContent = guessedWord.join(" ");
-                lettersContainer.innerHTML = "";
+    wordDisplay.textContent = guessedWord.join(" ");
+    lettersContainer.innerHTML = "";
 
-                alphabet.split("").forEach((letter) => {
-                    const button = document.createElement("button");
-                    button.textContent = letter;
-                    button.classList.add("letter");
-                    button.addEventListener("click", () => handleGuess(letter, button));
-                    lettersContainer.appendChild(button);
-                });
+    alphabet.split("").forEach((letter) => {
+        const button = document.createElement("button");
+        button.textContent = letter;
+        button.classList.add("letter");
+        button.addEventListener("click", () => handleGuess(letter, button));
+        lettersContainer.appendChild(button);
+    });
 
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-            }
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+
 
             function updateSpeechBubble(text) {
                 speechText.textContent = text;
