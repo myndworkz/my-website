@@ -199,10 +199,10 @@
             document.body.insertBefore(startButton, document.body.firstChild);
 
             startButton.addEventListener("click", () => {
-    speechContainer.style.display = "none";
-    audioCorrect.play().catch(error => console.error('Audio play failed:', error)); // Optional: Play sound when starting
-    initializeGame();
+    speechContainer.style.display = "none"; // Hide the speech container
+    initializeGame(); // Start the game logic
 });
+
 
         });
     </script>
