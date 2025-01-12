@@ -119,24 +119,33 @@
             }
 
             function handleGuess(letter, button) {
-                button.disabled = true;
+    button.disabled = true;
 
-                if (attemptsLeft <= 0 || !guessedWord.includes("_")) {
-                    return;
-                }
+    if (attemptsLeft <= 0 || !guessedWord.includes("_")) {
+        return;
+    }
 
-                if (selectedWord.includes(letter)) {
-                    updateGuessedWord(letter);
-                    triggerHatAnimation('spin');
-					audioCorrect.play().catch(error => console.error('Audio play failed:', error)); // Play correct sound
-                } else {
-                    attemptsLeft--;
-                    drawStickmanPart();
-                    triggerHatAnimation('wobble');
-                }
+    if (selectedWord.includes(letter)) {
+        updateGuessedWord(letter);
 
-                checkGameOver();
-            }
+        // Check if this guess completes the word (winning condition)
+        if (!guessedWord.includes("_")) {
+            // Skip "Well Done" sound if the game is won
+            checkGameOver();
+            return;
+        }
+
+        triggerHatAnimation('spin');
+        audioCorrect.play().catch(error => console.error('Audio play failed:', error)); // Play correct sound
+    } else {
+        attemptsLeft--;
+        drawStickmanPart();
+        triggerHatAnimation('wobble');
+    }
+
+    checkGameOver();
+}
+
 
             function updateGuessedWord(letter) {
                 for (let i = 0; i < selectedWord.length; i++) {
