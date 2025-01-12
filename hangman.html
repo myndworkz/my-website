@@ -200,9 +200,8 @@
 
             startButton.addEventListener("click", () => {
     speechContainer.style.display = "none";
-    initializeGame(); // Only initialize the game, no audio playback here
-});
-
+    audioCorrect.play().catch(error => console.error('Audio play failed:', error)); // Optional: Play sound when starting
+    initializeGame();
 });
 
         });
