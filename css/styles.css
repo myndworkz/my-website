@@ -147,7 +147,6 @@ nav ul li a:hover {
     background: #fff;
 }
 
-.about-section .text-box, 
 .about-section .image-box {
     flex: 1 1 45%; /* Flex item takes up 45% width by default */
     text-align: center;
@@ -164,6 +163,18 @@ nav ul li a:hover {
 
 /* Responsive Footer */
 footer {
+    position: fixed; /* Ensures it stays at the bottom */
+    bottom: 0;
+    width: 100%; /* Spans the entire width of the viewport */
+    text-align: center; /* Centers the text */
+    background-color: #f9f9f9; /* Light background for better visibility */
+    padding: 10px 0; /* Adds some space inside the footer */
+    border-top: 1px solid #ccc; /* Subtle border for separation */
+    color: black; /* Ensures the text is visible */
+    z-index: 1000; /* Keeps it above other elements */
+}
+
+
     text-align: center;
     padding: 1em;
     background: #333;

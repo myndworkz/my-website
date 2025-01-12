@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matching Pairs - Myndworkz</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/games.css">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .card {
+            width: 100px;
+            height: 150px;
+            border: 2px solid black;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .card.flipped {
+            background-color: white;
+            color: black;
+            cursor: default;
+        }
+
+        .card.match {
+            background-color: green;
+            color: white;
+        }
+
+        .card.no-match {
+            background-color: red;
+            color: white;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .disabled {
+            pointer-events: none;
+        }
+
+        #assistant {
+            position: relative;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+        }
+
+        .top-hat.spin {
+            animation: spin 1s linear;
+        }
+
+        .top-hat.shake {
+            animation: shake 1s ease-in-out;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes shake {
+            0% { transform: rotate(0deg); }
+            25% { transform: rotate(-15deg); }
+            50% { transform: rotate(15deg); }
+            75% { transform: rotate(-10deg); }
+            100% { transform: rotate(0deg); }
+        }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            background-color: #f9f9f9;
+            padding: 10px 0;
+            border-top: 1px solid #ccc;
+        }
+
+        #scorecard {
+            text-align: left;
+            font-size: 1.2rem;
+            margin: 10px;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const pairs = [
+                { word: "Dog", match: "Chien" },
+                { word: "Cat", match: "Chat" },
+                { word: "Apple", match: "Pomme" },
+                { word: "Car", match: "Voiture" }
+            ];
+
+            const audioCorrect = new Audio('https://myndworkz.github.io/my-website/WellDone.mp3');
+            const audioIncorrect = new Audio('https://myndworkz.github.io/my-website/OhNoTryAgain.mp3');
+            const audioWin = new Audio('https://myndworkz.github.io/my-website/CongratulationsYouWon.mp3');
+
+            let firstCard = null;
+            let secondCard = null;
+            let matchesFound = 0;
+            let totalTurns = 0;
+            const maxTurns = pairs.length * 2;
+
+            const grid = document.createElement('div');
+            grid.classList.add('grid');
+            document.body.insertBefore(grid, document.querySelector('footer'));
+
+            const assistant = document.getElementById('assistant');
+            const speechText = document.getElementById('speech-text');
+
+            const scorecard = document.createElement('div');
+            scorecard.id = 'scorecard';
+            scorecard.textContent = `Turns Taken: 0 | Remaining Turns: ${maxTurns}`;
+            document.body.insertBefore(scorecard, grid);
+
+            function updateSpeechBubble(text) {
+                speechText.textContent = text;
+                assistant.style.display = "block";
+            }
+
+            function triggerHatAnimation(animationType) {
+                const topHat = assistant.querySelector('.top-hat');
+                topHat.classList.add(animationType);
+                setTimeout(() => {
+                    topHat.classList.remove(animationType);
+                }, 1000);
+            }
+
+            function shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                return array;
+            }
+
+            function updateScorecard() {
+                const remainingTurns = maxTurns - totalTurns;
+                scorecard.textContent = `Turns Taken: ${totalTurns} | Remaining Turns: ${remainingTurns}`;
+            }
+
+            function initializeGame() {
+                const shuffledPairs = shuffleArray([...pairs.map(pair => ({
+                    text: pair.word,
+                    pairId: pair.word
+                })), ...pairs.map(pair => ({
+                    text: pair.match,
+                    pairId: pair.word
+                }))]);
+
+                shuffledPairs.forEach((item, index) => {
+                    const card = document.createElement('div');
+                    card.classList.add('card');
+                    card.dataset.pairId = item.pairId;
+                    card.textContent = ""; // Initially hidden
+                    card.addEventListener('click', () => handleCardClick(card, item.text));
+                    grid.appendChild(card);
+                });
+            }
+
+            function handleCardClick(card, text) {
+                if (card.classList.contains('flipped')) return;
+
+                card.textContent = text;
+                card.classList.add('flipped');
+
+                if (!firstCard) {
+                    firstCard = card;
+                } else {
+                    secondCard = card;
+                    totalTurns++;
+                    updateScorecard(); // Update scorecard on every turn
+
+                    if (firstCard.dataset.pairId === secondCard.dataset.pairId) {
+                        // Match found
+                        audioCorrect.play().catch(e => console.error('Audio play failed:', e));
+                        updateSpeechBubble('Well done!');
+                        triggerHatAnimation('spin');
+
+                        firstCard.classList.add('match');
+                        secondCard.classList.add('match');
+
+                        firstCard.classList.add('disabled');
+                        secondCard.classList.add('disabled');
+
+                        matchesFound++;
+                        if (matchesFound === pairs.length) {
+                            if (totalTurns <= Math.ceil(maxTurns * 0.65)) {
+                                audioWin.play().catch(e => console.error('Audio play failed:', e));
+                                updateSpeechBubble('Congratulations! You matched all pairs in record time!');
+                            } else {
+                                updateSpeechBubble('Congratulations! You matched all pairs!');
+                            }
+                        }
+
+                        firstCard = null;
+                        secondCard = null;
+                    } else {
+                        // No match
+                        audioIncorrect.play().catch(e => console.error('Audio play failed:', e));
+                        updateSpeechBubble('Try again!');
+                        triggerHatAnimation('shake');
+
+                        firstCard.classList.add('no-match');
+                        secondCard.classList.add('no-match');
+
+                        setTimeout(() => {
+                            firstCard.textContent = "";
+                            firstCard.classList.remove('flipped', 'no-match');
+                            secondCard.textContent = "";
+                            secondCard.classList.remove('flipped', 'no-match');
+
+                            firstCard = null;
+                            secondCard = null;
+                        }, 1000);
+                    }
+                }
+            }
+
+            initializeGame();
+        });
+    </script>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li class="dropdown">
+                    <span class="dropbtn">Games</span>
+                    <div class="dropdown-content">
+                        <a href="hangman.html">Hangman</a>
+                        <a href="matching_pairs.html">Matching Pairs</a>
+                    </div>
+                </li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div id="assistant" style="display: none;">
+        <img src="images/top-hat.png" alt="Top Hat" class="top-hat">
+        <p id="speech-text"></p>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Myndworkz Ltd. All rights reserved.</p>
+    </footer>
+</body>
+</html>
