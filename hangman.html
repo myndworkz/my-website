@@ -66,6 +66,7 @@
             const assistant = document.getElementById('assistant');
             const speechContainer = document.getElementById('speech-container');
             const speechText = document.getElementById('speech-text');
+		
 
             if (!canvas || !ctx || !lettersContainer || !wordDisplay || !assistant || !speechContainer || !speechText) {
                 console.error("One or more required DOM elements are missing.");
@@ -78,7 +79,11 @@
             const audioIncorrect = new Audio('https://myndworkz.github.io/my-website/OhNoTryAgain.mp3');
             const audioWin = new Audio('https://myndworkz.github.io/my-website/CongratulationsYouWon.mp3');
             const audioLose = new Audio('https://myndworkz.github.io/my-website/GameOver.mp3');
-            let selectedWord = "";
+          	audioCorrect.preload = "auto";
+			audioIncorrect.preload = "auto";
+			audioWin.preload = "auto";
+			audioLose.preload = "auto";  
+			let selectedWord = "";
             let guessedWord = [];
             let attemptsLeft = 9;
 
@@ -184,9 +189,11 @@
             document.body.insertBefore(startButton, document.body.firstChild);
 
             startButton.addEventListener("click", () => {
-                speechContainer.style.display = "none";
-                initializeGame();
-            });
+    speechContainer.style.display = "none";
+    audioCorrect.play().catch(error => console.error('Audio play failed:', error)); // Optional: Play sound when starting
+    initializeGame();
+});
+
         });
     </script>
 </head>
