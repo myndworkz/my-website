@@ -142,10 +142,6 @@ footer {
 .dropdown:hover .dropdown-content {
     display: block;
 }
-
-
-
-
 /* Centralized Image Container */
 .main-image {
     display: block;
@@ -171,31 +167,35 @@ footer {
 }
 
 /* Responsive Navigation Bar */
-nav ul {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
-    list-style: none;
-    padding: 1em;
+.navbar {
     background-color: #333;
+    padding: 0.5em 0;
 }
 
-nav ul li {
-    margin: 0.5em 0;
+.navbar ul {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 1em;
 }
 
-nav ul li a {
-    color: white;
+.navbar ul li a {
+    display: inline-block;
     text-decoration: none;
     padding: 0.5em 1em;
-    background: #555;
     border-radius: 5px;
-    display: inline-block;
+    color: white;
+    background-color: #444;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-nav ul li a:hover {
-    background: #777;
+.navbar ul li a:hover {
+    background-color: white;
+    color: #444;
 }
+
 
 /* Responsive Splash Section */
 .splash {
@@ -342,41 +342,49 @@ footer {
 }
 
 /* Contact Form Styling */
-.contact-form {
+..contact-form {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-    max-width: 500px;
-    margin: 0 auto;
+    gap: 1.5em;
+    max-width: 600px;
+    margin: 2em auto;
+    text-align: left;
 }
 
 .contact-form label {
-    text-align: left;
+    font-size: 1rem;
+    font-weight: bold;
     color: #333;
 }
 
 .contact-form input,
 .contact-form textarea {
     width: 100%;
-    padding: 0.75rem;
+    padding: 0.5em;
     border: 1px solid #ccc;
     border-radius: 5px;
+    font-size: 1rem;
+}
+
+.contact-form textarea {
+    height: 120px;
 }
 
 .contact-form button {
-    padding: 0.75rem;
-    background: #ff414d;
-    color: #fff;
-    font-weight: bold;
+    background-color: #d62828;
+    color: white;
     border: none;
+    padding: 0.8em 1.5em;
     border-radius: 5px;
+    font-size: 1rem;
     cursor: pointer;
-    transition: background 0.3s;
+    transition: background-color 0.3s ease;
 }
 
 .contact-form button:hover {
-    background: #e60023;
+    background-color: #a00000;
 }
+
 
 /* About Page Styling */
 .about-section {
