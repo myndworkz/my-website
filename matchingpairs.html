@@ -104,10 +104,14 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const pairs = [
-                { word: "Dog", match: "Chien" },
-                { word: "Cat", match: "Chat" },
-                { word: "Apple", match: "Pomme" },
-                { word: "Car", match: "Voiture" }
+                { word: "Friendly", match: "Friendly" },
+                { word: "Lazy", match: "Lazy" },
+                { word: "Hard-working", match: "Hard-working" },
+                { word: "Funny", match: "Funny" },
+                { word: "Rude", match: "Rude" },
+                { word: "Quiet", match: "Quiet" },
+                { word: "Kind", match: "Kind" },
+                { word: "Mean", match: "Mean" }
             ];
 
             const audioCorrect = new Audio('https://myndworkz.github.io/my-website/WellDone.mp3');
@@ -159,20 +163,15 @@
             }
 
             function initializeGame() {
-                const shuffledPairs = shuffleArray([...pairs.map(pair => ({
-                    text: pair.word,
-                    pairId: pair.word
-                })), ...pairs.map(pair => ({
-                    text: pair.match,
-                    pairId: pair.word
-                }))]);
+                const shuffledPairs = shuffleArray([...pairs, ...pairs]);
 
-                shuffledPairs.forEach((item, index) => {
+                shuffledPairs.forEach((item) => {
                     const card = document.createElement('div');
                     card.classList.add('card');
-                    card.dataset.pairId = item.pairId;
+                    card.dataset.pairId = item.word;
                     card.textContent = ""; // Initially hidden
-                    card.addEventListener('click', () => handleCardClick(card, item.text));
+
+                    card.addEventListener('click', () => handleCardClick(card, item.word));
                     grid.appendChild(card);
                 });
             }
@@ -226,6 +225,7 @@
                         setTimeout(() => {
                             firstCard.textContent = "";
                             firstCard.classList.remove('flipped', 'no-match');
+
                             secondCard.textContent = "";
                             secondCard.classList.remove('flipped', 'no-match');
 
