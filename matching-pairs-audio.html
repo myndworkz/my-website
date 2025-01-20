@@ -194,6 +194,7 @@
             }
 
             function initializeGame() {
+                playAudio('gameStart'); // Play game start audio
                 grid.innerHTML = "";
                 scorecard.textContent = "";
                 matchesFound = 0;
@@ -229,6 +230,7 @@
                     secondCard = card;
 
                     if (firstCard.dataset.pairId === secondCard.dataset.pairId) {
+                        playAudio('success'); // Play success audio
                         firstCard.classList.add('match');
                         secondCard.classList.add('match');
                         matchesFound++;
@@ -242,6 +244,7 @@
                         secondCard = null;
                     } else {
                         setTimeout(() => {
+                            playAudio('failure'); // Play failure audio
                             firstCard.textContent = "";
                             firstCard.classList.remove('flipped');
 
@@ -259,7 +262,19 @@
 
             initializeGame();
         });
-    </script>
+    const audioFiles = {
+            success: new Audio('WellDone.mp3'),
+            failure: new Audio('OhNoTryAgain.mp3'),
+            gameStart: new Audio('WelcomeToHangman.mp3')
+        };
+
+        function playAudio(event) {
+            if (audioFiles[event]) {
+                audioFiles[event].play();
+            }
+        }
+
+        </script>
 </head>
 <body>
     <header>
