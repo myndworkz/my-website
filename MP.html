@@ -45,8 +45,8 @@
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 10px;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 150px));
+            gap: 15px;
             justify-content: center;
             margin-bottom: 20px;
         }
@@ -63,13 +63,14 @@
             transform: translateX(-50%);
             display: flex;
             align-items: center;
-            width: 100px; /* Adjusted width */
-            height: auto; /* Maintains aspect ratio */
+            width: 100px;
+            height: auto;
         }
-		#top-hat {
-			width: 100px; /* Set a reasonable size */
-			height: auto; /* Maintain aspect ratio */
-		}
+
+        #top-hat {
+            width: 100px;
+            height: auto;
+        }
 
         .top-hat.spin {
             animation: spin 1s linear;
@@ -143,7 +144,7 @@
             speechContainer.id = 'speech-container';
             speechContainer.innerHTML = `
                 <img src="images/top-hat.png" alt="Top Hat" class="top-hat" id="top-hat">
-                <p id="speech-text">Welcome! Select options to start.</p>
+                <p id="speech-text" aria-live="polite">Welcome! Select options to start.</p>
             `;
             document.body.insertBefore(speechContainer, scorecard);
 
@@ -169,9 +170,12 @@
             document.body.insertBefore(controls, grid);
 
             document.getElementById('startGame').addEventListener('click', () => {
+                const startButton = document.getElementById('startGame');
+                startButton.disabled = true;
                 selectedCategory = document.getElementById('wordCategory').value;
                 numPairs = parseInt(document.getElementById('numPairs').value);
                 initializeGame();
+                startButton.disabled = false;
             });
 
             function shuffleArray(array) {
@@ -185,27 +189,41 @@
             function updateSpeechBubble(message) {
                 const speechText = document.getElementById('speech-text');
                 speechText.textContent = message;
+
+                // Play audio feedback
+                const audio = new Audio();
+                audio.src = message.includes('Congratulations') ? 'audio/WellDone.mp3' : 'audio/try-again.mp3';
+                audio.play();
             }
 
             function triggerHatAnimation(animationType) {
                 const hat = document.getElementById('top-hat');
-                hat.classList.add(animationType);
-                setTimeout(() => hat.classList.remove(animationType), 1000);
+                if (!hat.classList.contains(animationType)) {
+                    hat.classList.add(animationType);
+                    setTimeout(() => hat.classList.remove(animationType), 1000);
+                }
             }
 
             function initializeGame() {
+                const selectedWords = wordCategories[selectedCategory];
+                if (selectedWords.length < numPairs) {
+                    updateSpeechBubble("Not enough words in the selected category!");
+                    return;
+                }
+
                 grid.innerHTML = "";
                 scorecard.textContent = "";
                 matchesFound = 0;
 
-                const selectedWords = shuffleArray(wordCategories[selectedCategory]).slice(0, numPairs);
-                const pairs = shuffleArray([...selectedWords, ...selectedWords]);
+                const pairs = shuffleArray([...selectedWords.slice(0, numPairs), ...selectedWords.slice(0, numPairs)]);
 
                 pairs.forEach((word) => {
                     const card = document.createElement('div');
                     card.classList.add('card');
                     card.dataset.pairId = word;
                     card.textContent = "";
+                    card.setAttribute('role', 'button');
+                    card.setAttribute('aria-label', `Card ${word}`);
 
                     card.addEventListener('click', () => handleCardClick(card, word));
                     grid.appendChild(card);
@@ -216,6 +234,15 @@
             let firstCard = null;
             let secondCard = null;
             let matchesFound = 0;
+
+            function resetCards(...cards) {
+                cards.forEach(card => {
+                    card.textContent = "";
+                    card.classList.remove('flipped');
+                });
+                firstCard = null;
+                secondCard = null;
+            }
 
             function handleCardClick(card, word) {
                 if (card.classList.contains('flipped')) return;
@@ -232,27 +259,16 @@
                         firstCard.classList.add('match');
                         secondCard.classList.add('match');
                         matchesFound++;
-
                         if (matchesFound === numPairs) {
                             updateSpeechBubble(`Congratulations! You matched all ${numPairs} pairs!`);
                             triggerHatAnimation('spin');
                         }
-
                         firstCard = null;
                         secondCard = null;
                     } else {
-                        setTimeout(() => {
-                            firstCard.textContent = "";
-                            firstCard.classList.remove('flipped');
-
-                            secondCard.textContent = "";
-                            secondCard.classList.remove('flipped');
-
-                            firstCard = null;
-                            secondCard = null;
-                        }, 1000);
                         updateSpeechBubble("Try again!");
                         triggerHatAnimation('shake');
+                        setTimeout(() => resetCards(firstCard, secondCard), 1000);
                     }
                 }
             }

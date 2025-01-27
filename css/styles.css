@@ -759,6 +759,15 @@ nav ul li a:hover {
     border-radius: 8px;
     background-color: #ddd;
 }
+#speech-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+#speech-text {
+    font-size: 1.2rem;
+    color: #333;
+    margin: 10px;
+}
 
 
 /* Splash Section */
