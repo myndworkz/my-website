@@ -1,0 +1,143 @@
+---
+title: "Family History and Relationships"
+author: "Dr Bryn Williams"
+output:
+  revealjs::revealjs_presentation:
+    slideNumber: true
+    transition: fade
+    theme: simple
+---
+
+---
+title: "Family History and Relationships"
+author: "Dr Bryn Williams"
+output:
+  revealjs::revealjs_presentation:
+    slideNumber: true
+    transition: fade
+    theme: simple
+---
+
+# Slide 1: Introduction
+
+Welcome to today's lesson on family relationships! In this lesson, we will: - Read a family history story. - Practice scanning and controlled exercises. - Discuss a conversation activity.
+
+# Slide 2: Family History Story
+
+**The Roots**
+
+Evelyn, the wise and gentle great-grandmother, was the heart of the family. She had two children: Margaret, a loving mother, and James, a warm-hearted uncle. Margaret, who was raised with care, grew up to be a devoted daughter and later became a nurturing mother herself. James, always full of energy, became a caring father to his only child, Michael, who grew up to be a friendly and curious young man.
+
+**The Next Generation**
+
+Margaret passed on her nurturing spirit to her two daughters, Joanne and Susan. Joanne, a dedicated mother, married her husband John and had three children: Peter, a cheerful boy; Lucy, a bright and curious daughter; and Kevin, her stepchild, who brought a unique energy to the family. Susan, who experienced a challenging period in her life, eventually divorced her ex-husband Mark. Despite these challenges, Susan remained a loving aunt and a devoted mother to her two daughters, Linda and Maria.
+
+**Extended Bonds**
+
+As the family grew, connections beyond the immediate generation enriched their lives. Michael, James’s son, became a cousin to Peter and Lucy, forging close ties with his aunt Joanne’s children. Linda, one of Susan’s daughters, was even regarded as a niece by Joanne due to the close bond between the sisters. Every relationship—whether marked by marriage, divorce, or step-relations—was celebrated as part of a diverse, evolving, and loving family history.
+
+``` r
+```
+
+# Slide 3: Scanning Exercise
+
+**Instructions**
+
+Read the family history story quickly and scan for key details. Answer the questions below:
+
+1.  Who is the great-grandmother in the story?
+2.  Name the two children of Evelyn.
+3.  Which child of Margaret is married and has three children?
+4.  Who is Susan’s ex-husband?
+5.  Identify the person who is a stepchild.
+6.  Who is Michael in relation to James?
+7.  How is Linda described in relation to Joanne?
+
+(Discuss your answers with a partner.)
+
+# Slide 6: Controlled Learning Exercise
+
+**Vocabulary Matching**
+
+Match each term to its definition. Write the corresponding letter.
+
+**Terms:** A. Great-grandmother\
+B. Grandmother\
+C. Uncle\
+D. Mother\
+E. Aunt\
+F. Father\
+G. Son\
+H. Daughter\
+I. Cousin\
+J. Stepchild\
+K. Husband\
+L. Ex-husband\
+M. Niece
+
+**Definitions:**
+
+\_\_\_ The sister of your parent.\
+\_\_\_ The daughter of your parent.\
+\_\_\_ The person married to you (male partner).\
+\_\_\_ The child of your uncle or aunt.\
+\_\_\_ The mother of your parent.\
+\_\_\_ A child who is not biologically yours, but is part of your family by marriage.\
+\_\_\_ The daughter of your sibling.\
+\_\_\_ Your parent's sibling.\
+\_\_\_ The mother of your parent's parent.\
+\_\_\_ The man you were once married to.\
+\_\_\_ A child from a marriage where the parent is not the biological parent.\
+\_\_\_ A female child of your parent.
+
+**Fill-in-the-Blanks**
+
+Complete the sentences using the correct word from: (great-grandmother, uncle, stepchild, cousin, ex-husband, niece)
+
+1.  James is Michael’s \_\_\_\_\_\_\_\_, because he is his father’s brother.
+2.  Linda is Joanne’s \_\_\_\_\_\_\_\_ since she is the daughter of Susan, and Susan is Joanne’s sister.
+3.  Kevin is Joanne’s \_\_\_\_\_\_\_\_; he is not her biological child, but he is part of her family by marriage.
+4.  In our family, my \_\_\_\_\_\_\_\_ always tells amazing stories about the past.
+5.  Susan’s \_\_\_\_\_\_\_\_ Mark is no longer part of her life.
+6.  Michael is a close \_\_\_\_\_\_\_\_ of Peter and Lucy, and they enjoy playing together.
+
+# Slide 7: Conversation Activity
+
+**Family Reunion Chat (15-Minute Pair Activity)**
+
+**Role Assignment:**
+
+-   Learner A: You are preparing a family reunion and will explain your family tree.
+-   Learner B: You ask questions to understand the relationships.
+
+**Conversation Prompts:**
+
+**Starting the Conversation:**
+
+A: “Let me tell you about my family. It all started with my great-grandmother, Evelyn.”\
+B: “That sounds interesting! Who were her children?”
+
+**Discussing the Next Generation:**
+
+A: “Evelyn had two children—Margaret and James. Margaret became the mother of Joanne and Susan, and James, a caring father, had a son, Michael.”\
+B: “And what can you tell me about Joanne and Susan? How do their families differ?”
+
+**Exploring Extended Family:**
+
+A: “Joanne, married to her husband John, has three children—Peter, Lucy, and her stepchild, Kevin. Meanwhile, Susan, who divorced her ex-husband Mark, has two daughters, Linda and Maria. Linda is even regarded as a niece by Joanne due to the close bond between the sisters.”\
+B: “I see. And what about the cousins in your family?”
+
+**Additional Discussion Points:**
+
+-   “How do these relationships influence family gatherings?”
+-   “Which relationship do you find most interesting and why?”
+
+# Slide 8: Wrap-up
+
+**Review:** What did you learn about family relationships?
+
+**Discussion:** Which vocabulary words were most challenging?
+
+**Homework:** Write a short paragraph describing your own family relationships using at least five of the target vocabulary words.
+
+## Thank you for your participation!

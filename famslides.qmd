@@ -1,0 +1,276 @@
+---
+title: "Family History and Relationships"
+author: "Dr Bryn Williams"
+format:
+  revealjs:
+    slide-number: true
+    transition: fade
+    theme: simple
+execute:
+  echo: false
+---
+
+# Slide 1: Introduction
+
+Welcome to today's lesson on family relationships! In this lesson, we will:
+- Read a family history story.
+- Practice scanning and controlled exercises.
+- Discuss a conversation activity.
+- Explore an interactive family network diagram.
+- Examine a dendrogram and hierarchy table to clarify the family tree.
+
+# Slide 2: Family History Story
+
+**The Roots**
+
+Evelyn, the wise and gentle great-grandmother, was the heart of the family. She had two children: Margaret, a loving mother, and James, a warm-hearted uncle. Margaret, who was raised with care, grew up to be a devoted daughter and later became a nurturing mother herself. James, always full of energy, became a caring father to his only child, Michael, who grew up to be a friendly and curious young man.
+
+**The Next Generation**
+
+Margaret passed on her nurturing spirit to her two daughters, Joanne and Susan. Joanne, a dedicated mother, married her husband John and had three children: Peter, a cheerful boy; Lucy, a bright and curious daughter; and Kevin, her stepchild, who brought a unique energy to the family. Susan, who experienced a challenging period in her life, eventually divorced her ex-husband Mark. Despite these challenges, Susan remained a loving aunt and a devoted mother to her two daughters, Linda and Maria.
+
+**Extended Bonds**
+
+As the family grew, connections beyond the immediate generation enriched their lives. Michael, James’s son, became a cousin to Peter and Lucy, forging close ties with his aunt Joanne’s children. Linda, one of Susan’s daughters, was even regarded as a niece by Joanne due to the close bond between the sisters. Every relationship—whether marked by marriage, divorce, or step-relations—was celebrated as part of a diverse, evolving, and loving family history.
+
+# Slide 3: Interactive Family Network Diagram
+
+Below is the interactive family network diagram. You can zoom, pan, and hover over nodes to see details.
+
+```r
+# Load required packages
+library(networkD3)
+library(dplyr)
+library(htmlwidgets)
+
+# Define nodes (using zero-indexed IDs)
+nodes <- data.frame(
+  id = 0:12,
+  name = c(
+    "Evelyn\n(Great Grandmother)",  # 0
+    "Margaret\n(Mother)",            # 1
+    "James\n(Uncle)",                # 2
+    "Joanne\n(Mother)",              # 3
+    "Susan\n(Mother)",               # 4
+    "Peter\n(Son)",                  # 5
+    "Lucy\n(Daughter)",              # 6
+    "Linda\n(Daughter)",             # 7
+    "Maria\n(Daughter)",             # 8
+    "Michael\n(Cousin)",             # 9
+    "Kevin\n(Stepchild)",            # 10
+    "John\n(Husband)",               # 11
+    "Mark\n(Ex-husband)"             # 12
+  ),
+  generation = c(1, 2, 2, 3, 3, 4, 4, 4, 4, 3, 3, 3, 3)
+)
+
+# Define vertical relationships (parent–child)
+vertical_edges <- data.frame(
+  source = c(0, 0, 1, 1, 3, 3, 3, 4, 4),
+  target = c(1, 2, 3, 4, 5, 6, 10, 7, 8),
+  relation = rep("child", 9)
+)
+
+# Connect James to Michael
+vertical_edges <- bind_rows(vertical_edges,
+  data.frame(source = 2, target = 9, relation = "child")
+)
+
+# Define horizontal relationships (siblings)
+horizontal_edges <- data.frame(
+  source = c(1, 5, 7, 3),
+  target = c(2, 6, 8, 4),
+  relation = c("sibling", "sibling", "sibling", "sibling")
+)
+
+# Define marriage/divorce relationships
+marriage_edges <- data.frame(
+  source = c(3, 4),
+  target = c(11, 12),
+  relation = c("married", "divorced")
+)
+
+# Additional relationships (cousin, niece)
+additional_edges <- data.frame(
+  source = c(9, 7),
+  target = c(5, 3),
+  relation = c("cousin", "niece")
+)
+
+# Combine all edges
+links <- bind_rows(vertical_edges, horizontal_edges, marriage_edges, additional_edges)
+
+# Create the force-directed network diagram
+fn_plot <- forceNetwork(
+  Links = links,
+  Nodes = nodes,
+  Source = "source",
+  Target = "target",
+  NodeID = "name",
+  Group = "generation",
+  opacity = 0.9,
+  zoom = TRUE,
+  fontSize = 14,
+  linkDistance = 120,
+  charge = -250,
+  bounded = TRUE,
+  opacityNoHover = 1
+)
+
+# Add custom styling for labels
+fn_plot <- onRender(
+  fn_plot,
+  'function(el, x) {
+    d3.selectAll(".node text")
+      .style("background", "rgba(255, 255, 255, 0.8)")
+      .style("padding", "3px")
+      .style("stroke", "black")
+      .style("stroke-width", "0.5px")
+      .style("border-radius", "3px")
+      .attr("dy", ".35em")
+      .attr("dx", "5");
+  }'
+)
+
+fn_plot
+```
+
+# Slide 4: Dendrogram and Hierarchy Table
+
+**Dendrogram of Family Hierarchy**
+
+The dendrogram below is generated from the vertical (parent–child) relationships only, which helps clarify the generational structure.
+
+```r
+library(tidygraph)
+library(ggraph)
+library(ggplot2)
+
+# Create a tidygraph object using only vertical edges
+family_tree <- tbl_graph(nodes = nodes, edges = vertical_edges, directed = TRUE)
+
+# Plot the dendrogram
+ggraph(family_tree, layout = 'dendrogram', circular = FALSE) +
+  geom_edge_diagonal() +
+  geom_node_text(aes(label = name), hjust = -0.1, size = 3) +
+  coord_flip() +
+  theme_minimal() +
+  ggtitle("Family Hierarchy Dendrogram")
+```
+
+**Hierarchy Table**
+
+Below is a table listing each family member and their generation.
+
+```r
+library(knitr)
+
+# Order nodes by generation
+hierarchy_table <- nodes[order(nodes$generation), c("name", "generation")]
+kable(hierarchy_table, caption = "Family Hierarchy Table")
+```
+
+# Slide 5: Scanning Exercise
+
+**Instructions**
+
+Read the family history story quickly and scan for key details. Answer the questions below:
+
+1. Who is the great-grandmother in the story?
+2. Name the two children of Evelyn.
+3. Which child of Margaret is married and has three children?
+4. Who is Susan’s ex-husband?
+5. Identify the person who is a stepchild.
+6. Who is Michael in relation to James?
+7. How is Linda described in relation to Joanne?
+
+(Discuss your answers with a partner.)
+
+# Slide 6: Controlled Learning Exercise
+
+**Vocabulary Matching**
+
+Match each term to its definition. Write the corresponding letter.
+
+**Terms:**
+A. Great-grandmother  
+B. Grandmother  
+C. Uncle  
+D. Mother  
+E. Aunt  
+F. Father  
+G. Son  
+H. Daughter  
+I. Cousin  
+J. Stepchild  
+K. Husband  
+L. Ex-husband  
+M. Niece  
+
+**Definitions:**
+
+___ The sister of your parent.  
+___ The daughter of your parent.  
+___ The person married to you (male partner).  
+___ The child of your uncle or aunt.  
+___ The mother of your parent.  
+___ A child who is not biologically yours, but is part of your family by marriage.  
+___ The daughter of your sibling.  
+___ Your parent's sibling.  
+___ The mother of your parent's parent.  
+___ The man you were once married to.  
+___ A child from a marriage where the parent is not the biological parent.  
+___ A female child of your parent.  
+
+**Fill-in-the-Blanks**
+
+Complete the sentences using the correct word from: (great-grandmother, uncle, stepchild, cousin, ex-husband, niece)
+
+1. James is Michael’s ________, because he is his father’s brother.
+2. Linda is Joanne’s ________ since she is the daughter of Susan, and Susan is Joanne’s sister.
+3. Kevin is Joanne’s ________; he is not her biological child, but he is part of her family by marriage.
+4. In our family, my ________ always tells amazing stories about the past.
+5. Susan’s ________ Mark is no longer part of her life.
+6. Michael is a close ________ of Peter and Lucy, and they enjoy playing together.
+
+# Slide 7: Conversation Activity
+
+**Family Reunion Chat (15-Minute Pair Activity)**
+
+**Role Assignment:**
+
+- Learner A: You are preparing a family reunion and will explain your family tree.
+- Learner B: You ask questions to understand the relationships.
+
+**Conversation Prompts:**
+
+**Starting the Conversation:**
+
+A: “Let me tell you about my family. It all started with my great-grandmother, Evelyn.”  
+B: “That sounds interesting! Who were her children?”  
+
+**Discussing the Next Generation:**
+
+A: “Evelyn had two children—Margaret and James. Margaret became the mother of Joanne and Susan, and James, a caring father, had a son, Michael.”  
+B: “And what can you tell me about Joanne and Susan? How do their families differ?”  
+
+**Exploring Extended Family:**
+
+A: “Joanne, married to her husband John, has three children—Peter, Lucy, and her stepchild, Kevin. Meanwhile, Susan, who divorced her ex-husband Mark, has two daughters, Linda and Maria. Linda is even regarded as a niece by Joanne due to the close bond between the sisters.”  
+B: “I see. And what about the cousins in your family?”  
+
+**Additional Discussion Points:**
+
+- “How do these relationships influence family gatherings?”
+- “Which relationship do you find most interesting and why?”
+
+# Slide 8: Wrap-up
+
+**Review:** What did you learn about family relationships?
+
+**Discussion:** Which vocabulary words were most challenging?
+
+**Homework:** Write a short paragraph describing your own family relationships using at least five of the target vocabulary words.
+
+Thank you for your participation!
+
