@@ -1,14 +1,13 @@
 ---
 title: "Family History and Relationships"
 author: "Dr Bryn Williams"
-format:
-  revealjs:
-    slide-number: true
+output:
+  revealjs::revealjs_presentation:
+    slideNumber: true
     transition: fade
     theme: simple
-execute:
-  echo: false
 ---
+
 
 # Slide 1: Introduction
 
