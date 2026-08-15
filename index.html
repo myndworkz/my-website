@@ -1,77 +1,157 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Myndworkz - Personalised Learning Experiences</title>
-    <link rel="stylesheet" href="css/styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pub Philosophy & The Forest Project</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <!-- Navigation Bar -->
-    <header>
-        <nav>
-            <ul>
-                <li><a href="index.html">Home</a></li>
-                <li class="dropdown">
-                    <span class="dropbtn">Lessons</span>
-                    <div class="dropdown-content">
-                        <a href="lesson-portal.html">Catherine's Busy Day</a>
-                        <a href="university-lesson.html">First Day at University</a>
-                        <a href="sleep-routines.html">Sleep Routines</a>
-						<a href="Personalities.html">Personalities</a>
-						<a href="neighbour.html">Neighbour</a>
-                    </div>
-                </li>
-                <li class="dropdown">
-                    <span class="dropbtn">Games</span>
-                    <div class="dropdown-content">
-                        <a href="hangman.html">Hangman</a>
-                        <a href="matchingpairs.html">Matching Pairs</a>
-                    </div>
-                </li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="contact.html">Contact</a></li>
-				<li><a href="Designing-for-freedom.html">Anarchy & Freedom</a></li>
+<body class="bg-stone-50 text-stone-900 font-sans antialiased">
 
-            </ul>
-        </nav>
-    </header>
-
-   <section class="splash">
-    <div class="splash-content">
-        <h1 class="myndworkz-title">myndworkz</h1>
-        <h2>Welcome!</h2>
-        <div class="splash-inner">
-            <!-- Text Content -->
-            <div class="text-box">
-                <p>
-                    <strong>I'm Dr. Bryn R. Williams, a CELTA-certified English teacher and public philosopher.
-                    I specialize in creating personalized learning experiences tailored to your needs. 
-                    Whether you're looking to improve your English language skills or explore philosophical 
-                    concepts, I can help you achieve your goals with engaging and thought-provoking lessons.
-                </p>
-                <p>
-                    <strong>My approach blends years of expertise with a deep passion for education and philosophy.</strong>
-                    From interactive games to profound discussions, my lessons are designed to stimulate your 
-                    curiosity and boost your confidence.</strong>
-                </p>
-                <div class="button-container">
-                    <a href="services.html" class="btn">Learn more about my teaching</a>
-                    <a href="https://pubphilosophy.uk" class="btn">Learn more about public philosophy</a>
-                </div>
-            </div>
-            <!-- Image -->
-            <div class="image-box">
-                <img src="images/BoatJet.jpg" alt="Outdoors Geneva scene">
-            </div>
-        </div>
+  <!-- Navigation -->
+  <header class="sticky top-0 z-50 bg-stone-50/90 backdrop-blur border-b border-stone-200">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      <a href="#" class="text-xl font-bold tracking-tight text-emerald-950">Pub Philosophy & Rewilding</a>
+      <nav class="hidden md:flex space-x-8 text-sm font-medium text-stone-600">
+        <a href="#philosophy" class="hover:text-emerald-800 transition">Pub Philosophy</a>
+        <a href="#forest" class="hover:text-emerald-800 transition">Forest Project</a>
+        <a href="#action" class="hover:text-emerald-800 transition">Climate & Social Action</a>
+        <a href="#discussion" class="hover:text-emerald-800 transition">Community</a>
+      </nav>
     </div>
-</section>
+  </header>
 
+  <!-- Hero Section -->
+  <section class="max-w-6xl mx-auto px-6 py-20 lg:py-28">
+    <div class="max-w-3xl">
+      <span class="text-emerald-700 font-semibold tracking-wider text-xs uppercase">Philosophy • Ecology • Action</span>
+      <h1 class="text-4xl md:text-5xl font-extrabold text-stone-950 mt-3 leading-tight">
+        Open dialogue, ecological restoration, and direct grassroots action.
+      </h1>
+      <p class="text-stone-600 text-lg mt-5 leading-relaxed">
+        Connecting free-form public discourse in the UK and Geneva with hands-on afforestation trials in Wales, and creating space to organize collective climate and social action.
+      </p>
+    </div>
+  </section>
 
-    <!-- Footer -->
-    <footer>
-        <p>&copy; 2024 Myndworkz Ltd. All rights reserved.</p>
-    </footer>
+  <!-- 1. Pub Philosophy Section -->
+  <section id="philosophy" class="border-t border-stone-200 py-16 bg-white">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="mb-10">
+        <h2 class="text-2xl md:text-3xl font-bold text-stone-900">Pub Philosophy</h2>
+        <p class="text-stone-600 mt-2">Informal, open philosophical discussions outside academic walls.</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-8">
+        <!-- London Chapter -->
+        <div class="p-6 rounded-xl border border-stone-200 bg-stone-50">
+          <span class="inline-block px-2.5 py-1 text-xs font-semibold rounded bg-stone-200 text-stone-700 mb-4">London Chapter</span>
+          <h3 class="text-xl font-bold text-stone-900">London Sessions</h3>
+          <p class="text-stone-600 text-sm mt-2 leading-relaxed">
+            Bi-weekly meetups covering ethics, politics, epistemology, and contemporary crises over a pint.
+          </p>
+          <ul class="mt-4 space-y-2 text-sm text-stone-600 border-t border-stone-200 pt-4">
+            <li><strong>Next Meetup:</strong> Check back for upcoming dates</li>
+            <li><strong>Location:</strong> London, UK</li>
+          </ul>
+        </div>
+
+        <!-- Geneva Chapter -->
+        <div class="p-6 rounded-xl border border-stone-200 bg-stone-50">
+          <span class="inline-block px-2.5 py-1 text-xs font-semibold rounded bg-stone-200 text-stone-700 mb-4">Geneva Chapter</span>
+          <h3 class="text-xl font-bold text-stone-900">Geneva Sessions</h3>
+          <p class="text-stone-600 text-sm mt-2 leading-relaxed">
+            Bringing international and local perspectives together for grassroots philosophical discourse.
+          </p>
+          <ul class="mt-4 space-y-2 text-sm text-stone-600 border-t border-stone-200 pt-4">
+            <li><strong>Next Meetup:</strong> Check back for upcoming dates</li>
+            <li><strong>Location:</strong> Geneva, Switzerland</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. The Forest Project Section -->
+  <section id="forest" class="border-t border-stone-200 py-16 bg-emerald-950 text-stone-100">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="mb-10">
+        <h2 class="text-2xl md:text-3xl font-bold">The Forest Project (Wales)</h2>
+        <p class="text-emerald-300 mt-2">Documenting the journey from nursery trials to full afforestation.</p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="p-6 rounded-xl bg-emerald-900/60 border border-emerald-800">
+          <h3 class="font-bold text-lg text-emerald-100">The CAT Trial</h3>
+          <p class="text-emerald-200 text-sm mt-2 leading-relaxed">
+            Initial planting trials, soil assessments, and species selection testing at the Centre for Alternative Technology.
+          </p>
+        </div>
+
+        <div class="p-6 rounded-xl bg-emerald-900/60 border border-emerald-800">
+          <h3 class="font-bold text-lg text-emerald-100">Welsh Afforestation</h3>
+          <p class="text-emerald-200 text-sm mt-2 leading-relaxed">
+            Scaling native woodland restoration across Welsh landscapes using adaptive management.
+          </p>
+        </div>
+
+        <div class="p-6 rounded-xl bg-emerald-900/60 border border-emerald-800">
+          <h3 class="font-bold text-lg text-emerald-100">Field Logs & Data</h3>
+          <p class="text-emerald-200 text-sm mt-2 leading-relaxed">
+            Open-source records of growth rates, survival, species diversity, and ecological notes.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Climate & Social Activism Section -->
+  <section id="action" class="border-t border-stone-200 py-16 bg-white">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="mb-10">
+        <h2 class="text-2xl md:text-3xl font-bold text-stone-900">Climate & Social Action</h2>
+        <p class="text-stone-600 mt-2">Grassroots resources, non-hierarchical organizing, and strategic dialogue.</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-8">
+        <div class="p-6 border border-stone-200 rounded-xl">
+          <h3 class="font-bold text-lg text-stone-900">Action & Toolkits</h3>
+          <p class="text-stone-600 text-sm mt-2 leading-relaxed">
+            Practical guides on direct action, solidarity networks, local resistance strategies, and mutual aid structures.
+          </p>
+        </div>
+
+        <div class="p-6 border border-stone-200 rounded-xl">
+          <h3 class="font-bold text-lg text-stone-900">Theory in Practice</h3>
+          <p class="text-stone-600 text-sm mt-2 leading-relaxed">
+            Bridging radical political philosophy with tangible environmental and economic justice campaigns.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Community & Discussion Section -->
+  <section id="discussion" class="border-t border-stone-200 py-16 bg-stone-50">
+    <div class="max-w-4xl mx-auto px-6">
+      <div class="text-center mb-10">
+        <h2 class="text-2xl md:text-3xl font-bold text-stone-900">Community Discussion</h2>
+        <p class="text-stone-600 mt-2">Share thoughts, propose meeting topics, or coordinate on projects.</p>
+      </div>
+
+      <!-- Giscus / Discussion container placeholder -->
+      <div class="bg-white p-8 rounded-xl border border-stone-200 text-stone-600 text-sm">
+        <p class="mb-4">To enable interactive discussions directly on GitHub Pages, connect your repository with <strong>Giscus</strong> (powered by GitHub Discussions).</p>
+        <!-- Place your Giscus <script> tag here -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="border-t border-stone-200 bg-white py-8 text-center text-xs text-stone-500">
+    <p>&copy; 2026 Pub Philosophy & Forest Project. Open source & community organized.</p>
+  </footer>
+
 </body>
 </html>
