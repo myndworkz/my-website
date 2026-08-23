@@ -1,157 +1,589 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pub Philosophy & The Forest Project</title>
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Natural Philosophy : Natural Forestry</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-stone-50 text-stone-900 font-sans antialiased">
+<body>
 
-  <!-- Navigation -->
-  <header class="sticky top-0 z-50 bg-stone-50/90 backdrop-blur border-b border-stone-200">
-    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-      <a href="#" class="text-xl font-bold tracking-tight text-emerald-950">Pub Philosophy & Rewilding</a>
-      <nav class="hidden md:flex space-x-8 text-sm font-medium text-stone-600">
-        <a href="#philosophy" class="hover:text-emerald-800 transition">Pub Philosophy</a>
-        <a href="#forest" class="hover:text-emerald-800 transition">Forest Project</a>
-        <a href="#action" class="hover:text-emerald-800 transition">Climate & Social Action</a>
-        <a href="#discussion" class="hover:text-emerald-800 transition">Community</a>
-      </nav>
-    </div>
+  <!-- Floating UI Header -->
+  <header class="ui-header">
+    <h1 class="ui-header__title">Natural Philosophy : Natural Forestry</h1>
+    <p class="ui-header__desc">
+      Click a root sphere to <strong>expand / collapse</strong> its subfolders. Drag any sphere to stretch the elastic
+      network. Click the canvas to cycle speed:
+      <span id="speed-indicator" class="speed-badge">Moderate</span>
+    </p>
   </header>
 
-  <!-- Hero Section -->
-  <section class="max-w-6xl mx-auto px-6 py-20 lg:py-28">
-    <div class="max-w-3xl">
-      <span class="text-emerald-700 font-semibold tracking-wider text-xs uppercase">Philosophy • Ecology • Action</span>
-      <h1 class="text-4xl md:text-5xl font-extrabold text-stone-950 mt-3 leading-tight">
-        Open dialogue, ecological restoration, and direct grassroots action.
-      </h1>
-      <p class="text-stone-600 text-lg mt-5 leading-relaxed">
-        Connecting free-form public discourse in the UK and Geneva with hands-on afforestation trials in Wales, and creating space to organize collective climate and social action.
-      </p>
-    </div>
-  </section>
+  <!-- Species Tooltip -->
+  <div id="ball-tooltip" class="hidden">
+    <div id="tooltip-title" class="tooltip-title"></div>
+    <div id="tooltip-latin" class="tooltip-latin"></div>
+    <div id="tooltip-category" class="tooltip-cat"></div>
+  </div>
 
-  <!-- 1. Pub Philosophy Section -->
-  <section id="philosophy" class="border-t border-stone-200 py-16 bg-white">
-    <div class="max-w-6xl mx-auto px-6">
-      <div class="mb-10">
-        <h2 class="text-2xl md:text-3xl font-bold text-stone-900">Pub Philosophy</h2>
-        <p class="text-stone-600 mt-2">Informal, open philosophical discussions outside academic walls.</p>
-      </div>
+  <!-- Background Canvas -->
+  <canvas id="canvas-bg"></canvas>
 
-      <div class="grid md:grid-cols-2 gap-8">
-        <!-- London Chapter -->
-        <div class="p-6 rounded-xl border border-stone-200 bg-stone-50">
-          <span class="inline-block px-2.5 py-1 text-xs font-semibold rounded bg-stone-200 text-stone-700 mb-4">London Chapter</span>
-          <h3 class="text-xl font-bold text-stone-900">London Sessions</h3>
-          <p class="text-stone-600 text-sm mt-2 leading-relaxed">
-            Bi-weekly meetups covering ethics, politics, epistemology, and contemporary crises over a pint.
-          </p>
-          <ul class="mt-4 space-y-2 text-sm text-stone-600 border-t border-stone-200 pt-4">
-            <li><strong>Next Meetup:</strong> Check back for upcoming dates</li>
-            <li><strong>Location:</strong> London, UK</li>
-          </ul>
-        </div>
+  <!-- Elastic Graph Mind Map Layer -->
+  <main id="interactive-map">
+    <svg id="svg-connections" class="w-full h-full absolute inset-0 pointer-events-none"></svg>
+  </main>
 
-        <!-- Geneva Chapter -->
-        <div class="p-6 rounded-xl border border-stone-200 bg-stone-50">
-          <span class="inline-block px-2.5 py-1 text-xs font-semibold rounded bg-stone-200 text-stone-700 mb-4">Geneva Chapter</span>
-          <h3 class="text-xl font-bold text-stone-900">Geneva Sessions</h3>
-          <p class="text-stone-600 text-sm mt-2 leading-relaxed">
-            Bringing international and local perspectives together for grassroots philosophical discourse.
-          </p>
-          <ul class="mt-4 space-y-2 text-sm text-stone-600 border-t border-stone-200 pt-4">
-            <li><strong>Next Meetup:</strong> Check back for upcoming dates</li>
-            <li><strong>Location:</strong> Geneva, Switzerland</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </section>
+  <noscript>
+    <nav style="position:fixed;bottom:1rem;left:1rem;z-index:50;font-size:0.875rem">
+      <a href="permaculture-data.html">Permaculture Data</a> ·
+      <a href="action.html">Action</a> ·
+      <a href="events.html">Events</a> ·
+      <a href="what-is-it.html">What Is It?</a> ·
+      <a href="history-philosophy.html">History</a> ·
+      <a href="journal.html">Journal</a> ·
+      <a href="forest-data.html">Forest Data</a> ·
+      <a href="forest-history.html">Forest History</a>
+    </nav>
+  </noscript>
 
-  <!-- 2. The Forest Project Section -->
-  <section id="forest" class="border-t border-stone-200 py-16 bg-emerald-950 text-stone-100">
-    <div class="max-w-6xl mx-auto px-6">
-      <div class="mb-10">
-        <h2 class="text-2xl md:text-3xl font-bold">The Forest Project (Wales)</h2>
-        <p class="text-emerald-300 mt-2">Documenting the journey from nursery trials to full afforestation.</p>
-      </div>
+  <script>
+    /* =====================================================================
+       1. GRAPH DEFINITION
+       ===================================================================== */
+    const BOOK_ICON = `<svg class="sphere__icon" style="color:#451a03" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>`;
+    const LEAF_ICON = `<svg class="sphere__icon" style="color:#ecfdf5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m6.364.364l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>`;
 
-      <div class="grid md:grid-cols-3 gap-6">
-        <div class="p-6 rounded-xl bg-emerald-900/60 border border-emerald-800">
-          <h3 class="font-bold text-lg text-emerald-100">The CAT Trial</h3>
-          <p class="text-emerald-200 text-sm mt-2 leading-relaxed">
-            Initial planting trials, soil assessments, and species selection testing at the Centre for Alternative Technology.
-          </p>
-        </div>
+    const GRAPH = [
+      {
+        id: 'natphil', size: 'sphere--lg', theme: 'theme-natphil', anchor: [0.50, 0.50],
+        aria: 'Natural Philosophy',
+        html: `${BOOK_ICON}<span class="sphere__label" style="color:#451a03">Natural<br>Philosophy</span>`,
+        children: [
+          { id: 'natphil-events',  label: 'Events',      href: 'events.html',             chip: 'chip--amber' },
+          { id: 'natphil-what',    label: 'What Is It?', href: 'what-is-it.html',         chip: 'chip--orange' },
+          { id: 'natphil-history', label: 'History',     href: 'history-philosophy.html', chip: 'chip--amberdeep' }
+        ]
+      },
+      {
+        id: 'perma', size: 'sphere--md', theme: 'theme-perma', anchor: [0.28, 0.55],
+        aria: 'Permaculture',
+        html: `<span class="sphere__glyph">Ⓐ</span><span class="sphere__label" style="color:#ffe4e6">Permaculture</span>`,
+        children: [
+          { id: 'perma-data',   label: 'Data',   href: 'permaculture-data.html', chip: 'chip--rose' },
+          { id: 'perma-action', label: 'Action', href: 'action.html',            chip: 'chip--indigo' }
+        ]
+      },
+      {
+        id: 'natforest', size: 'sphere--md', theme: 'theme-natforest', anchor: [0.72, 0.55],
+        aria: 'Natural Forest',
+        html: `${LEAF_ICON}<span class="sphere__label" style="color:#ecfdf5">Natural<br>Forest</span>`,
+        children: [
+          { id: 'natforest-journal', label: 'Journal', href: 'journal.html',        chip: 'chip--emerald' },
+          { id: 'natforest-data',    label: 'Data',    href: 'forest-data.html',    chip: 'chip--teal' },
+          { id: 'natforest-history', label: 'History', href: 'forest-history.html', chip: 'chip--emerdeep' }
+        ]
+      }
+    ];
 
-        <div class="p-6 rounded-xl bg-emerald-900/60 border border-emerald-800">
-          <h3 class="font-bold text-lg text-emerald-100">Welsh Afforestation</h3>
-          <p class="text-emerald-200 text-sm mt-2 leading-relaxed">
-            Scaling native woodland restoration across Welsh landscapes using adaptive management.
-          </p>
-        </div>
+    const PHYS = {
+      repel: 2.6, repelPad: 30,
+      stiffChild: 0.055, stiffRoot: 0.022,
+      gapChild: 42, restRoot: 300,
+      damping: 0.87, maxSpeed: 46,
+      anchorPull: 0.0018, restitution: 0.45, wallPad: 8
+    };
 
-        <div class="p-6 rounded-xl bg-emerald-900/60 border border-emerald-800">
-          <h3 class="font-bold text-lg text-emerald-100">Field Logs & Data</h3>
-          <p class="text-emerald-200 text-sm mt-2 leading-relaxed">
-            Open-source records of growth rates, survival, species diversity, and ecological notes.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
+    let screenW = window.innerWidth;
+    let screenH = window.innerHeight;
+    const nodes = new Map();
+    const edges = [];
+    const expanded = new Set();
+    const map = document.getElementById('interactive-map');
+    const svg = document.getElementById('svg-connections');
+    const SVG_NS = 'http://www.w3.org/2000/svg';
 
-  <!-- 3. Climate & Social Activism Section -->
-  <section id="action" class="border-t border-stone-200 py-16 bg-white">
-    <div class="max-w-6xl mx-auto px-6">
-      <div class="mb-10">
-        <h2 class="text-2xl md:text-3xl font-bold text-stone-900">Climate & Social Action</h2>
-        <p class="text-stone-600 mt-2">Grassroots resources, non-hierarchical organizing, and strategic dialogue.</p>
-      </div>
+    /* =====================================================================
+       2. DOM CONSTRUCTION (Two-Layer Transform Contract)
+       ===================================================================== */
+    function buildNode(cfg, parentId) {
+      const wrap = document.createElement('div');
+      wrap.className = 'node' + (parentId ? ' is-collapsed' : '');
+      wrap.id = 'node-' + cfg.id;
+      const isRoot = !parentId;
+      const body = document.createElement(isRoot ? 'button' : 'a');
+      
+      if (isRoot) {
+        body.type = 'button';
+        body.className = `node__body sphere ${cfg.size} ${cfg.theme}`;
+        body.setAttribute('aria-expanded', 'false');
+        body.setAttribute('aria-label', cfg.aria);
+        body.innerHTML = cfg.html;
+      } else {
+        body.href = cfg.href;
+        body.className = `node__body chip ${cfg.chip}`;
+        body.setAttribute('draggable', 'false');
+        body.textContent = cfg.label;
+      }
+      
+      wrap.appendChild(body);
+      if (parentId) wrap.setAttribute('inert', '');
+      map.appendChild(wrap);
+      
+      nodes.set(cfg.id, {
+        id: cfg.id, el: wrap, body,
+        x: 0, y: 0, vx: 0, vy: 0, r: 40,
+        active: isRoot, isRoot, parent: parentId || null,
+        invMass: isRoot ? 0.55 : 1,
+        anchor: cfg.anchor || null
+      });
+      
+      attachPointer(cfg.id, body, wrap, isRoot);
+    }
 
-      <div class="grid md:grid-cols-2 gap-8">
-        <div class="p-6 border border-stone-200 rounded-xl">
-          <h3 class="font-bold text-lg text-stone-900">Action & Toolkits</h3>
-          <p class="text-stone-600 text-sm mt-2 leading-relaxed">
-            Practical guides on direct action, solidarity networks, local resistance strategies, and mutual aid structures.
-          </p>
-        </div>
+   GRAPH.forEach(root => {
+  buildNode(root, null);
+  root.children.forEach(child => buildNode(child, root.id));
+  edges.push(...root.children.map(c => ({ from: root.id, to: c.id, kind: 'child' })));
+});
 
-        <div class="p-6 border border-stone-200 rounded-xl">
-          <h3 class="font-bold text-lg text-stone-900">Theory in Practice</h3>
-          <p class="text-stone-600 text-sm mt-2 leading-relaxed">
-            Bridging radical political philosophy with tangible environmental and economic justice campaigns.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
+// Central Radiating Dashed Lines (Natural Philosophy -> Pillars)
+edges.push({ from: 'natphil', to: 'perma',     kind: 'root' });
+edges.push({ from: 'natphil', to: 'natforest', kind: 'root' });
 
-  <!-- 4. Community & Discussion Section -->
-  <section id="discussion" class="border-t border-stone-200 py-16 bg-stone-50">
-    <div class="max-w-4xl mx-auto px-6">
-      <div class="text-center mb-10">
-        <h2 class="text-2xl md:text-3xl font-bold text-stone-900">Community Discussion</h2>
-        <p class="text-stone-600 mt-2">Share thoughts, propose meeting topics, or coordinate on projects.</p>
-      </div>
+// Thicker Direct Bridge (Permaculture <-> Natural Forestry)
+edges.push({ from: 'perma',   to: 'natforest', kind: 'thick' });
 
-      <!-- Giscus / Discussion container placeholder -->
-      <div class="bg-white p-8 rounded-xl border border-stone-200 text-stone-600 text-sm">
-        <p class="mb-4">To enable interactive discussions directly on GitHub Pages, connect your repository with <strong>Giscus</strong> (powered by GitHub Discussions).</p>
-        <!-- Place your Giscus <script> tag here -->
-      </div>
-    </div>
-  </section>
+edges.forEach(edge => {
+  const path = document.createElementNS(SVG_NS, 'path');
+  path.setAttribute('class', edge.kind === 'thick' ? 'connection-line--thick' : 'connection-line');
+  svg.appendChild(path);
+  edge.pathEl = path;
+});
 
-  <!-- Footer -->
-  <footer class="border-t border-stone-200 bg-white py-8 text-center text-xs text-stone-500">
-    <p>&copy; 2026 Pub Philosophy & Forest Project. Open source & community organized.</p>
-  </footer>
+    /* =====================================================================
+       3. MEASUREMENT + INITIAL LAYOUT
+       ===================================================================== */
+    function measureNodes() {
+      nodes.forEach(n => { n.r = Math.max(18, n.body.offsetWidth / 2); });
+    }
 
+    function layoutInitial() {
+      nodes.forEach(n => {
+        if (n.isRoot) {
+          n.x = screenW * n.anchor[0];
+          n.y = screenH * n.anchor[1];
+        } else {
+          const p = nodes.get(n.parent);
+          n.x = p.x; n.y = p.y;
+        }
+        n.vx = n.vy = 0;
+      });
+    }
+
+    /* =====================================================================
+       4. EXPAND / COLLAPSE
+       ===================================================================== */
+    function toggleCluster(rootId) {
+      const root = nodes.get(rootId);
+      const kids = GRAPH.find(g => g.id === rootId).children.map(c => nodes.get(c.id));
+      const isOpen = expanded.has(rootId);
+      root.body.setAttribute('aria-expanded', String(!isOpen));
+      
+      if (isOpen) {
+        expanded.delete(rootId);
+        kids.forEach(k => {
+          k.active = false;
+          k.el.classList.add('is-collapsed');
+          k.el.setAttribute('inert', '');
+        });
+        return;
+      }
+      
+      expanded.add(rootId);
+      kids.forEach((k, i) => {
+        k.active = true;
+        k.x = root.x;
+        k.y = root.y;
+        const spread = (i / kids.length) * Math.PI * 2 + (Math.random() - 0.5) * 0.5;
+        k.vx = Math.cos(spread) * 17;
+        k.vy = Math.sin(spread) * 17;
+        k.el.classList.remove('is-collapsed');
+        k.el.removeAttribute('inert');
+      });
+    }
+
+    /* =====================================================================
+       5. DRAG vs CLICK
+       ===================================================================== */
+    let drag = null;
+    let suppressClick = false;
+
+    function attachPointer(id, body, wrap, isRoot) {
+      body.addEventListener('dragstart', e => e.preventDefault());
+      
+      body.addEventListener('pointerdown', e => {
+        if (e.button !== 0 && e.pointerType === 'mouse') return;
+        const n = nodes.get(id);
+        suppressClick = false;
+        drag = {
+          id,
+          ox: n.x - e.clientX, oy: n.y - e.clientY,
+          lastX: e.clientX, lastY: e.clientY,
+          startX: e.clientX, startY: e.clientY,
+          moved: false
+        };
+        wrap.classList.add('is-dragging');
+        try { body.setPointerCapture(e.pointerId); } catch (_) {}
+      });
+
+      body.addEventListener('pointermove', e => {
+        if (!drag || drag.id !== id) return;
+        if (!drag.moved && Math.hypot(e.clientX - drag.startX, e.clientY - drag.startY) > 6) {
+          drag.moved = true;
+        }
+        const n = nodes.get(id);
+        n.x = e.clientX + drag.ox;
+        n.y = e.clientY + drag.oy;
+        n.vx = e.clientX - drag.lastX;
+        n.vy = e.clientY - drag.lastY;
+        drag.lastX = e.clientX;
+        drag.lastY = e.clientY;
+      });
+
+      const endDrag = e => {
+        if (!drag || drag.id !== id) return;
+        suppressClick = drag.moved;
+        wrap.classList.remove('is-dragging');
+        try { body.releasePointerCapture(e.pointerId); } catch (_) {}
+        drag = null;
+      };
+
+      body.addEventListener('pointerup', endDrag);
+      body.addEventListener('pointercancel', endDrag);
+
+      body.addEventListener('click', e => {
+        e.stopPropagation();
+        if (suppressClick) {
+          e.preventDefault();
+          suppressClick = false;
+          return;
+        }
+        if (isRoot) {
+          e.preventDefault();
+          toggleCluster(id);
+        }
+      });
+    }
+
+    /* =====================================================================
+       6. SPRING SIMULATION
+       ===================================================================== */
+    function restLength(edge, a, b) {
+  if (edge.kind === 'child') return a.r + b.r + PHYS.gapChild;
+  if (edge.kind === 'thick') return 340;
+  return 250; // Central radiating distance
+}
+
+    function simulate(dt) {
+      const list = [...nodes.values()].filter(n => n.active);
+
+      // Repulsion
+      for (let i = 0; i < list.length; i++) {
+        for (let j = i + 1; j < list.length; j++) {
+          const a = list[i], b = list[j];
+          const dx = b.x - a.x, dy = b.y - a.y;
+          const dist = Math.hypot(dx, dy) || 0.01;
+          const minDist = a.r + b.r + PHYS.repelPad;
+          if (dist >= minDist) continue;
+          const f = ((minDist - dist) / minDist) * PHYS.repel * dt;
+          const nx = dx / dist, ny = dy / dist;
+          if (!drag || drag.id !== a.id) { a.vx -= nx * f * a.invMass; a.vy -= ny * f * a.invMass; }
+          if (!drag || drag.id !== b.id) { b.vx += nx * f * b.invMass; b.vy += ny * f * b.invMass; }
+        }
+      }
+
+      // Spring tension
+      edges.forEach(edge => {
+        const a = nodes.get(edge.from), b = nodes.get(edge.to);
+        if (!a.active || !b.active) return;
+        const dx = b.x - a.x, dy = b.y - a.y;
+        const dist = Math.hypot(dx, dy) || 0.01;
+        const stiff = edge.kind === 'root' ? PHYS.stiffRoot : PHYS.stiffChild;
+        const f = (dist - restLength(edge, a, b)) * stiff * dt;
+        const fx = (dx / dist) * f, fy = (dy / dist) * f;
+        if (!drag || drag.id !== a.id) { a.vx += fx * a.invMass; a.vy += fy * a.invMass; }
+        if (!drag || drag.id !== b.id) { b.vx -= fx * b.invMass; b.vy -= fy * b.invMass; }
+      });
+
+      const damp = Math.pow(PHYS.damping, dt);
+      list.forEach(n => {
+        if (drag && drag.id === n.id) return;
+        if (n.isRoot) {
+          n.vx += (screenW * n.anchor[0] - n.x) * PHYS.anchorPull * dt;
+          n.vy += (screenH * n.anchor[1] - n.y) * PHYS.anchorPull * dt;
+        }
+        n.vx *= damp;
+        n.vy *= damp;
+        const speed = Math.hypot(n.vx, n.vy);
+        if (speed > PHYS.maxSpeed) {
+          n.vx = (n.vx / speed) * PHYS.maxSpeed;
+          n.vy = (n.vy / speed) * PHYS.maxSpeed;
+        }
+        n.x += n.vx * dt;
+        n.y += n.vy * dt;
+        
+        const pad = n.r + PHYS.wallPad;
+        if (n.x < pad)                { n.x = pad;                n.vx = Math.abs(n.vx) * PHYS.restitution; }
+        else if (n.x > screenW - pad) { n.x = screenW - pad;     n.vx = -Math.abs(n.vx) * PHYS.restitution; }
+        if (n.y < pad)                { n.y = pad;                n.vy = Math.abs(n.vy) * PHYS.restitution; }
+        else if (n.y > screenH - pad) { n.y = screenH - pad;     n.vy = -Math.abs(n.vy) * PHYS.restitution; }
+      });
+    }
+
+    function renderGraph() {
+      nodes.forEach(n => {
+        n.el.style.transform = `translate3d(${n.x}px, ${n.y}px, 0)`;
+      });
+
+      edges.forEach(edge => {
+        const a = nodes.get(edge.from);
+        const b = nodes.get(edge.to);
+
+        // Hide lines if either node is collapsed/inactive
+        if (!a || !b || !a.active || !b.active) {
+          edge.pathEl.style.display = 'none';
+          return;
+        }
+
+        const dx = b.x - a.x;
+        const dy = b.y - a.y;
+        const dist = Math.hypot(dx, dy) || 1;
+        const nx = dx / dist;
+        const ny = dy / dist;
+
+        // Ensure lines don't get hidden if nodes overlap slightly
+        const startX = a.x + nx * Math.min(a.r - 2, dist * 0.4);
+        const startY = a.y + ny * Math.min(a.r - 2, dist * 0.4);
+        const endX   = b.x - nx * Math.min(b.r - 2, dist * 0.4);
+        const endY   = b.y - ny * Math.min(b.r - 2, dist * 0.4);
+
+        edge.pathEl.style.display = 'block';
+        edge.pathEl.setAttribute('d', `M ${startX} ${startY} L ${endX} ${endY}`);
+      });
+    }
+
+    /* =====================================================================
+       7. BACKGROUND CANVAS
+       ===================================================================== */
+    const flagsDb = [
+      { name: "Brazil",    latin: "República Federativa do Brasil",    category: "Flag", imgUrl: "https://flagcdn.com/w160/br.png" },
+      { name: "Peru",      latin: "República del Perú",                category: "Flag", imgUrl: "https://flagcdn.com/w160/pe.png" },
+      { name: "Argentina", latin: "República Argentina",               category: "Flag", imgUrl: "https://flagcdn.com/w160/ar.png" },
+      { name: "Bolivia",   latin: "Estado Plurinacional de Bolivia",   category: "Flag", imgUrl: "https://flagcdn.com/w160/bo.png" },
+      { name: "Wales",     latin: "Cymru / Wales",                     category: "Flag", imgUrl: "https://flagcdn.com/w160/gb-wls.png" }
+    ];
+
+    const treesDb = [
+      { name: "Brazil Nut Tree",      latin: "Bertholletia excelsa", category: "Amazon Rainforest",   imgUrl: "https://images.unsplash.com/photo-1596436889106-be35e843f974?auto=format&fit=crop&w=150&q=80" },
+      { name: "Kapok Tree",           latin: "Ceiba pentandra",      category: "Amazon Rainforest",   imgUrl: "https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?auto=format&fit=crop&w=150&q=80" },
+      { name: "Rubber Tree",          latin: "Hevea brasiliensis",   category: "Amazon Rainforest",   imgUrl: "https://images.unsplash.com/photo-1528183429752-a97d0bf99b5a?auto=format&fit=crop&w=150&q=80" },
+      { name: "Golden Trumpet Tree",  latin: "Handroanthus albus",   category: "Atlantic Rainforest", imgUrl: "https://images.unsplash.com/photo-1569154941061-e231b4725ef1?auto=format&fit=crop&w=150&q=80" },
+      { name: "Brazilwood",           latin: "Paubrasilia echinata", category: "Atlantic Rainforest", imgUrl: "https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&w=150&q=80" },
+      { name: "Jequitibá-rosa",       latin: "Cariniana legalis",    category: "Atlantic Rainforest", imgUrl: "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=150&q=80" },
+      { name: "Sessile Oak",          latin: "Quercus petraea",      category: "Welsh Rainforest",    imgUrl: "https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=150&q=80" },
+      { name: "Rowan",                latin: "Sorbus aucuparia",     category: "Welsh Rainforest",    imgUrl: "https://images.unsplash.com/photo-1605335133612-404c0bc6ee6a?auto=format&fit=crop&w=150&q=80" },
+      { name: "Silver Birch",         latin: "Betula pendula",       category: "Welsh Rainforest",    imgUrl: "https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?auto=format&fit=crop&w=150&q=80" },
+      { name: "Hazel",                latin: "Corylus avellana",     category: "Welsh Rainforest",    imgUrl: "https://images.unsplash.com/photo-1501183007986-d0d080b147f9?auto=format&fit=crop&w=150&q=80" }
+    ];
+
+    const preloaded = {};
+    function preload(url) {
+      if (!preloaded[url]) {
+        const img = new Image();
+        img.decoding = 'async';
+        img.src = url;
+        preloaded[url] = img;
+      }
+      return preloaded[url];
+    }
+    [...flagsDb, ...treesDb].forEach(d => preload(d.imgUrl));
+
+    const canvas = document.getElementById('canvas-bg');
+    const ctx = canvas.getContext('2d');
+    let cw = window.innerWidth, ch = window.innerHeight;
+
+    function sizeCanvas() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      cw = window.innerWidth;
+      ch = window.innerHeight;
+      canvas.width = Math.round(cw * dpr);
+      canvas.height = Math.round(ch * dpr);
+      canvas.style.width = cw + 'px';
+      canvas.style.height = ch + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    const speedLevels = [
+      { label: 'Stopped',    mult: 0.0 },
+      { label: 'Slow Float', mult: 0.4 },
+      { label: 'Moderate',   mult: 1.0 }
+    ];
+    let speedIndex = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 1 : 2;
+
+    class Ball {
+      constructor() {
+        this.radius = Math.random() * 8 + 18;
+        this.mass = this.radius;
+        this.x = Math.random() * (cw - this.radius * 2) + this.radius;
+        this.y = Math.random() * (ch - this.radius * 2) + this.radius;
+        const a = Math.random() * Math.PI * 2;
+        const s = Math.random() * 1.5 + 1.2;
+        this.vx = Math.cos(a) * s;
+        this.vy = Math.sin(a) * s;
+        this.data = Math.random() < 0.25
+          ? flagsDb[Math.floor(Math.random() * flagsDb.length)]
+          : treesDb[Math.floor(Math.random() * treesDb.length)];
+        this.img = preload(this.data.imgUrl);
+      }
+      update(dt) {
+        const m = speedLevels[speedIndex].mult;
+        if (m === 0) return;
+        this.x += this.vx * m * dt;
+        this.y += this.vy * m * dt;
+        if (this.x - this.radius <= 0)       { this.x = this.radius;      this.vx = Math.abs(this.vx); }
+        else if (this.x + this.radius >= cw) { this.x = cw - this.radius; this.vx = -Math.abs(this.vx); }
+        if (this.y - this.radius <= 0)       { this.y = this.radius;      this.vy = Math.abs(this.vy); }
+        else if (this.y + this.radius >= ch) { this.y = ch - this.radius; this.vy = -Math.abs(this.vy); }
+      }
+      draw() {
+        ctx.save();
+        ctx.globalAlpha = 0.55;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.clip();
+        if (this.img && this.img.complete && this.img.naturalWidth) {
+          ctx.drawImage(this.img, this.x - this.radius, this.y - this.radius, this.radius * 2, this.radius * 2);
+        } else {
+          ctx.fillStyle = '#cbd5e1';
+          ctx.fill();
+        }
+        ctx.restore();
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.lineWidth = 1.5;
+        ctx.strokeStyle = this.data.category === 'Welsh Rainforest' ? '#16a34a' : 'rgba(148,163,184,.4)';
+        ctx.stroke();
+      }
+    }
+
+    sizeCanvas();
+    const balls = Array.from({ length: 32 }, () => new Ball());
+
+    function resolveBallCollisions() {
+      if (speedLevels[speedIndex].mult === 0) return;
+      for (let i = 0; i < balls.length; i++) {
+        for (let j = i + 1; j < balls.length; j++) {
+          const b1 = balls[i], b2 = balls[j];
+          const dx = b2.x - b1.x, dy = b2.y - b1.y;
+          const dist = Math.hypot(dx, dy);
+          if (dist >= b1.radius + b2.radius) continue;
+          const overlap = b1.radius + b2.radius - dist;
+          const nx = dx / (dist || 1), ny = dy / (dist || 1);
+          b1.x -= nx * overlap * 0.5; b1.y -= ny * overlap * 0.5;
+          b2.x += nx * overlap * 0.5; b2.y += ny * overlap * 0.5;
+          const kx = b1.vx - b2.vx, ky = b1.vy - b2.vy;
+          const p = 2 * (nx * kx + ny * ky) / (b1.mass + b2.mass);
+          b1.vx -= p * b2.mass * nx; b1.vy -= p * b2.mass * ny;
+          b2.vx += p * b1.mass * nx; b2.vy += p * b1.mass * ny;
+        }
+      }
+    }
+
+    /* =====================================================================
+       8. FRAME-RATE NORMALISED LOOP
+       ===================================================================== */
+    let lastFrame = performance.now();
+
+    function frame(now) {
+      let dt = (now - lastFrame) / 16.6667;
+      lastFrame = now;
+      dt = Math.max(0.2, Math.min(dt, 3));
+      
+      ctx.clearRect(0, 0, cw, ch);
+      resolveBallCollisions();
+      balls.forEach(b => { b.update(dt); b.draw(); });
+      simulate(dt);
+      renderGraph();
+      requestAnimationFrame(frame);
+    }
+
+    measureNodes();
+    layoutInitial();
+    renderGraph();
+    requestAnimationFrame(frame);
+
+    /* =====================================================================
+       9. INPUT EVENTS
+       ===================================================================== */
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      screenW = window.innerWidth;
+      screenH = window.innerHeight;
+      sizeCanvas();
+      balls.forEach(b => {
+        b.x = Math.min(Math.max(b.x, b.radius), cw - b.radius);
+        b.y = Math.min(Math.max(b.y, b.radius), ch - b.radius);
+      });
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(measureNodes, 120);
+    });
+
+    const tooltip = document.getElementById('ball-tooltip');
+    const tipTitle = document.getElementById('tooltip-title');
+    const tipLatin = document.getElementById('tooltip-latin');
+    const tipCat = document.getElementById('tooltip-category');
+
+    window.addEventListener('mousemove', e => {
+      if (drag) { tooltip.classList.add('hidden'); return; }
+      let hit = null;
+      for (let i = balls.length - 1; i >= 0; i--) {
+        if (Math.hypot(balls[i].x - e.clientX, balls[i].y - e.clientY) <= balls[i].radius) {
+          hit = balls[i];
+          break;
+        }
+      }
+      if (!hit) { tooltip.classList.add('hidden'); return; }
+      
+      tipTitle.textContent = hit.data.name;
+      tipLatin.textContent = hit.data.latin;
+      tipCat.textContent = hit.data.category;
+      
+      const catClass = hit.data.category === 'Flag' ? 'tooltip-cat--flag' :
+                       hit.data.category === 'Amazon Rainforest' ? 'tooltip-cat--amazon' :
+                       hit.data.category === 'Atlantic Rainforest' ? 'tooltip-cat--atlantic' :
+                       'tooltip-cat--welsh';
+                       
+      tipCat.className = `tooltip-cat ${catClass}`;
+      tooltip.style.left = Math.min(e.clientX + 15, cw - 260) + 'px';
+      tooltip.style.top  = Math.min(e.clientY + 15, ch - 120) + 'px';
+      tooltip.classList.remove('hidden');
+    });
+
+    const speedIndicator = document.getElementById('speed-indicator');
+    speedIndicator.textContent = speedLevels[speedIndex].label;
+
+    window.addEventListener('click', e => {
+      if (e.target.closest('.node')) return;
+      speedIndex = (speedIndex + 1) % speedLevels.length;
+      speedIndicator.textContent = speedLevels[speedIndex].label;
+      balls.forEach(b => {
+        const dx = b.x - e.clientX, dy = b.y - e.clientY;
+        const dist = Math.hypot(dx, dy) || 1;
+        const force = Math.min(15, 250 / dist);
+        b.vx += (dx / dist) * force;
+        b.vy += (dy / dist) * force;
+      });
+    });
+  </script>
 </body>
 </html>

@@ -1,0 +1,372 @@
+
+
+
+<!DOCTYPE html>
+<!-- <a href="index.html">← Back to Hub</a> -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Natural Forest Journal : Page 1</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Tailwind Config to extend color palettes -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              yellow: '#fef08a',
+              yellowBorder: '#f43f5e',
+              pink: '#fbcfe8',
+              pinkBorder: '#eab308',
+              blue: '#93c5fd',
+              blueBorder: '#6366f1',
+              orange: '#fdba74',
+              orangeBorder: '#ea580c',
+              green: '#86efac',
+              greenBorder: '#16a34a',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #fafaf9; /* Stone 50 */
+      background-image: radial-gradient(circle at 80% 20%, rgba(134, 239, 172, 0.15) 0%, transparent 40%),
+                        radial-gradient(circle at 15% 70%, rgba(147, 197, 253, 0.1) 0%, transparent 50%);
+    }
+
+    /* 3D Glass Bubble Styling */
+    .bubble-glass-3d {
+      background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.9) 0%, rgba(244, 114, 182, 0.4) 40%, rgba(232, 121, 249, 0.55) 85%, rgba(192, 38, 211, 0.8) 100%);
+      box-shadow: 0 15px 35px -5px rgba(192, 38, 211, 0.2), 
+                  0 10px 15px -10px rgba(0, 0, 0, 0.1),
+                  inset 0 -5px 15px rgba(0, 0, 0, 0.15);
+      position: relative;
+    }
+    
+    .bubble-glass-3d::after {
+      content: '';
+      position: absolute;
+      top: 10%;
+      left: 10%;
+      width: 35%;
+      height: 20%;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0) 100%);
+      border-radius: 50%;
+      transform: rotate(-35deg);
+      pointer-events: none;
+    }
+
+    /* Dashed Outer Rotation Ring */
+    .bubble-ring {
+      position: relative;
+    }
+    .bubble-ring::before {
+      content: '';
+      position: absolute;
+      inset: -8px;
+      border: 1.5px dashed rgba(132, 204, 22, 0.45);
+      border-radius: 50%;
+      animation: rotate-ring 40s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes rotate-ring {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* Play Button Hover Pulse waves */
+    .pulse-wave {
+      animation: wave 2.5s cubic-bezier(0.24, 0, 0.38, 1) infinite;
+    }
+    @keyframes wave {
+      0% { transform: scale(1); opacity: 0.8; }
+      50% { transform: scale(1.15); opacity: 0.3; }
+      100% { transform: scale(1.3); opacity: 0; }
+    }
+  </style>
+</head>
+<body class="font-sans text-stone-900 antialiased min-h-screen py-8 px-4 sm:px-6 lg:px-8 select-none">
+
+  <!-- Top Navigation bar -->
+  <div class="max-w-6xl mx-auto mb-10 flex justify-between items-center">
+    <a href="index.html" class="inline-flex items-center text-sm font-semibold text-emerald-800 bg-emerald-100/80 hover:bg-emerald-200/90 px-4 py-2 rounded-full border border-emerald-300 transition-all shadow-sm hover:shadow-md">
+      <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+      </svg>
+      ← Back to Map
+    </a>
+    <div class="text-xs font-bold uppercase tracking-widest text-stone-500 bg-white/80 px-3.5 py-1.5 rounded-full border border-stone-200 shadow-sm backdrop-blur">
+      Journal Log: Page 1
+    </div>
+  </div>
+
+  <!-- Main Grid Layout matching the sketch -->
+  <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12 items-start">
+    
+    <!-- LEFT SIDEBAR COLUMN (Bubble Video & Vertical Bios) -->
+    <div class="md:col-span-5 lg:col-span-4 space-y-10 flex flex-col items-center md:items-stretch">
+      
+      <!-- 1. The Large Circle: Video Player for adventure.mp4 -->
+      <div class="flex flex-col items-center">
+        <div class="bubble-ring">
+          <button onclick="openVideoModal()" class="bubble-glass-3d w-64 h-64 sm:w-72 sm:h-72 rounded-full flex flex-col items-center justify-center text-center cursor-pointer group transition-all duration-500 transform hover:scale-105 hover:rotate-3 focus:outline-none">
+            <!-- Sailboat Unsplash Background to represent maritime travel -->
+            <div class="absolute inset-4 rounded-full bg-cover bg-center opacity-45 mix-blend-multiply transition-transform duration-700 group-hover:scale-110" style="background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=400');"></div>
+            
+            <div class="absolute w-16 h-16 rounded-full bg-white/40 pulse-wave"></div>
+            
+            <!-- White Play Button -->
+            <div class="relative z-10 w-16 h-16 rounded-full bg-white text-emerald-800 flex items-center justify-center shadow-lg transition-transform duration-300 group-hover:scale-110">
+              <svg class="w-8 h-8 fill-current translate-x-0.5" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+            </div>
+            
+            <span class="relative z-10 mt-4 text-xs font-black uppercase tracking-wider text-pink-900 drop-shadow-sm">Play Video</span>
+            <!-- <span class="relative z-10 text-[10px] font-bold text-pink-800/80 px-3">bryn & Elle's adventure.mp4</span> -->
+			<span class="relative z-10 text-[10px] font-bold text-pink-800/80 px-3">Bryn & Elle's Trip.mp4</span>
+
+          </button>
+        </div>
+        <p class="mt-3 text-xs text-stone-500 font-medium italic text-center max-w-[250px]">
+          Click to watch our 8-month South American expedition
+        </p>
+      </div>
+
+      <!-- 2. The Vertical Rectangle: Biographies Sidebar -->
+      <div class="w-full max-w-sm bg-white/95 border-2 border-brand-pinkBorder rounded-2xl shadow-xl overflow-hidden p-6 relative">
+        <div class="absolute -top-3 -right-3 w-8 h-8 bg-brand-yellow rounded-full border border-brand-yellowBorder flex items-center justify-center transform rotate-12 font-black text-xs text-brand-yellowBorder shadow">
+          Ⓐ
+        </div>
+        
+        <h3 class="text-lg font-black text-stone-800 border-b-2 border-dashed border-stone-200 pb-3 mb-4 flex items-center">
+          <span class="inline-block w-3 h-3 rounded-full bg-brand-pinkBorder mr-2 shadow-sm"></span>
+          Expedition Biographies
+        </h3>
+        
+        <div class="space-y-3">
+          <!-- Bryn's Accordion -->
+          <button onclick="toggleBio('bryn')" class="w-full text-left p-3 rounded-xl border border-stone-200 hover:border-brand-blue bg-stone-50/50 hover:bg-brand-blue/10 transition-all duration-300 focus:outline-none flex items-center justify-between group">
+            <div class="flex items-center space-x-3">
+              <div class="w-8 h-8 rounded-full bg-brand-blue flex items-center justify-center font-bold text-blue-900 border border-brand-blueBorder shadow-sm">B</div>
+              <div>
+                <h4 class="font-bold text-stone-800 text-sm">Bryn</h4>
+                <p class="text-[10px] text-stone-500">Forestry & Woodlands</p>
+              </div>
+            </div>
+            <svg id="chevron-bryn" class="w-4 h-4 text-stone-400 group-hover:text-stone-600 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
+          </button>
+          <div id="bio-bryn" class="hidden px-3 pb-3 pt-1 text-xs text-stone-600 leading-relaxed space-y-2">
+            <p><strong>Role:</strong> TBC</p>
+            <!-- <p>Bryn is returning to Wales with a lifelong dream of creating a native forest. After completing an 8-month tour of South America working on ecological projects, he is currently learning Welsh (Cymraeg) and preparing for the woodland restoration trial at CAT.</p> -->
+          </div>
+
+          <!-- Elle's Accordion -->
+          <button onclick="toggleBio('elle')" class="w-full text-left p-3 rounded-xl border border-stone-200 hover:border-brand-pink bg-stone-50/50 hover:bg-brand-pink/10 transition-all duration-300 focus:outline-none flex items-center justify-between group">
+            <div class="flex items-center space-x-3">
+              <div class="w-8 h-8 rounded-full bg-brand-pink flex items-center justify-center font-bold text-pink-950 border border-brand-pinkBorder shadow-sm">E</div>
+              <div>
+                <h4 class="font-bold text-stone-800 text-sm">Elle</h4>
+                <p class="text-[10px] text-stone-500">TBC</p>
+              </div>
+            </div>
+            <svg id="chevron-elle" class="w-4 h-4 text-stone-400 group-hover:text-stone-600 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
+          </button>
+          <div id="bio-elle" class="hidden px-3 pb-3 pt-1 text-xs text-stone-600 leading-relaxed space-y-2">
+            <p><strong>Role:</strong> TBC</p>
+            <!-- <p>Elle specializes in grassroots organizing and non-hierarchical networking. During the South American trek, she hosted crucial interviews with indigenous representatives and coordinated solidarity fleets with the Flotilla for Change.</p> -->
+          </div>
+
+          <!-- Bryn & Elle's Accordion -->
+          <button onclick="toggleBio('joint')" class="w-full text-left p-3 rounded-xl border border-stone-200 hover:border-brand-orange bg-stone-50/50 hover:bg-brand-orange/10 transition-all duration-300 focus:outline-none flex items-center justify-between group">
+            <div class="flex items-center space-x-3">
+              <div class="w-8 h-8 rounded-full bg-brand-orange flex items-center justify-center font-bold text-orange-950 border border-brand-orangeBorder shadow-sm">B&E</div>
+              <div>
+                <h4 class="font-bold text-stone-800 text-sm">Bryn & Elle</h4>
+                <p class="text-[10px] text-stone-500">Partners in Rewilding</p>
+              </div>
+            </div>
+            <svg id="chevron-joint" class="w-4 h-4 text-stone-400 group-hover:text-stone-600 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
+          </button>
+          <div id="bio-joint" class="hidden px-3 pb-3 pt-1 text-xs text-stone-600 leading-relaxed space-y-2">
+            <p><strong>Mission:</strong> The Forest Project</p>
+            <!-- <p>After crossing the Atlantic as volunteer crew on the cargo schooner Avontuur and reforesting parts of South America, Bryn and Elle decided to direct their collective action closer to home. They are launching their new ecological restoration project starting at Machynlleth, Wales.</p> -->
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT MAIN CONTENT COLUMN (TITLES & Journal Content) -->
+    <div class="md:col-span-7 lg:col-span-8 bg-white border border-stone-200 rounded-2xl shadow-xl p-6 sm:p-8 lg:p-10 space-y-8">
+      
+      <!-- Page Header (TITLES from Sketch) -->
+      <div class="border-b border-stone-100 pb-6">
+        <div class="flex items-center space-x-2 text-xs font-extrabold text-emerald-700 uppercase tracking-widest mb-1.5">
+          <span>Journal</span>
+          <span>•</span>
+          <span>London to Wales</span>
+        </div>
+        <h2 class="text-3xl sm:text-4xl font-black text-stone-900 tracking-tight leading-tight">
+          So, every journal, like every journey, needs to start somewhere...
+        </h2>
+        <div class="mt-4 flex flex-wrap items-center gap-3 text-xs text-stone-500 font-semibold">
+          <span class="bg-stone-100 text-stone-600 px-2.5 py-1 rounded-full border border-stone-200">Date: August 2026</span>
+          <span class="bg-stone-100 text-stone-600 px-2.5 py-1 rounded-full border border-stone-200">Location: London, UK</span>
+          <span class="bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded-full border border-emerald-200">Trial Stage: Preparing</span>
+        </div>
+      </div>
+
+      <!-- Journal Body Text (Ipsum Lorum from Sketch) -->
+      <div class="prose prose-stone max-w-none text-stone-700 leading-relaxed space-y-6 text-sm sm:text-base">
+        
+        <p class="first-letter:text-5xl first-letter:font-black first-letter:text-emerald-800 first-letter:float-left first-letter:mr-3 first-letter:line-height-1">
+          So, every journal, like every journey, needs to start somewhere, and this one starts in London, on Tuesday the 18th of August, where Elle and I are staying with Elle’s mum Mary while we wait until September when we arrive at the Centre for Alternative Technology in Machynlleth (Wales). We will stay there for 4 days, where they will get to have a look at us and we get to have a look at them, and if we like the look of each other, then our adventure will truly begin.
+        </p>
+
+        <p>
+          When we returned from our 8 month tour of South America the first thing we did was apply to CAT for a 6 month volunteer role in their woodlands and waterways team. A week ago, we heard that our application(s) were successful and invited to the trial. This Journal is in hope more than anticipation that we will clear the final hurdle.
+        </p>
+
+        <p>
+          That possible future will unfold itself on these pages, but if you’ve read this far you might be interested in who we are, and what our plans are. To find out who we are, have a look at our bios. To understand our plan, then we need to go back in time a bit. About a year I think. Then, we had no real plan, no jobs, and were soon to be homeless, as we had to leave Geneva and return to London. Fortunately, despite these circumstances we were not penniless, and we had many options - our task was to choose between them. After discarding many we came up with one we could agree on. We decided to go to COP 30, in Belém (Brazil).
+        </p>
+
+        <div class="p-5 my-6 bg-amber-50/50 border-l-4 border-brand-orangeBorder rounded-r-xl space-y-3">
+          <h4 class="font-black text-stone-800 text-sm uppercase tracking-wider flex items-center">
+            <svg class="w-4 h-4 mr-1.5 text-brand-orangeBorder" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+            Sailing to COP 30
+          </h4>
+          <p class="text-xs sm:text-sm text-stone-600 leading-relaxed italic">
+            "Only a few seconds after deciding that we were going to Brazil, we realised how incredibly crass it would be to fly there, so we modified our decision and now it was clear – and exciting - that we were going to <strong>sail</strong> to Belém for COP 30."
+          </p>
+        </div>
+
+        <p>
+          That decision, I see now, was the first in a series of events, adventures – and misadventures – that led us to where we are now. While trying to find a ship we fell in with a group of young activists organising <strong class="text-emerald-950 font-bold">Flotilla for Change</strong>, collecting an array of seacraft to coordinate their journey to Belem so that we all arrive together as a symbol of solidarity and sustainability. I was way out of my depth, but this kind of thing was Elle’s bread and butter. We found ourselves organising and hosting a series of interviews with indigenous representatives heading to COP to tell their stories of how climate change was disproportionately affecting them. Some of the most tragic stories I’d ever heard.
+        </p>
+
+        <p>
+          This was our first joint adventure into climate activism and we liked it. When we finally joined the Flotilla aboard the cargo schooner <em class="not-italic font-bold text-stone-800">Avontuur</em> as crew, we met others who had chosen activism over resigned despair.
+        </p>
+
+        <p>
+          Over the ensuing months we were to get up close and personal with nature in a way that our hikes in Switzerland had only hinted might be possible. The Atlantic Ocean itself, a thing of massive wonder, the natural beauty that abounds throughout Brazil, Patagonia, Chile, Bolivia and Peru. We lived and worked in jungles, climbed mountains and volcanoes got drenched by giant waterfalls, kayaked in enormous lakes, climbed palm trees and met many more people on the way who had chosen to work against climate change as opposed to contributing to it.
+        </p>
+
+        <p>
+          Our experience, the people we met, and two stints volunteering to help reforest the South American rainforests led us to the desire to do the same thing, but closer to home. I’d always wanted to return to Wales, and where better to help maintain (and possibly expand) a rainforest?
+        </p>
+
+        <p class="font-bold text-emerald-800 border-t border-stone-100 pt-6 flex flex-wrap items-center justify-between gap-4">
+          <span>That’s page 1 of this journal. Elle and I are busy learning Cymraeg, more later.</span>
+          <span class="text-emerald-900 bg-emerald-100/50 border border-emerald-200 px-3 py-1 rounded text-xs font-extrabold uppercase">Diolch yn Fawr</span>
+        </p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Page Footer -->
+  <footer class="mt-16 border-t border-stone-200 bg-white py-8 text-center text-xs text-stone-500">
+    <p>&copy; 2026 Natural Philosophy : Natural Forestry. All rights reserved.</p>
+  </footer>
+
+  <!-- Lightbox Video Modal overlay -->
+  <div id="video-modal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="relative w-full max-w-3xl bg-stone-900 rounded-2xl shadow-2xl overflow-hidden border border-white/10">
+      
+      <!-- Close modal -->
+      <button onclick="closeVideoModal()" class="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-black/40 text-white flex items-center justify-center hover:bg-black/60 transition-all focus:outline-none">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+      </button>
+	<div class="aspect-video bg-black relative">
+		<video id="journal-video" controls class="w-full h-full object-contain">
+				<source src="file:///C:/Users/myndw/OneDrive/Videos/Bryn%20+%20Elle's%20Trip.mp4" type="video/mp4">
+    Your browser does not support the video tag or cannot access local files.
+		</video>
+	</div>
+      Simulated video workspace content
+      <!-- <div class="aspect-video bg-black flex flex-col items-center justify-center relative p-6"> -->
+        <!-- <div class="absolute inset-0 bg-cover bg-center opacity-60" style="background-image: url('https://images.unsplash.com/photo-1518837695005-2083093ee35b?auto=format&fit=crop&q=80&w=1200');"></div> -->
+        
+        <!-- <div class="relative z-10 text-center space-y-4 max-w-md"> -->
+          <!-- <span class="inline-block px-3 py-1 bg-emerald-500 text-white rounded-full text-[10px] font-black uppercase tracking-widest animate-pulse">Playing</span> -->
+          <!-- <h3 class="text-xl sm:text-2xl font-black text-white drop-shadow-md">bryn & Elle’s adventure.mp4</h3> -->
+          <!-- <p class="text-xs sm:text-sm text-stone-200 drop-shadow-sm leading-relaxed"> -->
+            <!-- A montage of Atlantic crossings, reforestation work, and community climate activism on our way to Belém, Brazil. -->
+          <!-- </p> -->
+          
+          Playback loader
+          <!-- <div class="pt-4"> -->
+            <!-- <div class="w-full bg-stone-700 h-1.5 rounded-full overflow-hidden"> -->
+              <!-- <div class="bg-emerald-500 h-full w-2/5 rounded-full transition-all duration-1000 animate-pulse"></div> -->
+            <!-- </div> -->
+            <!-- <div class="flex justify-between text-[10px] text-stone-400 mt-1.5 font-bold"> -->
+              <!-- <span>02:14</span> -->
+              <!-- <span>05:30</span> -->
+            <!-- </div> -->
+          <!-- </div> -->
+        <!-- </div> -->
+      <!-- </div> -->
+
+    </div>
+  </div>
+
+  <script>
+    // Biography Toggling Control
+    function toggleBio(id) {
+      const bioEl = document.getElementById(`bio-${id}`);
+      const chevronEl = document.getElementById(`chevron-${id}`);
+      
+      const allBios = ['bryn', 'elle', 'joint'];
+      allBios.forEach(bio => {
+        const curBio = document.getElementById(`bio-${bio}`);
+        const curChevron = document.getElementById(`chevron-${bio}`);
+        if (bio === id) {
+          if (curBio.classList.contains('hidden')) {
+            curBio.classList.remove('hidden');
+            curChevron.style.transform = 'rotate(180deg)';
+          } else {
+            curBio.classList.add('hidden');
+            curChevron.style.transform = 'rotate(0deg)';
+          }
+        } else {
+          curBio.classList.add('hidden');
+          curChevron.style.transform = 'rotate(0deg)';
+        }
+      });
+    }
+	function openVideoModal() {
+  document.getElementById('video-modal').classList.remove('hidden');
+  const video = document.getElementById('journal-video');
+  if (video) video.play();
+}
+function closeVideoModal() {
+  document.getElementById('video-modal').classList.add('hidden');
+  const video = document.getElementById('journal-video');
+  if (video) {
+    video.pause();
+    video.currentTime = 0;
+  }
+}
+
+    // Modal Control Logic
+	
+    <!-- function openVideoModal() { -->
+      <!-- document.getElementById('video-modal').classList.remove('hidden'); -->
+    <!-- } -->
+    <!-- function closeVideoModal() { -->
+      <!-- document.getElementById('video-modal').classList.add('hidden'); -->
+    <!-- } -->
+  </script>
+</body>
+</html>
