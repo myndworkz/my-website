@@ -311,9 +311,17 @@ edges.forEach(edge => {
 
       // Hover tooltip for top-level spheres
       if (isRoot) {
+        // Pointer events
         body.addEventListener('pointerenter', e => { showBallTooltip(id, e); });
         body.addEventListener('pointermove', e => { positionBallTooltip(e.clientX, e.clientY); });
         body.addEventListener('pointerleave', hideBallTooltip);
+        // Mouse fallbacks for older browsers
+        body.addEventListener('mouseenter', e => { showBallTooltip(id, e); });
+        body.addEventListener('mousemove', e => { positionBallTooltip(e.clientX || e.pageX, e.clientY || e.pageY); });
+        body.addEventListener('mouseleave', hideBallTooltip);
+        // Keyboard focus (accessibility)
+        body.addEventListener('focus', e => { showBallTooltip(id, { clientX: parseInt(body.style.left || 0)+20, clientY: parseInt(body.style.top || 0)+20 }); }, true);
+        body.addEventListener('blur', hideBallTooltip, true);
       }
     }
 
