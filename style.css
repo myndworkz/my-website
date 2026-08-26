@@ -104,7 +104,7 @@ html, body {
    CANVAS & SVG LAYERS
    ===================================================================== */
 #canvas-bg { z-index: 1; }
-#interactive-map { z-index: 10; pointer-events: none; }
+#interactive-map { z-index: 10; pointer-events: auto; }
 
 /* SVG Connection Layer */
 #svg-connections {
