@@ -193,6 +193,8 @@
         body.setAttribute('aria-label', cfg.aria);
         body.innerHTML = cfg.html;
         body.dataset.nodeId = cfg.id; // identify for fallback hover detection
+        // set native title as a graceful hover fallback for browsers where JS tooltip may be suppressed
+        try { if (TOOLTIP_TEXT && TOOLTIP_TEXT[cfg.id]) body.setAttribute('title', TOOLTIP_TEXT[cfg.id]); } catch (_) {}
       } else {
         body.href = cfg.href;
         body.className = `node__body chip ${cfg.chip}`;
