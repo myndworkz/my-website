@@ -101,7 +101,19 @@
       catEl.textContent = '';
       ballTooltip.style.opacity = '1';
       ballTooltip.classList.remove('hidden');
-      if (e && typeof e.clientX === 'number') positionBallTooltip(e.clientX, e.clientY);
+      // compute coordinates: prefer event, else use node bounding rect
+      let x = null, y = null;
+      if (e && typeof e.clientX === 'number' && isFinite(e.clientX) && typeof e.clientY === 'number' && isFinite(e.clientY)) {
+        x = e.clientX; y = e.clientY;
+      } else {
+        const node = nodes.get(id);
+        if (node && node.body && node.body.getBoundingClientRect) {
+          const rect = node.body.getBoundingClientRect();
+          x = rect.left + rect.width / 2;
+          y = rect.top + rect.height / 2;
+        }
+      }
+      if (x !== null && y !== null) positionBallTooltip(x, y);
     }
     function hideBallTooltip() {
       if (!ballTooltip) return;
@@ -345,7 +357,7 @@ edges.forEach(edge => {
         body.addEventListener('mousemove', e => { positionBallTooltip(e.clientX || e.pageX, e.clientY || e.pageY); });
         body.addEventListener('mouseleave', hideBallTooltip);
         // Keyboard focus (accessibility)
-        body.addEventListener('focus', e => { showBallTooltip(id, { clientX: parseInt(body.style.left || 0)+20, clientY: parseInt(body.style.top || 0)+20 }); }, true);
+        body.addEventListener('focus', e => { showBallTooltip(id); }, true);
         body.addEventListener('blur', hideBallTooltip, true);
       }
     }
