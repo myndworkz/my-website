@@ -85,6 +85,41 @@
       }
     ];
 
+    // Top-level hover tooltip texts
+    const TOOLTIP_TEXT = {
+      natphil: "This is the term I am adopting for the philosophy that we do in person, in real time and with others."
+    };
+
+    const ballTooltip = document.getElementById('ball-tooltip');
+    function showBallTooltip(id, e) {
+      const titleEl = document.getElementById('tooltip-title');
+      const latinEl = document.getElementById('tooltip-latin');
+      const catEl = document.getElementById('tooltip-category');
+      const text = TOOLTIP_TEXT[id] || '';
+      titleEl.textContent = text;
+      latinEl.textContent = '';
+      catEl.textContent = '';
+      ballTooltip.style.opacity = '1';
+      ballTooltip.classList.remove('hidden');
+      positionBallTooltip(e.clientX, e.clientY);
+    }
+    function hideBallTooltip() {
+      if (!ballTooltip) return;
+      ballTooltip.classList.add('hidden');
+      ballTooltip.style.opacity = '0';
+    }
+    function positionBallTooltip(x, y) {
+      if (!ballTooltip) return;
+      const pad = 12;
+      const ttW = Math.min(320, window.innerWidth - 2*pad);
+      let left = x + 14;
+      let top = y + 14;
+      if (left + ttW > window.innerWidth - pad) left = x - ttW - 14;
+      if (top + 40 > window.innerHeight - pad) top = y - 40 - 14;
+      ballTooltip.style.left = left + 'px';
+      ballTooltip.style.top = top + 'px';
+    }
+
     const PHYS = {
       repel: 2.6, repelPad: 30,
       stiffChild: 0.055, stiffRoot: 0.022,
@@ -273,6 +308,13 @@ edges.forEach(edge => {
           toggleCluster(id);
         }
       });
+
+      // Hover tooltip for top-level spheres
+      if (isRoot) {
+        body.addEventListener('pointerenter', e => { showBallTooltip(id, e); });
+        body.addEventListener('pointermove', e => { positionBallTooltip(e.clientX, e.clientY); });
+        body.addEventListener('pointerleave', hideBallTooltip);
+      }
     }
 
     /* =====================================================================
