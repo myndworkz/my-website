@@ -138,8 +138,9 @@
       // do nothing during drag
       if (drag) return;
       const el = document.elementFromPoint(e.clientX, e.clientY);
-      if (!el) { if (lastHoverId) { lastHoverId=null; hideBallTooltip(); } return; }
+      if (!el) { console.debug('global mousemove: no elementFromPoint', e.clientX, e.clientY); if (lastHoverId) { lastHoverId=null; hideBallTooltip(); } return; }
       const body = el.closest && el.closest('.node__body');
+      console.debug('global mousemove', e.clientX, e.clientY, 'el=', el && (el.className || el.tagName), 'bodyId=', body && body.dataset && body.dataset.nodeId);
       if (body && body.dataset && body.dataset.nodeId) {
         const id = body.dataset.nodeId;
         if (id !== lastHoverId) {
@@ -354,16 +355,16 @@ edges.forEach(edge => {
       // Hover tooltip for top-level spheres
       if (isRoot) {
         // Pointer events
-        body.addEventListener('pointerenter', e => { showBallTooltip(id, e); });
-        body.addEventListener('pointermove', e => { positionBallTooltip(e.clientX, e.clientY); });
-        body.addEventListener('pointerleave', hideBallTooltip);
+        body.addEventListener('pointerenter', e => { console.debug('pointerenter', id, e.pointerType, e.clientX, e.clientY); showBallTooltip(id, e); });
+        body.addEventListener('pointermove', e => { console.debug('pointermove', id, e.clientX, e.clientY); positionBallTooltip(e.clientX, e.clientY); });
+        body.addEventListener('pointerleave', e => { console.debug('pointerleave', id); hideBallTooltip(); });
         // Mouse fallbacks for older browsers
-        body.addEventListener('mouseenter', e => { showBallTooltip(id, e); });
-        body.addEventListener('mousemove', e => { positionBallTooltip(e.clientX || e.pageX, e.clientY || e.pageY); });
-        body.addEventListener('mouseleave', hideBallTooltip);
+        body.addEventListener('mouseenter', e => { console.debug('mouseenter', id); showBallTooltip(id, e); });
+        body.addEventListener('mousemove', e => { console.debug('mousemove', id, e.clientX || e.pageX, e.clientY || e.pageY); positionBallTooltip(e.clientX || e.pageX, e.clientY || e.pageY); });
+        body.addEventListener('mouseleave', e => { console.debug('mouseleave', id); hideBallTooltip(); });
         // Keyboard focus (accessibility)
-        body.addEventListener('focus', e => { setTimeout(() => { showBallTooltip(id); }, 50); }, true);
-        body.addEventListener('blur', hideBallTooltip, true);
+        body.addEventListener('focus', e => { console.debug('focus', id); setTimeout(() => { showBallTooltip(id); }, 50); }, true);
+        body.addEventListener('blur', e => { console.debug('blur', id); hideBallTooltip(); }, true);
       }
     }
 
