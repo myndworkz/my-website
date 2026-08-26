@@ -145,7 +145,10 @@
         if (id !== lastHoverId) {
           lastHoverId = id;
           // only show tooltips for roots
-          if (nodes.get(id) && nodes.get(id).isRoot) showBallTooltip(id, e);
+          if (nodes.get(id) && nodes.get(id).isRoot) {
+            // defer slightly to allow any transform/layout to settle
+            requestAnimationFrame(() => { showBallTooltip(id, e); });
+          }
         } else {
           // update position
           positionBallTooltip(e.clientX, e.clientY);
@@ -343,6 +346,8 @@ edges.forEach(edge => {
         if (isRoot) {
           e.preventDefault();
           toggleCluster(id);
+          // show tooltip after layout updates (allow simulation step)
+          setTimeout(() => { try { showBallTooltip(id); } catch (_) {} }, 60);
         }
       });
 
@@ -357,7 +362,7 @@ edges.forEach(edge => {
         body.addEventListener('mousemove', e => { positionBallTooltip(e.clientX || e.pageX, e.clientY || e.pageY); });
         body.addEventListener('mouseleave', hideBallTooltip);
         // Keyboard focus (accessibility)
-        body.addEventListener('focus', e => { showBallTooltip(id); }, true);
+        body.addEventListener('focus', e => { setTimeout(() => { showBallTooltip(id); }, 50); }, true);
         body.addEventListener('blur', hideBallTooltip, true);
       }
     }
