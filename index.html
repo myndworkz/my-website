@@ -176,6 +176,35 @@
     const svg = document.getElementById('svg-connections');
     const SVG_NS = 'http://www.w3.org/2000/svg';
 
+    // Delegated pointer hover on the map as a robust fallback when per-node events are not firing
+    (function() {
+      let delegateHoverId = null;
+      map.addEventListener('pointermove', e => {
+        if (drag) return;
+        const el = document.elementFromPoint(e.clientX, e.clientY);
+        const body = el && el.closest && el.closest('.node__body');
+        if (body && body.dataset && body.dataset.nodeId) {
+          const id = body.dataset.nodeId;
+          if (nodes.get(id) && nodes.get(id).isRoot) {
+            if (id !== delegateHoverId) {
+              delegateHoverId = id;
+              // Prefer event coords for positioning
+              try { showBallTooltip(id, e); } catch (_) { showBallTooltip(id); }
+            } else {
+              positionBallTooltip(e.clientX, e.clientY);
+            }
+            return;
+          }
+        }
+        if (delegateHoverId) {
+          delegateHoverId = null;
+          hideBallTooltip();
+        }
+      }, { passive: true });
+
+      map.addEventListener('pointerleave', () => { delegateHoverId = null; hideBallTooltip(); });
+    })();
+
     /* =====================================================================
        2. DOM CONSTRUCTION (Two-Layer Transform Contract)
        ===================================================================== */
