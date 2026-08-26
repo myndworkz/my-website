@@ -101,7 +101,7 @@
       catEl.textContent = '';
       ballTooltip.style.opacity = '1';
       ballTooltip.classList.remove('hidden');
-      positionBallTooltip(e.clientX, e.clientY);
+      if (e && typeof e.clientX === 'number') positionBallTooltip(e.clientX, e.clientY);
     }
     function hideBallTooltip() {
       if (!ballTooltip) return;
@@ -119,6 +119,29 @@
       ballTooltip.style.left = left + 'px';
       ballTooltip.style.top = top + 'px';
     }
+
+    // Fallback global hover detector (uses elementFromPoint)
+    let lastHoverId = null;
+    window.addEventListener('mousemove', e => {
+      // do nothing during drag
+      if (drag) return;
+      const el = document.elementFromPoint(e.clientX, e.clientY);
+      if (!el) { if (lastHoverId) { lastHoverId=null; hideBallTooltip(); } return; }
+      const body = el.closest && el.closest('.node__body');
+      if (body && body.dataset && body.dataset.nodeId) {
+        const id = body.dataset.nodeId;
+        if (id !== lastHoverId) {
+          lastHoverId = id;
+          // only show tooltips for roots
+          if (nodes.get(id) && nodes.get(id).isRoot) showBallTooltip(id, e);
+        } else {
+          // update position
+          positionBallTooltip(e.clientX, e.clientY);
+        }
+      } else {
+        if (lastHoverId) { lastHoverId = null; hideBallTooltip(); }
+      }
+    }, { passive: true });
 
     const PHYS = {
       repel: 2.6, repelPad: 30,
@@ -153,11 +176,13 @@
         body.setAttribute('aria-expanded', 'false');
         body.setAttribute('aria-label', cfg.aria);
         body.innerHTML = cfg.html;
+        body.dataset.nodeId = cfg.id; // identify for fallback hover detection
       } else {
         body.href = cfg.href;
         body.className = `node__body chip ${cfg.chip}`;
         body.setAttribute('draggable', 'false');
         body.textContent = cfg.label;
+        body.dataset.nodeId = cfg.id;
       }
       
       wrap.appendChild(body);
