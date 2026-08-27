@@ -76,7 +76,8 @@
       {
         id: 'natforest', size: 'sphere--md', theme: 'theme-natforest', anchor: [0.72, 0.55],
         aria: 'Natural Forest',
-        html: `${LEAF_ICON}<span class="sphere__label" style="color:#ecfdf5">Natural<br>Forest</span>`,
+        html: `${LEAF_ICON}<span class="sphere__label" style="color:#ecfdf5">Natural<br>Forestry</span>`,
+        aria: 'Natural Forestry',
         children: [
           { id: 'natforest-journal', label: 'Journal', href: 'journal.html',        chip: 'chip--emerald' },
           { id: 'natforest-data',    label: 'Data',    href: 'forest-data.html',    chip: 'chip--teal' },
@@ -84,6 +85,82 @@
         ]
       }
     ];
+
+    // Top-level hover tooltip texts
+    const TOOLTIP_TEXT = {
+      natphil: "This is the term I am adopting for the philosophy that we do in person, in real time and with others.",
+      natforest: "This is what we're learning, and where we will add things as we go",
+      perma: "This is the big picture, where we will try to pull everything together"
+    };
+
+    const ballTooltip = document.getElementById('ball-tooltip');
+    function showBallTooltip(id, e) {
+      const titleEl = document.getElementById('tooltip-title');
+      const latinEl = document.getElementById('tooltip-latin');
+      const catEl = document.getElementById('tooltip-category');
+      const text = TOOLTIP_TEXT[id] || '';
+      titleEl.textContent = text;
+      latinEl.textContent = '';
+      catEl.textContent = '';
+      ballTooltip.style.opacity = '1';
+      ballTooltip.classList.remove('hidden');
+      // compute coordinates: prefer event, else use node bounding rect
+      let x = null, y = null;
+      if (e && typeof e.clientX === 'number' && isFinite(e.clientX) && typeof e.clientY === 'number' && isFinite(e.clientY)) {
+        x = e.clientX; y = e.clientY;
+      } else {
+        const node = nodes.get(id);
+        if (node && node.body && node.body.getBoundingClientRect) {
+          const rect = node.body.getBoundingClientRect();
+          x = rect.left + rect.width / 2;
+          y = rect.top + rect.height / 2;
+        }
+      }
+      if (x !== null && y !== null) positionBallTooltip(x, y);
+    }
+    function hideBallTooltip() {
+      if (!ballTooltip) return;
+      ballTooltip.classList.add('hidden');
+      ballTooltip.style.opacity = '0';
+    }
+    function positionBallTooltip(x, y) {
+      if (!ballTooltip) return;
+      const pad = 12;
+      const ttW = Math.min(320, window.innerWidth - 2*pad);
+      let left = x + 14;
+      let top = y + 14;
+      if (left + ttW > window.innerWidth - pad) left = x - ttW - 14;
+      if (top + 40 > window.innerHeight - pad) top = y - 40 - 14;
+      ballTooltip.style.left = left + 'px';
+      ballTooltip.style.top = top + 'px';
+    }
+
+    // Fallback global hover detector (uses elementFromPoint)
+    let lastHoverId = null;
+    window.addEventListener('mousemove', e => {
+      // do nothing during drag
+      if (drag) return;
+      const el = document.elementFromPoint(e.clientX, e.clientY);
+      if (!el) { console.debug('global mousemove: no elementFromPoint', e.clientX, e.clientY); if (lastHoverId) { lastHoverId=null; hideBallTooltip(); } return; }
+      const body = el.closest && el.closest('.node__body');
+      console.debug('global mousemove', e.clientX, e.clientY, 'el=', el && (el.className || el.tagName), 'bodyId=', body && body.dataset && body.dataset.nodeId);
+      if (body && body.dataset && body.dataset.nodeId) {
+        const id = body.dataset.nodeId;
+        if (id !== lastHoverId) {
+          lastHoverId = id;
+          // only show tooltips for roots
+          if (nodes.get(id) && nodes.get(id).isRoot) {
+            // defer slightly to allow any transform/layout to settle
+            requestAnimationFrame(() => { showBallTooltip(id, e); });
+          }
+        } else {
+          // update position
+          positionBallTooltip(e.clientX, e.clientY);
+        }
+      } else {
+        if (lastHoverId) { lastHoverId = null; hideBallTooltip(); }
+      }
+    }, { passive: true });
 
     const PHYS = {
       repel: 2.6, repelPad: 30,
@@ -102,6 +179,35 @@
     const svg = document.getElementById('svg-connections');
     const SVG_NS = 'http://www.w3.org/2000/svg';
 
+    // Delegated pointer hover on the map as a robust fallback when per-node events are not firing
+    (function() {
+      let delegateHoverId = null;
+      map.addEventListener('pointermove', e => {
+        if (drag) return;
+        const el = document.elementFromPoint(e.clientX, e.clientY);
+        const body = el && el.closest && el.closest('.node__body');
+        if (body && body.dataset && body.dataset.nodeId) {
+          const id = body.dataset.nodeId;
+          if (nodes.get(id) && nodes.get(id).isRoot) {
+            if (id !== delegateHoverId) {
+              delegateHoverId = id;
+              // Prefer event coords for positioning
+              try { showBallTooltip(id, e); } catch (_) { showBallTooltip(id); }
+            } else {
+              positionBallTooltip(e.clientX, e.clientY);
+            }
+            return;
+          }
+        }
+        if (delegateHoverId) {
+          delegateHoverId = null;
+          hideBallTooltip();
+        }
+      }, { passive: true });
+
+      map.addEventListener('pointerleave', () => { delegateHoverId = null; hideBallTooltip(); });
+    })();
+
     /* =====================================================================
        2. DOM CONSTRUCTION (Two-Layer Transform Contract)
        ===================================================================== */
@@ -118,11 +224,15 @@
         body.setAttribute('aria-expanded', 'false');
         body.setAttribute('aria-label', cfg.aria);
         body.innerHTML = cfg.html;
+        body.dataset.nodeId = cfg.id; // identify for fallback hover detection
+        // set native title as a graceful hover fallback for browsers where JS tooltip may be suppressed
+        try { if (TOOLTIP_TEXT && TOOLTIP_TEXT[cfg.id]) body.setAttribute('title', TOOLTIP_TEXT[cfg.id]); } catch (_) {}
       } else {
         body.href = cfg.href;
         body.className = `node__body chip ${cfg.chip}`;
         body.setAttribute('draggable', 'false');
         body.textContent = cfg.label;
+        body.dataset.nodeId = cfg.id;
       }
       
       wrap.appendChild(body);
@@ -271,8 +381,25 @@ edges.forEach(edge => {
         if (isRoot) {
           e.preventDefault();
           toggleCluster(id);
+          // show tooltip after layout updates (allow simulation step)
+          setTimeout(() => { try { showBallTooltip(id); } catch (_) {} }, 60);
         }
       });
+
+      // Hover tooltip for top-level spheres
+      if (isRoot) {
+        // Pointer events
+        body.addEventListener('pointerenter', e => { console.debug('pointerenter', id, e.pointerType, e.clientX, e.clientY); showBallTooltip(id, e); });
+        body.addEventListener('pointermove', e => { console.debug('pointermove', id, e.clientX, e.clientY); positionBallTooltip(e.clientX, e.clientY); });
+        body.addEventListener('pointerleave', e => { console.debug('pointerleave', id); hideBallTooltip(); });
+        // Mouse fallbacks for older browsers
+        body.addEventListener('mouseenter', e => { console.debug('mouseenter', id); showBallTooltip(id, e); });
+        body.addEventListener('mousemove', e => { console.debug('mousemove', id, e.clientX || e.pageX, e.clientY || e.pageY); positionBallTooltip(e.clientX || e.pageX, e.clientY || e.pageY); });
+        body.addEventListener('mouseleave', e => { console.debug('mouseleave', id); hideBallTooltip(); });
+        // Keyboard focus (accessibility)
+        body.addEventListener('focus', e => { console.debug('focus', id); setTimeout(() => { showBallTooltip(id); }, 50); }, true);
+        body.addEventListener('blur', e => { console.debug('blur', id); hideBallTooltip(); }, true);
+      }
     }
 
     /* =====================================================================
