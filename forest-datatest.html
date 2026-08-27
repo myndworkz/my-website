@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spatial Data & Agroforestry Analysis — Natural Forest</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background-color: #fdfbf7; /* Warm Cream */
+      background-image: radial-gradient(circle at 85% 15%, rgba(5, 150, 105, 0.08) 0%, transparent 40%),
+                        radial-gradient(circle at 10% 75%, rgba(16, 185, 129, 0.06) 0%, transparent 50%);
+    }
+
+    /* 3D Glass Bubble in Emerald / Jade */
+    .bubble-emerald-3d {
+      background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.95) 0%, rgba(167, 243, 208, 0.85) 35%, rgba(52, 211, 153, 0.9) 75%, rgba(4, 120, 87, 0.95) 100%);
+      box-shadow: 0 15px 35px -5px rgba(5, 150, 105, 0.35), 
+                  inset 0 -5px 15px rgba(2, 44, 34, 0.35);
+      position: relative;
+    }
+    .bubble-emerald-3d::after {
+      content: '';
+      position: absolute;
+      top: 10%;
+      left: 10%;
+      width: 35%;
+      height: 20%;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0) 100%);
+      border-radius: 50%;
+      transform: rotate(-35deg);
+      pointer-events: none;
+    }
+
+    /* Clean accordion rotation arrow */
+    details summary::-webkit-details-marker {
+      display: none;
+    }
+    details[open] summary svg {
+      transform: rotate(180deg);
+    }
+  </style>
+</head>
+<body class="font-sans text-stone-900 antialiased min-h-screen py-8 px-4 sm:px-6 lg:px-8">
+
+  <!-- Top Navigation Bar -->
+  <header class="max-w-6xl mx-auto mb-10 flex justify-between items-center">
+    <a href="index.html" class="inline-flex items-center text-sm font-semibold text-emerald-900 bg-emerald-100/90 hover:bg-emerald-200 px-4 py-2 rounded-full border border-emerald-300 transition-all shadow-sm hover:shadow-md">
+      <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+      </svg>
+      ← Back to Map
+    </a>
+    <div class="text-xs font-bold uppercase tracking-widest text-emerald-800 bg-emerald-50 px-3.5 py-1.5 rounded-full border border-emerald-200 shadow-sm">
+      Natural Forest • Spatial Analysis &amp; Data
+    </div>
+  </header>
+
+  <!-- Main Grid Layout -->
+  <main class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12 items-start">
+    
+    <!-- LEFT COLUMN: 3D Bubble Sphere & Quick Layer Overview -->
+    <aside class="md:col-span-5 lg:col-span-4 space-y-8 flex flex-col items-center md:items-stretch">
+      
+      <!-- 3D Bubble Frame with Link to Map Explorer -->
+      <a href="#interactive-map" class="group flex flex-col items-center focus:outline-none" title="Click through to Interactive Web Map">
+        <div class="w-56 h-56 sm:w-64 sm:h-64 rounded-full bubble-emerald-3d flex flex-col items-center justify-center text-center p-6 border-2 border-emerald-600/40 transform transition-transform group-hover:scale-105">
+          <svg class="w-10 h-10 text-emerald-950/80 drop-shadow mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+          </svg>
+          <span class="text-xs font-black uppercase tracking-widest text-emerald-950 drop-shadow">QGIS Web Map</span>
+          <span class="text-[10px] font-bold text-emerald-900/80 mt-1">Dyfi Biosphere Reserve</span>
+        </div>
+      </a>
+
+      <!-- Left Sidebar: Suitability Tiers (Interactive Accordion) -->
+      <div class="w-full bg-white/95 border-2 border-emerald-500/20 rounded-2xl shadow-xl p-6 relative">
+        <h3 class="text-base font-black text-stone-900 border-b-2 border-dashed border-stone-200 pb-3 mb-4 flex items-center">
+          <span class="inline-block w-3 h-3 rounded-full bg-emerald-600 mr-2 shadow-sm"></span>
+          Suitability Tiers
+        </h3>
+        
+        <div class="space-y-3">
+          <!-- Tier 1 -->
+          <details class="group bg-stone-50/50 rounded-xl border border-stone-200 overflow-hidden open:border-emerald-400">
+            <summary class="flex justify-between items-center p-3 font-bold text-stone-900 text-xs cursor-pointer hover:bg-emerald-50/50">
+              <span class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-600"></span>
+                Micro-Corridors (1–5 ha)
+              </span>
+              <svg class="w-4 h-4 text-stone-400 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <div class="p-3 text-[11px] text-stone-600 leading-relaxed border-t border-stone-100 bg-white">
+              Optimized for shelterbelts, keyline swales, and niche food-forest micro-interventions between pasture divisions.
+            </div>
+          </details>
+
+          <!-- Tier 2 -->
+          <details class="group bg-stone-50/50 rounded-xl border border-stone-200 overflow-hidden open:border-emerald-400">
+            <summary class="flex justify-between items-center p-3 font-bold text-stone-900 text-xs cursor-pointer hover:bg-emerald-50/50">
+              <span class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-teal-600"></span>
+                Commercial (> 5 ha)
+              </span>
+              <svg class="w-4 h-4 text-stone-400 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <div class="p-3 text-[11px] text-stone-600 leading-relaxed border-t border-stone-100 bg-white">
+              Scaled for silvopastoral grazing systems and alley cropping capable of amortizing sustainable farm infrastructure.
+            </div>
+          </details>
+
+          <!-- Tier 3 -->
+          <details class="group bg-stone-50/50 rounded-xl border border-stone-200 overflow-hidden open:border-emerald-400">
+            <summary class="flex justify-between items-center p-3 font-bold text-stone-900 text-xs cursor-pointer hover:bg-emerald-50/50">
+              <span class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                Target Macro-Hubs
+              </span>
+              <svg class="w-4 h-4 text-stone-400 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <div class="p-3 text-[11px] text-stone-600 leading-relaxed border-t border-stone-100 bg-white">
+              Density-aggregated parcel clusters capable of supporting collaborative, multi-holding landscape restoration.
+            </div>
+          </details>
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- RIGHT COLUMN: Web Map Embed, Project Overview & Methodology -->
+    <section class="md:col-span-7 lg:col-span-8 bg-white border border-stone-200 rounded-2xl shadow-xl p-6 sm:p-8 lg:p-10 space-y-8">
+      
+      <!-- Header -->
+      <div class="border-b border-stone-100 pb-6">
+        <span class="text-emerald-700 font-extrabold uppercase tracking-widest text-xs">Dyfi Biosphere Analysis</span>
+        <h1 class="text-3xl sm:text-4xl font-black text-stone-900 tracking-tight mt-1">
+          Agroforestry Opportunity Zones
+        </h1>
+        <p class="text-sm text-stone-500 mt-2">
+          Multi-criteria spatial modeling for habitat connectivity and continuous cover woodland.
+        </p>
+      </div>
+
+      <!-- Interactive Web Map Embed -->
+      <div id="interactive-map" class="space-y-3">
+        <div class="flex justify-between items-center">
+          <h3 class="text-sm font-bold uppercase tracking-wider text-stone-800">Interactive Map Viewer</h3>
+          <span class="text-[11px] text-stone-500 font-medium">QGIS / Leaflet Export</span>
+        </div>
+        
+        <div class="relative w-full rounded-2xl overflow-hidden border-2 border-stone-200 shadow-inner bg-stone-100">
+          <iframe 
+            src="qgis2web/index.html" 
+            class="w-full h-[500px] border-0"
+            title="Dyfi Biosphere Agroforestry Opportunity Zones">
+          </iframe>
+        </div>
+        <p class="text-xs text-stone-500 italic">
+          Use the layer control panel inside the map to toggle ancient woodland buffers, slope criteria, and opportunity parcels.
+        </p>
+      </div>
+
+      <!-- Project Overview -->
+      <div class="prose prose-stone max-w-none text-stone-700 leading-relaxed space-y-4 text-sm sm:text-base border-t border-stone-100 pt-6">
+        <h2 class="text-xl font-bold text-stone-900">Project Overview</h2>
+        <p>
+          This spatial analysis identifies high-priority opportunity zones for agroforestry within the <strong>UNESCO Dyfi Biosphere Reserve</strong>. The model isolates unconstrained agricultural land positioned to serve as ecological corridors between fragmented stands of Ancient Semi-Natural Woodland (ASNW).
+        </p>
+      </div>
+
+      <!-- Selection Criteria & Methodology Grid -->
+      <div class="space-y-4 border-t border-stone-100 pt-6">
+        <h2 class="text-xl font-bold text-stone-900">Selection Criteria &amp; Methodology</h2>
+        
+        <div class="grid sm:grid-cols-2 gap-4">
+          <div class="p-4 rounded-xl bg-stone-50 border border-stone-200 space-y-2">
+            <h4 class="font-bold text-xs uppercase tracking-wider text-emerald-900">1. Target Vegetation</h4>
+            <p class="text-xs text-stone-600 leading-relaxed">
+              Filtered for <strong>0.25 &le; NDVI &le; 0.50</strong> using Sentinel-2 imagery to capture open pasture and degraded grassland while excluding existing dense canopies and bare ground.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-xl bg-stone-50 border border-stone-200 space-y-2">
+            <h4 class="font-bold text-xs uppercase tracking-wider text-emerald-900">2. Workable Topography</h4>
+            <p class="text-xs text-stone-600 leading-relaxed">
+              Targeted <strong>2&deg; &le; Slope &le; 15&deg;</strong> using OS Terrain 50 data to isolate accessible terrain while excluding waterlogged valley bottoms (&lt; 2&deg;) and hazardous slopes (&gt; 15&deg;).
+            </p>
+          </div>
+
+          <div class="p-4 rounded-xl bg-stone-50 border border-stone-200 space-y-2">
+            <h4 class="font-bold text-xs uppercase tracking-wider text-emerald-900">3. Riparian Protection</h4>
+            <p class="text-xs text-stone-600 leading-relaxed">
+              Applied a <strong>20-meter exclusion buffer</strong> along all primary watercourses to safeguard aquatic ecosystems and prevent runoff during ground preparation.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-xl bg-stone-50 border border-stone-200 space-y-2">
+            <h4 class="font-bold text-xs uppercase tracking-wider text-emerald-900">4. Woodland Connectivity</h4>
+            <p class="text-xs text-stone-600 leading-relaxed">
+              Prioritized parcels within a <strong>500-meter buffer</strong> of Ancient Woodland Inventory (AWI) sites to maximize seed dispersal and structural habitat connectivity.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Data Sources & References -->
+      <div class="border-t border-stone-100 pt-6 space-y-3">
+        <h3 class="text-sm font-bold uppercase tracking-wider text-stone-800">Data Sources &amp; References</h3>
+        <ul class="text-xs text-stone-600 space-y-1.5 list-disc pl-5">
+          <li><strong>Ancient Woodland Inventory (AWI):</strong> Natural Resources Wales (NRW).</li>
+          <li><strong>Satellite Multispectral Imagery:</strong> European Space Agency (ESA) Sentinel-2 (NDVI calibrated).</li>
+          <li><strong>Digital Elevation Model:</strong> Ordnance Survey (OS) Terrain 50.</li>
+          <li><strong>Hydrography &amp; Protected Boundaries:</strong> UNESCO Biosphere &amp; NRW Open Data.</li>
+        </ul>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="max-w-6xl mx-auto mt-16 pt-8 border-t border-stone-200 flex justify-between items-center text-xs text-stone-500">
+    <a href="index.html" class="font-bold text-emerald-800 hover:underline">← Back to Hub Network</a>
+    <p>&copy; 2026 Natural Philosophy : Natural Forestry</p>
+  </footer>
+
+</body>
+</html>
