@@ -13,12 +13,40 @@
         <link rel="stylesheet" href="css/fontawesome-all.min.css">
         <link rel="stylesheet" href="css/leaflet.photon.css">
         <link rel="stylesheet" href="css/leaflet-measure.css">
-        <style>
-        #map {
-            width: 1006px;
-            height: 662px;
-        }
-        </style>
+        
+		<style>
+  /* Replace the fixed 1006px/662px rule with responsive full-frame sizing */
+  html, body, #map {
+    width: 100% !important;
+    height: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+  }
+
+  /* Force the layer control panel to remain visible, expanded, and layered above all tiles */
+  .leaflet-control-layers,
+  .leaflet-control-layers-expanded {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 10000 !important;
+    position: relative !important;
+    max-height: 80vh !important;
+    overflow-y: auto !important;
+    background: rgba(255, 255, 255, 0.95) !important;
+    border: 2px solid #059669 !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25) !important;
+  }
+
+  /* Anchor the controls container firmly inside the viewport */
+  .leaflet-top.leaflet-right {
+    top: 10px !important;
+    right: 10px !important;
+    z-index: 10000 !important;
+  }
+</style>
         <title></title>
     </head>
     <body>
