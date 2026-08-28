@@ -47,11 +47,9 @@
   </noscript>
 
   <script>
-    /* =====================================================================
-       1. GRAPH DEFINITION
-       ===================================================================== */
-    const BOOK_ICON = `<svg class="sphere__icon" style="color:#451a03" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C6.5 6.253 2 10.998 2 17.25c0 5.105 3.07 9.408 7.5 11.398m0-13c5.5 0 10 4.745 10 10.997 0 5.105-3.07 9.408-7.5 11.398m0 0A21.708 21.708 0 0 1 4.5 28.5M12 12.75h.008v.008H12v-.008Z"></path></svg>`;
-    const LEAF_ICON = `<svg class="sphere__icon" style="color:#ecfdf5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 1 0-5.656-5.656m5.656 5.656A8 8 0 1 1 3.172 3.172m10.656 10.656l1.414-1.414M9.172 9.172L7.758 7.758m9.172 9.172l1.414 1.414M7.758 16.242l1.414 1.414"></path></svg>`;
+    // Safe icon fallbacks to prevent malformed inline SVG from breaking JS parsing
+    const BOOK_ICON = `<span class="sphere__glyph" aria-hidden="true">📘</span>`;
+    const LEAF_ICON = `<span class="sphere__glyph" aria-hidden="true">🍃</span>`;
 
     const GRAPH = [
       {
@@ -75,9 +73,8 @@
       },
       {
         id: 'natforest', size: 'sphere--md', theme: 'theme-natforest', anchor: [0.72, 0.55],
-        aria: 'Natural Forest',
-        html: `${LEAF_ICON}<span class="sphere__label" style="color:#ecfdf5">Natural<br>Forestry</span>`,
         aria: 'Natural Forestry',
+        html: `${LEAF_ICON}<span class="sphere__label" style="color:#ecfdf5">Natural<br>Forestry</span>`,
         children: [
           { id: 'natforest-journal', label: 'Journal', href: 'journal.html',        chip: 'chip--emerald' },
           { id: 'natforest-data',    label: 'Data',    href: 'forest-data.html',    chip: 'chip--teal' },
@@ -104,7 +101,6 @@
       catEl.textContent = '';
       ballTooltip.style.opacity = '1';
       ballTooltip.classList.remove('hidden');
-      // compute coordinates: prefer event, else use node bounding rect
       let x = null, y = null;
       if (e && typeof e.clientX === 'number' && isFinite(e.clientX) && typeof e.clientY === 'number' && isFinite(e.clientY)) {
         x = e.clientX; y = e.clientY;
@@ -135,26 +131,20 @@
       ballTooltip.style.top = top + 'px';
     }
 
-    // Fallback global hover detector (uses elementFromPoint)
     let lastHoverId = null;
     window.addEventListener('mousemove', e => {
-      // do nothing during drag
       if (drag) return;
       const el = document.elementFromPoint(e.clientX, e.clientY);
-      if (!el) { console.debug('global mousemove: no elementFromPoint', e.clientX, e.clientY); if (lastHoverId) { lastHoverId=null; hideBallTooltip(); } return; }
+      if (!el) { if (lastHoverId) { lastHoverId=null; hideBallTooltip(); } return; }
       const body = el.closest && el.closest('.node__body');
-      console.debug('global mousemove', e.clientX, e.clientY, 'el=', el && (el.className || el.tagName), 'bodyId=', body && body.dataset && body.dataset.nodeId);
       if (body && body.dataset && body.dataset.nodeId) {
         const id = body.dataset.nodeId;
         if (id !== lastHoverId) {
           lastHoverId = id;
-          // only show tooltips for roots
           if (nodes.get(id) && nodes.get(id).isRoot) {
-            // defer slightly to allow any transform/layout to settle
             requestAnimationFrame(() => { showBallTooltip(id, e); });
           }
         } else {
-          // update position
           positionBallTooltip(e.clientX, e.clientY);
         }
       } else {
@@ -179,7 +169,6 @@
     const svg = document.getElementById('svg-connections');
     const SVG_NS = 'http://www.w3.org/2000/svg';
 
-    // Delegated pointer hover on the map as a robust fallback when per-node events are not firing
     (function() {
       let delegateHoverId = null;
       map.addEventListener('pointermove', e => {
@@ -191,7 +180,6 @@
           if (nodes.get(id) && nodes.get(id).isRoot) {
             if (id !== delegateHoverId) {
               delegateHoverId = id;
-              // Prefer event coords for positioning
               try { showBallTooltip(id, e); } catch (_) { showBallTooltip(id); }
             } else {
               positionBallTooltip(e.clientX, e.clientY);
@@ -208,24 +196,20 @@
       map.addEventListener('pointerleave', () => { delegateHoverId = null; hideBallTooltip(); });
     })();
 
-    /* =====================================================================
-       2. DOM CONSTRUCTION (Two-Layer Transform Contract)
-       ===================================================================== */
     function buildNode(cfg, parentId) {
       const wrap = document.createElement('div');
       wrap.className = 'node' + (parentId ? ' is-collapsed' : '');
       wrap.id = 'node-' + cfg.id;
       const isRoot = !parentId;
       const body = document.createElement(isRoot ? 'button' : 'a');
-      
+
       if (isRoot) {
         body.type = 'button';
         body.className = `node__body sphere ${cfg.size} ${cfg.theme}`;
         body.setAttribute('aria-expanded', 'false');
         body.setAttribute('aria-label', cfg.aria);
         body.innerHTML = cfg.html;
-        body.dataset.nodeId = cfg.id; // identify for fallback hover detection
-        // set native title as a graceful hover fallback for browsers where JS tooltip may be suppressed
+        body.dataset.nodeId = cfg.id;
         try { if (TOOLTIP_TEXT && TOOLTIP_TEXT[cfg.id]) body.setAttribute('title', TOOLTIP_TEXT[cfg.id]); } catch (_) {}
       } else {
         body.href = cfg.href;
@@ -234,11 +218,11 @@
         body.textContent = cfg.label;
         body.dataset.nodeId = cfg.id;
       }
-      
+
       wrap.appendChild(body);
       if (parentId) wrap.setAttribute('inert', '');
       map.appendChild(wrap);
-      
+
       nodes.set(cfg.id, {
         id: cfg.id, el: wrap, body,
         x: 0, y: 0, vx: 0, vy: 0, r: 40,
@@ -246,33 +230,27 @@
         invMass: isRoot ? 0.55 : 1,
         anchor: cfg.anchor || null
       });
-      
+
       attachPointer(cfg.id, body, wrap, isRoot);
     }
 
-   GRAPH.forEach(root => {
-  buildNode(root, null);
-  root.children.forEach(child => buildNode(child, root.id));
-  edges.push(...root.children.map(c => ({ from: root.id, to: c.id, kind: 'child' })));
-});
+    GRAPH.forEach(root => {
+      buildNode(root, null);
+      root.children.forEach(child => buildNode(child, root.id));
+      edges.push(...root.children.map(c => ({ from: root.id, to: c.id, kind: 'child' })));
+    });
 
-// Central Radiating Dashed Lines (Natural Philosophy -> Pillars)
-edges.push({ from: 'natphil', to: 'perma',     kind: 'root' });
-edges.push({ from: 'natphil', to: 'natforest', kind: 'root' });
+    edges.push({ from: 'natphil', to: 'perma',     kind: 'root' });
+    edges.push({ from: 'natphil', to: 'natforest', kind: 'root' });
+    edges.push({ from: 'perma',   to: 'natforest', kind: 'thick' });
 
-// Thicker Direct Bridge (Permaculture <-> Natural Forestry)
-edges.push({ from: 'perma',   to: 'natforest', kind: 'thick' });
+    edges.forEach(edge => {
+      const path = document.createElementNS(SVG_NS, 'path');
+      path.setAttribute('class', edge.kind === 'thick' ? 'connection-line--thick' : 'connection-line');
+      svg.appendChild(path);
+      edge.pathEl = path;
+    });
 
-edges.forEach(edge => {
-  const path = document.createElementNS(SVG_NS, 'path');
-  path.setAttribute('class', edge.kind === 'thick' ? 'connection-line--thick' : 'connection-line');
-  svg.appendChild(path);
-  edge.pathEl = path;
-});
-
-    /* =====================================================================
-       3. MEASUREMENT + INITIAL LAYOUT
-       ===================================================================== */
     function measureNodes() {
       nodes.forEach(n => { n.r = Math.max(18, n.body.offsetWidth / 2); });
     }
@@ -290,15 +268,12 @@ edges.forEach(edge => {
       });
     }
 
-    /* =====================================================================
-       4. EXPAND / COLLAPSE
-       ===================================================================== */
     function toggleCluster(rootId) {
       const root = nodes.get(rootId);
       const kids = GRAPH.find(g => g.id === rootId).children.map(c => nodes.get(c.id));
       const isOpen = expanded.has(rootId);
       root.body.setAttribute('aria-expanded', String(!isOpen));
-      
+
       if (isOpen) {
         expanded.delete(rootId);
         kids.forEach(k => {
@@ -308,7 +283,7 @@ edges.forEach(edge => {
         });
         return;
       }
-      
+
       expanded.add(rootId);
       kids.forEach((k, i) => {
         k.active = true;
@@ -322,15 +297,12 @@ edges.forEach(edge => {
       });
     }
 
-    /* =====================================================================
-       5. DRAG vs CLICK
-       ===================================================================== */
     let drag = null;
     let suppressClick = false;
 
     function attachPointer(id, body, wrap, isRoot) {
       body.addEventListener('dragstart', e => e.preventDefault());
-      
+
       body.addEventListener('pointerdown', e => {
         if (e.button !== 0 && e.pointerType === 'mouse') return;
         const n = nodes.get(id);
@@ -381,40 +353,31 @@ edges.forEach(edge => {
         if (isRoot) {
           e.preventDefault();
           toggleCluster(id);
-          // show tooltip after layout updates (allow simulation step)
           setTimeout(() => { try { showBallTooltip(id); } catch (_) {} }, 60);
         }
       });
 
-      // Hover tooltip for top-level spheres
       if (isRoot) {
-        // Pointer events
-        body.addEventListener('pointerenter', e => { console.debug('pointerenter', id, e.pointerType, e.clientX, e.clientY); showBallTooltip(id, e); });
-        body.addEventListener('pointermove', e => { console.debug('pointermove', id, e.clientX, e.clientY); positionBallTooltip(e.clientX, e.clientY); });
-        body.addEventListener('pointerleave', e => { console.debug('pointerleave', id); hideBallTooltip(); });
-        // Mouse fallbacks for older browsers
-        body.addEventListener('mouseenter', e => { console.debug('mouseenter', id); showBallTooltip(id, e); });
-        body.addEventListener('mousemove', e => { console.debug('mousemove', id, e.clientX || e.pageX, e.clientY || e.pageY); positionBallTooltip(e.clientX || e.pageX, e.clientY || e.pageY); });
-        body.addEventListener('mouseleave', e => { console.debug('mouseleave', id); hideBallTooltip(); });
-        // Keyboard focus (accessibility)
-        body.addEventListener('focus', e => { console.debug('focus', id); setTimeout(() => { showBallTooltip(id); }, 50); }, true);
-        body.addEventListener('blur', e => { console.debug('blur', id); hideBallTooltip(); }, true);
+        body.addEventListener('pointerenter', e => { showBallTooltip(id, e); });
+        body.addEventListener('pointermove', e => { positionBallTooltip(e.clientX, e.clientY); });
+        body.addEventListener('pointerleave', () => { hideBallTooltip(); });
+        body.addEventListener('mouseenter', e => { showBallTooltip(id, e); });
+        body.addEventListener('mousemove', e => { positionBallTooltip(e.clientX || e.pageX, e.clientY || e.pageY); });
+        body.addEventListener('mouseleave', () => { hideBallTooltip(); });
+        body.addEventListener('focus', () => { setTimeout(() => { showBallTooltip(id); }, 50); }, true);
+        body.addEventListener('blur', () => { hideBallTooltip(); }, true);
       }
     }
 
-    /* =====================================================================
-       6. SPRING SIMULATION
-       ===================================================================== */
     function restLength(edge, a, b) {
-   if (edge.kind === 'child') return a.r + b.r + PHYS.gapChild;
-   if (edge.kind === 'thick') return 340;
-   return 250; // Central radiating distance
-}
+      if (edge.kind === 'child') return a.r + b.r + PHYS.gapChild;
+      if (edge.kind === 'thick') return 340;
+      return 250;
+    }
 
     function simulate(dt) {
       const list = [...nodes.values()].filter(n => n.active);
 
-      // Repulsion
       for (let i = 0; i < list.length; i++) {
         for (let j = i + 1; j < list.length; j++) {
           const a = list[i], b = list[j];
@@ -429,7 +392,6 @@ edges.forEach(edge => {
         }
       }
 
-      // Spring tension
       edges.forEach(edge => {
         const a = nodes.get(edge.from), b = nodes.get(edge.to);
         if (!a.active || !b.active) return;
@@ -458,7 +420,7 @@ edges.forEach(edge => {
         }
         n.x += n.vx * dt;
         n.y += n.vy * dt;
-        
+
         const pad = n.r + PHYS.wallPad;
         if (n.x < pad)                { n.x = pad;                n.vx = Math.abs(n.vx) * PHYS.restitution; }
         else if (n.x > screenW - pad) { n.x = screenW - pad;     n.vx = -Math.abs(n.vx) * PHYS.restitution; }
@@ -476,7 +438,6 @@ edges.forEach(edge => {
         const a = nodes.get(edge.from);
         const b = nodes.get(edge.to);
 
-        // Hide lines if either node is collapsed/inactive
         if (!a || !b || !a.active || !b.active) {
           edge.pathEl.style.display = 'none';
           return;
@@ -488,7 +449,6 @@ edges.forEach(edge => {
         const nx = dx / dist;
         const ny = dy / dist;
 
-        // Ensure lines don't get hidden if nodes overlap slightly
         const startX = a.x + nx * Math.min(a.r - 2, dist * 0.4);
         const startY = a.y + ny * Math.min(a.r - 2, dist * 0.4);
         const endX   = b.x - nx * Math.min(b.r - 2, dist * 0.4);
@@ -499,9 +459,6 @@ edges.forEach(edge => {
       });
     }
 
-    /* =====================================================================
-       7. BACKGROUND CANVAS
-       ===================================================================== */
     const flagsDb = [
       { name: "Brazil",    latin: "República Federativa do Brasil",    category: "Flag", imgUrl: "https://flagcdn.com/w160/br.png" },
       { name: "Peru",      latin: "República del Perú",                category: "Flag", imgUrl: "https://flagcdn.com/w160/pe.png" },
@@ -511,16 +468,16 @@ edges.forEach(edge => {
     ];
 
     const treesDb = [
-      { name: "Brazil Nut Tree",      latin: "Bertholletia excelsa", category: "Amazon Rainforest",   imgUrl: "https://images.unsplash.com/photo-1596436889106-be35e843f974?auto=format&fit=crop&w=200" },
-      { name: "Kapok Tree",           latin: "Ceiba pentandra",      category: "Amazon Rainforest",   imgUrl: "https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?auto=format&fit=crop&w=200" },
-      { name: "Rubber Tree",          latin: "Hevea brasiliensis",   category: "Amazon Rainforest",   imgUrl: "https://images.unsplash.com/photo-1528183429752-a97d0bf99b5a?auto=format&fit=crop&w=200" },
-      { name: "Golden Trumpet Tree",  latin: "Handroanthus albus",   category: "Atlantic Rainforest", imgUrl: "https://images.unsplash.com/photo-1569154941061-e231b4725ef1?auto=format&fit=crop&w=200" },
-      { name: "Brazilwood",           latin: "Paubrasilia echinata", category: "Atlantic Rainforest", imgUrl: "https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&w=200" },
-      { name: "Jequitibá-rosa",       latin: "Cariniana legalis",    category: "Atlantic Rainforest", imgUrl: "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=200" },
-      { name: "Sessile Oak",          latin: "Quercus petraea",      category: "Welsh Rainforest",    imgUrl: "https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=200" },
-      { name: "Rowan",                latin: "Sorbus aucuparia",     category: "Welsh Rainforest",    imgUrl: "https://images.unsplash.com/photo-1605335133612-404c0bc6ee6a?auto=format&fit=crop&w=200" },
-      { name: "Silver Birch",         latin: "Betula pendula",       category: "Welsh Rainforest",    imgUrl: "https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?auto=format&fit=crop&w=200" },
-      { name: "Hazel",                latin: "Corylus avellana",     category: "Welsh Rainforest",    imgUrl: "https://images.unsplash.com/photo-1501183007986-d0d080b147f9?auto=format&fit=crop&w=200" }
+      { name: "Brazil Nut Tree",      latin: "Bertholletia excelsa", category: "Amazon Rainforest",   imgUrl: "https://images.unsplash.com/photo-1596436889106-be35e843f974?auto=format&fit=crop&w=400&q=70" },
+      { name: "Kapok Tree",           latin: "Ceiba pentandra",      category: "Amazon Rainforest",   imgUrl: "https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?auto=format&fit=crop&w=400&q=70" },
+      { name: "Rubber Tree",          latin: "Hevea brasiliensis",   category: "Amazon Rainforest",   imgUrl: "https://images.unsplash.com/photo-1528183429752-a97d0bf99b5a?auto=format&fit=crop&w=400&q=70" },
+      { name: "Golden Trumpet Tree",  latin: "Handroanthus albus",   category: "Atlantic Rainforest", imgUrl: "https://images.unsplash.com/photo-1569154941061-e231b4725ef1?auto=format&fit=crop&w=400&q=70" },
+      { name: "Brazilwood",           latin: "Paubrasilia echinata", category: "Atlantic Rainforest", imgUrl: "https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&w=400&q=70" },
+      { name: "Jequitibá-rosa",       latin: "Cariniana legalis",    category: "Atlantic Rainforest", imgUrl: "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=400&q=70" },
+      { name: "Sessile Oak",          latin: "Quercus petraea",      category: "Welsh Rainforest",    imgUrl: "https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=400&q=70" },
+      { name: "Rowan",                latin: "Sorbus aucuparia",     category: "Welsh Rainforest",    imgUrl: "https://images.unsplash.com/photo-1605335133612-404c0bc6ee6a?auto=format&fit=crop&w=400&q=70" },
+      { name: "Silver Birch",         latin: "Betula pendula",       category: "Welsh Rainforest",    imgUrl: "https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?auto=format&fit=crop&w=400&q=70" },
+      { name: "Hazel",                latin: "Corylus avellana",     category: "Welsh Rainforest",    imgUrl: "https://images.unsplash.com/photo-1501183007986-d0d080b147f9?auto=format&fit=crop&w=400&q=70" }
     ];
 
     const preloaded = {};
@@ -626,16 +583,13 @@ edges.forEach(edge => {
       }
     }
 
-    /* =====================================================================
-       8. FRAME-RATE NORMALISED LOOP
-       ===================================================================== */
     let lastFrame = performance.now();
 
     function frame(now) {
       let dt = (now - lastFrame) / 16.6667;
       lastFrame = now;
       dt = Math.max(0.2, Math.min(dt, 3));
-      
+
       ctx.clearRect(0, 0, cw, ch);
       resolveBallCollisions();
       balls.forEach(b => { b.update(dt); b.draw(); });
@@ -649,9 +603,6 @@ edges.forEach(edge => {
     renderGraph();
     requestAnimationFrame(frame);
 
-    /* =====================================================================
-       9. INPUT EVENTS
-       ===================================================================== */
     let resizeTimer;
     window.addEventListener('resize', () => {
       screenW = window.innerWidth;
@@ -680,16 +631,16 @@ edges.forEach(edge => {
         }
       }
       if (!hit) { tooltip.classList.add('hidden'); return; }
-      
+
       tipTitle.textContent = hit.data.name;
       tipLatin.textContent = hit.data.latin;
       tipCat.textContent = hit.data.category;
-      
+
       const catClass = hit.data.category === 'Flag' ? 'tooltip-cat--flag' :
                        hit.data.category === 'Amazon Rainforest' ? 'tooltip-cat--amazon' :
                        hit.data.category === 'Atlantic Rainforest' ? 'tooltip-cat--atlantic' :
                        'tooltip-cat--welsh';
-                       
+
       tipCat.className = `tooltip-cat ${catClass}`;
       tooltip.style.left = Math.min(e.clientX + 15, cw - 260) + 'px';
       tooltip.style.top  = Math.min(e.clientY + 15, ch - 120) + 'px';
