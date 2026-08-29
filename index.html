@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- <title>Natural Philosophy : Natural Forestry</title> -->
+  <title>Natural Philosophy : Natural Forestry</title>
   <link rel="stylesheet" href="style.css">
   <style>
     /* Layer hierarchy: canvas behind, nodes and modals in front */
@@ -28,15 +28,38 @@
     .node {
       pointer-events: auto;
     }
-    .ui-header {
-      position: absolute;
-      top: 1.5rem;
-      left: 1.5rem;
-      z-index: 20;
-      pointer-events: none;
-    }
     #ball-tooltip {
       z-index: 30;
+    }
+
+    /* Floating speed indicator pill (replaces header text) */
+    .speed-pill-control {
+      position: fixed;
+      bottom: 1.25rem;
+      right: 1.25rem;
+      z-index: 40;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(8px);
+      border: 1px solid #cbd5e1;
+      border-radius: 9999px;
+      padding: 6px 14px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #334155;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      pointer-events: auto;
+      user-select: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+    .speed-pill-control:hover {
+      background: #ffffff;
+      border-color: #059669;
+      color: #059669;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
     }
 
     /* 2x Sphere Dimensions, +2pt Font Sizing & Universal Black Text */
@@ -45,7 +68,7 @@
       height: 220px !important;
       min-width: 220px !important;
       min-height: 220px !important;
-      font-size: 1.35rem !important; /* +2pt larger */
+      font-size: 1.35rem !important;
       color: #000000 !important;
     }
     .sphere--md {
@@ -53,7 +76,7 @@
       height: 184px !important;
       min-width: 184px !important;
       min-height: 184px !important;
-      font-size: 1.25rem !important; /* +2pt larger */
+      font-size: 1.25rem !important;
       color: #000000 !important;
     }
     .sphere__label {
@@ -181,14 +204,11 @@
 </head>
 <body>
 
-  <!-- Floating UI Header -->
-  <header class="ui-header">
-    <h1 class="ui-header__title">Natural Philosophy : Natural Forestry</h1>
-    <p class="ui-header__desc">
-      Click a root sphere to <strong>expand / collapse</strong> branches. Click any floating tree box for details. Click background to cycle speed:
-      <span id="speed-indicator" class="speed-badge">Moderate</span>
-    </p>
-  </header>
+  <!-- Floating Speed Control Pill -->
+  <div id="speed-toggle-pill" class="speed-pill-control" title="Click to cycle drift speed">
+    <span>Float Speed:</span>
+    <span id="speed-indicator" style="color:#059669">Moderate</span>
+  </div>
 
   <!-- Species Hover Tooltip -->
   <div id="ball-tooltip" class="hidden">
@@ -227,7 +247,7 @@
       <a href="permaculture-data.html">Permaculture Data</a> ·
       <a href="action.html">Action</a> ·
       <a href="events.html">Events</a> ·
-      <a href="what-is-it.html">What It Is ?</a> ·
+      <a href="what-is-it.html">What It Is</a> ·
       <a href="history-philosophy.html">History</a> ·
       <a href="journal.html">Journal</a> ·
       <a href="forest-data.html">Forest Data</a> ·
@@ -237,7 +257,6 @@
 
   <script src="audio.js"></script>
   <script>
-    // Universal Black Typography on Spheres
     const BOOK_ICON = `<span class="sphere__glyph" aria-hidden="true">💬</span>`;
     const LEAF_ICON = `<span class="sphere__glyph" aria-hidden="true">🍃</span>`;
 
@@ -399,7 +418,6 @@
       }
     }, { passive: true });
 
-    // Adjusted physics for 2x spheres
     const PHYS = {
       repel: 3.2, repelPad: 45,
       stiffChild: 0.055, stiffRoot: 0.022,
@@ -892,17 +910,15 @@
     renderGraph();
     requestAnimationFrame(frame);
 
-    // --- ON LOAD: BLOOM & RETRACT REVEAL ANIMATION ---
+    // Initial Bloom & Retract
     window.addEventListener('load', () => {
       setTimeout(() => {
-        // Expand all 3 clusters in sequence
         ['natphil', 'perma', 'natforest'].forEach((id, idx) => {
           setTimeout(() => {
             if (!expanded.has(id)) toggleCluster(id, true);
           }, idx * 160);
         });
 
-        // Automatically collapse back after user gets a glimpse of the branches
         setTimeout(() => {
           ['natphil', 'perma', 'natforest'].forEach((id, idx) => {
             setTimeout(() => {
@@ -950,13 +966,34 @@
       }
     });
 
-    const speedIndicator = document.getElementById('speed-indicator');
-    if (speedIndicator) {
-      speedIndicator.textContent = speedLevels[speedIndex].label;
+    function cycleSpeed(e) {
+      if (typeof playBoing === 'function') playBoing();
+      speedIndex = (speedIndex + 1) % speedLevels.length;
+      const speedIndicator = document.getElementById('speed-indicator');
+      if (speedIndicator) {
+        speedIndicator.textContent = speedLevels[speedIndex].label;
+      }
+      if (e) {
+        balls.forEach(b => {
+          const dx = b.x - e.clientX, dy = b.y - e.clientY;
+          const dist = Math.hypot(dx, dy) || 1;
+          const force = Math.min(15, 250 / dist);
+          b.vx += (dx / dist) * force;
+          b.vy += (dy / dist) * force;
+        });
+      }
+    }
+
+    const speedPill = document.getElementById('speed-toggle-pill');
+    if (speedPill) {
+      speedPill.addEventListener('click', e => {
+        e.stopPropagation();
+        cycleSpeed(e);
+      });
     }
 
     window.addEventListener('click', e => {
-      if (isModalOpen || e.target.closest('.node') || e.target.closest('.tree-modal-card')) return;
+      if (isModalOpen || e.target.closest('.node') || e.target.closest('.tree-modal-card') || e.target.closest('#speed-toggle-pill')) return;
 
       let clickedBall = null;
       for (let i = balls.length - 1; i >= 0; i--) {
@@ -971,18 +1008,7 @@
         return;
       }
 
-      if (typeof playBoing === 'function') playBoing();
-      speedIndex = (speedIndex + 1) % speedLevels.length;
-      if (speedIndicator) {
-        speedIndicator.textContent = speedLevels[speedIndex].label;
-      }
-      balls.forEach(b => {
-        const dx = b.x - e.clientX, dy = b.y - e.clientY;
-        const dist = Math.hypot(dx, dy) || 1;
-        const force = Math.min(15, 250 / dist);
-        b.vx += (dx / dist) * force;
-        b.vy += (dy / dist) * force;
-      });
+      cycleSpeed(e);
     });
   </script>
 </body>
