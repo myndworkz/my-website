@@ -47,9 +47,9 @@
   </noscript>
 
   <script>
-// Safe icon fallbacks to prevent malformed inline SVG from breaking JS parsing
-const BOOK_ICON = `<span class="sphere__glyph" aria-hidden="true">💬</span>`;
-const LEAF_ICON = `<span class="sphere__glyph" aria-hidden="true">🍃</span>`;
+    // Safe icon fallbacks
+    const BOOK_ICON = `<span class="sphere__glyph" aria-hidden="true">💬</span>`;
+    const LEAF_ICON = `<span class="sphere__glyph" aria-hidden="true">🍃</span>`;
 
     const GRAPH = [
       {
@@ -83,14 +83,13 @@ const LEAF_ICON = `<span class="sphere__glyph" aria-hidden="true">🍃</span>`;
       }
     ];
 
-    // Top-level hover tooltip texts
     const TOOLTIP_TEXT = {
       natphil: "This is the term I am adopting for the philosophy that we do in person, in real time and with others.",
       natforest: "This is what we're learning, and where we will add things as we go",
       perma: "This is the big picture, where we will try to pull everything together"
     };
 
-const ballTooltip = document.getElementById('ball-tooltip');
+    const ballTooltip = document.getElementById('ball-tooltip');
 
     function showBallTooltip(id, e, data) {
       const titleEl = document.getElementById('tooltip-title');
@@ -98,36 +97,26 @@ const ballTooltip = document.getElementById('ball-tooltip');
       const catEl = document.getElementById('tooltip-category');
       if (!ballTooltip || !titleEl) return;
 
-      // 1. If a tree/ball data object is passed directly
       if (data && typeof data === 'object') {
-        titleEl.textContent = data.title || data.name || '';
+        titleEl.textContent = data.name || data.title || '';
         if (latinEl) latinEl.textContent = data.latin || data.botanical || '';
         if (catEl) catEl.textContent = data.category || data.region || '';
-      } 
-      // 2. Otherwise look up via ID in TOOLTIP_TEXT
-      else if (typeof TOOLTIP_TEXT !== 'undefined' && TOOLTIP_TEXT[id]) {
-        const item = TOOLTIP_TEXT[id];
-        if (typeof item === 'object') {
-          titleEl.textContent = item.title || item.name || '';
-          if (latinEl) latinEl.textContent = item.latin || item.botanical || '';
-          if (catEl) catEl.textContent = item.category || item.region || '';
-        } else {
-          titleEl.textContent = item;
-          if (latinEl) latinEl.textContent = '';
-          if (catEl) catEl.textContent = '';
-        }
+      } else if (typeof TOOLTIP_TEXT !== 'undefined' && TOOLTIP_TEXT[id]) {
+        titleEl.textContent = TOOLTIP_TEXT[id];
+        if (latinEl) latinEl.textContent = '';
+        if (catEl) catEl.textContent = '';
       }
 
       ballTooltip.style.opacity = '1';
       ballTooltip.classList.remove('hidden');
 
       let x = null, y = null;
-      if (e && typeof e.clientX === 'number' && isFinite(e.clientX) && typeof e.clientY === 'number' && isFinite(e.clientY)) {
+      if (e && typeof e.clientX === 'number' && isFinite(e.clientX)) {
         x = e.clientX; 
         y = e.clientY;
-      } else if (typeof nodes !== 'undefined' && nodes.get) {
+      } else if (nodes.get(id)) {
         const node = nodes.get(id);
-        if (node && node.body && node.body.getBoundingClientRect) {
+        if (node && node.body) {
           const rect = node.body.getBoundingClientRect();
           x = rect.left + rect.width / 2;
           y = rect.top + rect.height / 2;
@@ -135,19 +124,21 @@ const ballTooltip = document.getElementById('ball-tooltip');
       }
       if (x !== null && y !== null) positionBallTooltip(x, y);
     }
+
     function hideBallTooltip() {
       if (!ballTooltip) return;
       ballTooltip.classList.add('hidden');
       ballTooltip.style.opacity = '0';
     }
+
     function positionBallTooltip(x, y) {
       if (!ballTooltip) return;
       const pad = 12;
-      const ttW = Math.min(320, window.innerWidth - 2*pad);
+      const ttW = Math.min(320, window.innerWidth - 2 * pad);
       let left = x + 14;
       let top = y + 14;
       if (left + ttW > window.innerWidth - pad) left = x - ttW - 14;
-      if (top + 40 > window.innerHeight - pad) top = y - 40 - 14;
+      if (top + 60 > window.innerHeight - pad) top = y - 60 - 14;
       ballTooltip.style.left = left + 'px';
       ballTooltip.style.top = top + 'px';
     }
@@ -156,7 +147,7 @@ const ballTooltip = document.getElementById('ball-tooltip');
     window.addEventListener('mousemove', e => {
       if (drag) return;
       const el = document.elementFromPoint(e.clientX, e.clientY);
-      if (!el) { if (lastHoverId) { lastHoverId=null; hideBallTooltip(); } return; }
+      if (!el) { if (lastHoverId) { lastHoverId = null; hideBallTooltip(); } return; }
       const body = el.closest && el.closest('.node__body');
       if (body && body.dataset && body.dataset.nodeId) {
         const id = body.dataset.nodeId;
@@ -190,33 +181,6 @@ const ballTooltip = document.getElementById('ball-tooltip');
     const svg = document.getElementById('svg-connections');
     const SVG_NS = 'http://www.w3.org/2000/svg';
 
-    (function() {
-      let delegateHoverId = null;
-      map.addEventListener('pointermove', e => {
-        if (drag) return;
-        const el = document.elementFromPoint(e.clientX, e.clientY);
-        const body = el && el.closest && el.closest('.node__body');
-        if (body && body.dataset && body.dataset.nodeId) {
-          const id = body.dataset.nodeId;
-          if (nodes.get(id) && nodes.get(id).isRoot) {
-            if (id !== delegateHoverId) {
-              delegateHoverId = id;
-              try { showBallTooltip(id, e); } catch (_) { showBallTooltip(id); }
-            } else {
-              positionBallTooltip(e.clientX, e.clientY);
-            }
-            return;
-          }
-        }
-        if (delegateHoverId) {
-          delegateHoverId = null;
-          hideBallTooltip();
-        }
-      }, { passive: true });
-
-      map.addEventListener('pointerleave', () => { delegateHoverId = null; hideBallTooltip(); });
-    })();
-
     function buildNode(cfg, parentId) {
       const wrap = document.createElement('div');
       wrap.className = 'node' + (parentId ? ' is-collapsed' : '');
@@ -231,7 +195,6 @@ const ballTooltip = document.getElementById('ball-tooltip');
         body.setAttribute('aria-label', cfg.aria);
         body.innerHTML = cfg.html;
         body.dataset.nodeId = cfg.id;
-        try { if (TOOLTIP_TEXT && TOOLTIP_TEXT[cfg.id]) body.setAttribute('title', TOOLTIP_TEXT[cfg.id]); } catch (_) {}
       } else {
         body.href = cfg.href;
         body.className = `node__body chip ${cfg.chip}`;
@@ -374,20 +337,8 @@ const ballTooltip = document.getElementById('ball-tooltip');
         if (isRoot) {
           e.preventDefault();
           toggleCluster(id);
-          setTimeout(() => { try { showBallTooltip(id); } catch (_) {} }, 60);
         }
       });
-
-      if (isRoot) {
-        body.addEventListener('pointerenter', e => { showBallTooltip(id, e); });
-        body.addEventListener('pointermove', e => { positionBallTooltip(e.clientX, e.clientY); });
-        body.addEventListener('pointerleave', () => { hideBallTooltip(); });
-        body.addEventListener('mouseenter', e => { showBallTooltip(id, e); });
-        body.addEventListener('mousemove', e => { positionBallTooltip(e.clientX || e.pageX, e.clientY || e.pageY); });
-        body.addEventListener('mouseleave', () => { hideBallTooltip(); });
-        body.addEventListener('focus', () => { setTimeout(() => { showBallTooltip(id); }, 50); }, true);
-        body.addEventListener('blur', () => { hideBallTooltip(); }, true);
-      }
     }
 
     function restLength(edge, a, b) {
@@ -488,60 +439,19 @@ const ballTooltip = document.getElementById('ball-tooltip');
       { name: "Wales",     latin: "Cymru / Wales",                     category: "Flag", imgUrl: "https://flagcdn.com/w160/gb-wls.png" }
     ];
 
-    // --- COMBINED BOTANICAL CATALOG (WELSH & SOUTH AMERICAN SPECIES) ---
-    const treeCatalog = [
-  // --- Welsh Native Trees ---
-  {
-    title: "Sessile Oak",
-    latin: "Quercus petraea (Deri)",
-    category: "🏴󠁧󠁢󠁷󠁬󠁳󠁿 Welsh Temperate Rainforest",
-    url: "https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?auto=format&fit=crop&w=160&q=80"
-  },
-  {
-    title: "Scots Pine",
-    latin: "Pinus sylvestris",
-    category: "🏴󠁧󠁢󠁷󠁬󠁳󠁿 Welsh Native Woodland",
-    url: "https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?auto=format&fit=crop&w=160&q=80"
-  },
-  {
-    title: "Silver Birch",
-    latin: "Betula pendula (Bedwen)",
-    category: "🏴󠁧󠁢󠁷󠁬󠁳󠁿 Welsh Pioneer Species",
-    url: "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=160&q=80"
-  },
-  {
-    title: "Rowan / Mountain Ash",
-    latin: "Sorbus aucuparia (Cerddinen)",
-    category: "🏴󠁧󠁢󠁷󠁬󠁳󠁿 Upland Hardwood",
-    url: "https://images.unsplash.com/photo-1473448912268-2022ce9509d8?auto=format&fit=crop&w=160&q=80"
-  },
+    const treesDb = [
+      // Welsh Native Species
+      { name: "Sessile Oak", latin: "Quercus petraea (Deri)", category: "Welsh Rainforest", imgUrl: "https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?auto=format&fit=crop&w=160&q=80" },
+      { name: "Scots Pine", latin: "Pinus sylvestris", category: "Welsh Native", imgUrl: "https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?auto=format&fit=crop&w=160&q=80" },
+      { name: "Silver Birch", latin: "Betula pendula (Bedwen)", category: "Welsh Pioneer", imgUrl: "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=160&q=80" },
+      { name: "Rowan / Mountain Ash", latin: "Sorbus aucuparia (Cerddinen)", category: "Welsh Upland", imgUrl: "https://images.unsplash.com/photo-1473448912268-2022ce9509d8?auto=format&fit=crop&w=160&q=80" },
 
-  // --- South American & Neotropical Agroforestry Trees ---
-  {
-    title: "Ice Cream Bean",
-    latin: "Inga edulis (Guaba)",
-    category: "🇵🇪 Peru • Syntropic Nitrogen Fixer",
-    url: "https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=160&q=80"
-  },
-  {
-    title: "Brazil Nut Tree",
-    latin: "Bertholletia excelsa (Castanheira)",
-    category: "🇧🇷 Brazil • Amazon Primary Canopy",
-    url: "https://images.unsplash.com/photo-1426604966848-d7adac402bff?auto=format&fit=crop&w=160&q=80"
-  },
-  {
-    title: "Paraná Pine",
-    latin: "Araucaria angustifolia (Curi)",
-    category: "🇧🇷 Brazil • Atlantic Forest",
-    url: "https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?auto=format&fit=crop&w=160&q=80"
-  },
-  {
-    title: "Pink Peppercorn",
-    latin: "Schinus molle (Aguaribay)",
-    category: "🇦🇷 Argentina • Andean Slope",
-    url: "https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?auto=format&fit=crop&w=160&q=80"
-  }
-];
+      // South American Species
+      { name: "Ice Cream Bean", latin: "Inga edulis (Guaba)", category: "Amazon Agroforestry", imgUrl: "https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=160&q=80" },
+      { name: "Brazil Nut Tree", latin: "Bertholletia excelsa (Castanheira)", category: "Amazon Canopy", imgUrl: "https://images.unsplash.com/photo-1426604966848-d7adac402bff?auto=format&fit=crop&w=160&q=80" },
+      { name: "Paraná Pine", latin: "Araucaria angustifolia (Curi)", category: "Atlantic Rainforest", imgUrl: "https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?auto=format&fit=crop&w=160&q=80" },
+      { name: "Pink Peppercorn", latin: "Schinus molle (Aguaribay)", category: "Andean Slope", imgUrl: "https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?auto=format&fit=crop&w=160&q=80" }
+    ];
 
     const preloaded = {};
     function preload(url) {
@@ -604,7 +514,7 @@ const ballTooltip = document.getElementById('ball-tooltip');
       }
       draw() {
         ctx.save();
-        ctx.globalAlpha = 0.55;
+        ctx.globalAlpha = 0.65;
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
         ctx.clip();
@@ -618,7 +528,7 @@ const ballTooltip = document.getElementById('ball-tooltip');
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
         ctx.lineWidth = 1.5;
-        ctx.strokeStyle = this.data.category === 'Welsh Rainforest' ? '#16a34a' : 'rgba(148,163,184,.4)';
+        ctx.strokeStyle = this.data.category.includes('Welsh') ? '#16a34a' : 'rgba(148,163,184,.5)';
         ctx.stroke();
       }
     }
@@ -679,13 +589,15 @@ const ballTooltip = document.getElementById('ball-tooltip');
       resizeTimer = setTimeout(measureNodes, 120);
     });
 
-    const tooltip = document.getElementById('ball-tooltip');
-    const tipTitle = document.getElementById('tooltip-title');
-    const tipLatin = document.getElementById('tooltip-latin');
-    const tipCat = document.getElementById('tooltip-category');
-
     window.addEventListener('mousemove', e => {
-      if (drag) { tooltip.classList.add('hidden'); return; }
+      if (drag) { hideBallTooltip(); return; }
+      
+      const el = document.elementFromPoint(e.clientX, e.clientY);
+      const body = el && el.closest && el.closest('.node__body');
+      if (body && body.dataset && body.dataset.nodeId) {
+        return; // Handled by node pointer hover listener
+      }
+
       let hit = null;
       for (let i = balls.length - 1; i >= 0; i--) {
         if (Math.hypot(balls[i].x - e.clientX, balls[i].y - e.clientY) <= balls[i].radius) {
@@ -693,30 +605,25 @@ const ballTooltip = document.getElementById('ball-tooltip');
           break;
         }
       }
-      if (!hit) { tooltip.classList.add('hidden'); return; }
-
-      tipTitle.textContent = hit.data.name;
-      tipLatin.textContent = hit.data.latin;
-      tipCat.textContent = hit.data.category;
-
-      const catClass = hit.data.category === 'Flag' ? 'tooltip-cat--flag' :
-                       hit.data.category === 'Amazon Rainforest' ? 'tooltip-cat--amazon' :
-                       hit.data.category === 'Atlantic Rainforest' ? 'tooltip-cat--atlantic' :
-                       'tooltip-cat--welsh';
-
-      tipCat.className = `tooltip-cat ${catClass}`;
-      tooltip.style.left = Math.min(e.clientX + 15, cw - 260) + 'px';
-      tooltip.style.top  = Math.min(e.clientY + 15, ch - 120) + 'px';
-      tooltip.classList.remove('hidden');
+      
+      if (hit) {
+        showBallTooltip(null, e, hit.data);
+      } else {
+        hideBallTooltip();
+      }
     });
 
     const speedIndicator = document.getElementById('speed-indicator');
-    speedIndicator.textContent = speedLevels[speedIndex].label;
+    if (speedIndicator) {
+      speedIndicator.textContent = speedLevels[speedIndex].label;
+    }
 
     window.addEventListener('click', e => {
       if (e.target.closest('.node')) return;
       speedIndex = (speedIndex + 1) % speedLevels.length;
-      speedIndicator.textContent = speedLevels[speedIndex].label;
+      if (speedIndicator) {
+        speedIndicator.textContent = speedLevels[speedIndex].label;
+      }
       balls.forEach(b => {
         const dx = b.x - e.clientX, dy = b.y - e.clientY;
         const dist = Math.hypot(dx, dy) || 1;
