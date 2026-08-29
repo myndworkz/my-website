@@ -136,11 +136,11 @@
 
       <div class="prose prose-stone max-w-none text-stone-700 leading-relaxed space-y-6 text-sm sm:text-base">
         <p class="text-base sm:text-lg leading-relaxed text-stone-900 font-medium">
-          Pub/Café Philosophy provides an open, informal space where anyone—from seasoned thinkers to curious newcomers—can gather over drinks to explore life’s biggest questions[cite: 2].
+          Pub/Café Philosophy provides an open, informal space where anyone—from seasoned thinkers to curious newcomers—can gather over drinks to explore life's biggest questions[cite: 2].
         </p>
 
         <p>
-          Rooted in the living tradition of <a href="natural philosophy.html" class="text-teal-800 font-bold underline underline-offset-4 decoration-teal-400 hover:text-teal-950 hover:decoration-teal-700 transition">natural philosophy</a>, our approach treats philosophical inquiry not as dry academic dogma, but as an active, organic exploration of ourselves, our world, and how we make sense of reality[cite: 2]. Rather than listening to lectures, participants engage directly in rational inquiry and collaborative debate[cite: 2].
+          Rooted in the living tradition of <a href="index.html" class="text-teal-800 font-bold underline underline-offset-4 decoration-teal-400 hover:text-teal-950 hover:decoration-teal-700 transition">natural philosophy</a>, our approach treats philosophical inquiry not as dry academic dogma, but as an active, organic exploration of ourselves, our world, and how we make sense of reality[cite: 2]. Rather than listening to lectures, participants engage directly in rational inquiry and collaborative debate[cite: 2].
         </p>
 
         <div class="p-6 bg-stone-50 border border-stone-200 rounded-xl space-y-4">
@@ -148,7 +148,7 @@
           <ul class="space-y-2 text-xs sm:text-sm text-stone-700 list-disc pl-5">
             <li><strong>Democratic Topic Selection:</strong> The question of the evening is proposed and chosen democratically by the group at the start of each session[cite: 2].</li>
             <li><strong>Equal, Open Participation:</strong> You do not need formal philosophical training to take part[cite: 2]. The sessions are designed to make inquiry fun, accessible, and meaningful for everyone[cite: 2].</li>
-            <li><strong>Philosophy for Philosophy’s Sake:</strong> The aim is not necessarily to reach a final resolution or absolute proof, but to enjoy the stimulation of dancing with ideas, challenging unexamined assumptions, and broadening perspectives[cite: 2].</li>
+            <li><strong>Philosophy for Philosophy's Sake:</strong> The aim is not necessarily to reach a final resolution or absolute proof, but to enjoy the stimulation of dancing with ideas, challenging unexamined assumptions, and broadening perspectives[cite: 2].</li>
             <li><strong>Facilitation Over Lecturing:</strong> Sessions are guided by a facilitator whose role is simply to pose questions, encourage balanced discussion, and ensure everyone has a voice without defending any dogmatic position[cite: 2].</li>
             <li><strong>Mutual Respect:</strong> Participants are asked to express their ideas clearly and allow others to speak without interruption or hostility[cite: 2].</li>
           </ul>
@@ -170,47 +170,8 @@
 
   </div>
 
+  <script src="audio.js"></script>
   <script>
-    let audioCtx = null;
-    function initAudio() {
-      if (!audioCtx) {
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        if (AudioContext) audioCtx = new AudioContext();
-      }
-      if (audioCtx && audioCtx.state === 'suspended') {
-        audioCtx.resume();
-      }
-    }
-
-    function playSwish() {
-      try {
-        initAudio();
-        if (!audioCtx) return;
-        const now = audioCtx.currentTime;
-        const bufferSize = audioCtx.sampleRate * 0.15;
-        const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-        const data = buffer.getChannelData(0);
-        for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
-
-        const noise = audioCtx.createBufferSource();
-        noise.buffer = buffer;
-        const filter = audioCtx.createBiquadFilter();
-        filter.type = 'bandpass';
-        filter.frequency.setValueAtTime(800, now);
-        filter.frequency.exponentialRampToValueAtTime(2400, now + 0.12);
-        filter.Q.value = 1.8;
-
-        const gain = audioCtx.createGain();
-        gain.gain.setValueAtTime(0.18, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
-
-        noise.connect(filter);
-        filter.connect(gain);
-        gain.connect(audioCtx.destination);
-        noise.start(now);
-      } catch (_) {}
-    }
-
     function toggleSection(id) {
       playSwish();
       const sec = document.getElementById('section-' + id);
