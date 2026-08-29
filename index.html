@@ -61,7 +61,7 @@
     .tree-modal-card {
       background: #ffffff;
       border-radius: 20px;
-      max-width: 460px;
+      max-width: 480px;
       width: 100%;
       box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
       border: 1.5px solid #059669;
@@ -74,7 +74,7 @@
     }
     .tree-modal-image {
       width: 100%;
-      height: 220px;
+      height: 230px;
       object-fit: cover;
       background-color: #f1f5f9;
     }
@@ -369,7 +369,7 @@
     }, { passive: true });
 
     const PHYS = {
-      repel: 2.6, repelPad: 30,
+      repel: 2.8, repelPad: 35,
       stiffChild: 0.055, stiffRoot: 0.022,
       gapChild: 42, restRoot: 300,
       damping: 0.87, maxSpeed: 46,
@@ -578,7 +578,7 @@
         const f = (dist - restLength(edge, a, b)) * stiff * dt;
         const fx = (dx / dist) * f, fy = (dy / dist) * f;
         if (!drag || drag.id !== a.id) { a.vx += fx * a.invMass; a.vy += fy * a.invMass; }
-        if (!drag || drag.id !== b.id) { b.vx -= fx * b.invMass; b.vy += fy * b.invMass; }
+        if (!drag || drag.id !== b.id) { b.vx -= fx * b.invMass; b.vy -= fy * b.invMass; }
       });
 
       const damp = Math.pow(PHYS.damping, dt);
@@ -649,6 +649,7 @@
     ];
 
     const treesDb = [
+      // Welsh Native Species
       { 
         name: "Sessile Oak", 
         latin: "Quercus petraea (Deri)", 
@@ -685,6 +686,8 @@
         description: "Hardy high-altitude tree celebrated in Celtic folklore; produces nutrient-rich red autumn berries vital for resident and migratory birds.",
         detailUrl: "https://www.woodlandtrust.org.uk/trees-woods-and-wildlife/british-trees/a-z-of-british-trees/rowan/"
       },
+
+      // South American Species (Linked to Useful Tropical Plants & PFAF)
       { 
         name: "Ice Cream Bean", 
         latin: "Inga edulis (Guaba)", 
@@ -692,7 +695,7 @@
         imgUrl: "https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=160&q=80",
         largeImg: "https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=1200&q=85",
         description: "Fast-growing leguminous canopy tree used in syntropic agroforestry systems for heavy biomass production, deep taproots, and active nitrogen fixation.",
-        detailUrl: "https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:500966-1"
+        detailUrl: "https://tropical.theferns.info/viewtropical.php?id=Inga+edulis"
       },
       { 
         name: "Brazil Nut Tree", 
@@ -701,7 +704,7 @@
         imgUrl: "https://images.unsplash.com/photo-1426604966848-d7adac402bff?auto=format&fit=crop&w=160&q=80",
         largeImg: "https://images.unsplash.com/photo-1426604966848-d7adac402bff?auto=format&fit=crop&w=1200&q=85",
         description: "One of the largest emergent trees of the Amazon rainforest, dependent on pristine primary forest networks and specialized native bee pollinators.",
-        detailUrl: "https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:591456-1"
+        detailUrl: "https://tropical.theferns.info/viewtropical.php?id=Bertholletia+excelsa"
       },
       { 
         name: "Paraná Pine", 
@@ -710,7 +713,7 @@
         imgUrl: "https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?auto=format&fit=crop&w=160&q=80",
         largeImg: "https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?auto=format&fit=crop&w=1200&q=85",
         description: "Critically endangered evergreen conifer of the southern Brazilian highlands; an essential keystone species providing edible pine nuts (pinhão).",
-        detailUrl: "https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:261681-1"
+        detailUrl: "https://tropical.theferns.info/viewtropical.php?id=Araucaria+angustifolia"
       },
       { 
         name: "Pink Peppercorn", 
@@ -719,7 +722,7 @@
         imgUrl: "https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?auto=format&fit=crop&w=160&q=80",
         largeImg: "https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?auto=format&fit=crop&w=1200&q=85",
         description: "Drought-tolerant Andean tree celebrated for aromatic leaves, soil conservation on dry slopes, and culinary pink peppercorn berries.",
-        detailUrl: "https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:70685-1"
+        detailUrl: "https://pfaf.org/user/Plant.aspx?LatinName=Schinus+molle"
       }
     ];
 
@@ -762,8 +765,8 @@
 
     class Ball {
       constructor() {
-        // Original baseline radius size
-        this.radius = Math.random() * 8 + 16;
+        // Generous size for clear visibility with borders
+        this.radius = Math.random() * 8 + 22;
         this.mass = this.radius;
         this.x = Math.random() * (cw - this.radius * 2) + this.radius;
         this.y = Math.random() * (ch - this.radius * 2) + this.radius;
@@ -790,26 +793,27 @@
       draw() {
         if (!this.img || !this.img.complete || !this.img.naturalWidth) return;
         ctx.save();
-        ctx.globalAlpha = 0.9;
+        ctx.globalAlpha = 0.95;
 
-        // Draw as clean rectangular boxes with subtle border
-        const w = this.radius * 2.2;
-        const h = this.radius * 1.6;
+        // Clean enlarged framed boxes (approx 58px x 42px)
+        const w = this.radius * 2.3;
+        const h = this.radius * 1.65;
         const x = this.x - w / 2;
         const y = this.y - h / 2;
 
-        // Box shadow / fill
+        // Shadow & White Card Base
         ctx.fillStyle = '#ffffff';
-        ctx.shadowColor = 'rgba(0, 0, 0, 0.12)';
-        ctx.shadowBlur = 6;
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.16)';
+        ctx.shadowBlur = 8;
+        ctx.shadowOffsetY = 2;
         ctx.fillRect(x, y, w, h);
 
-        // Image tile
+        // Photo Inset
         ctx.shadowColor = 'transparent';
-        ctx.drawImage(this.img, x + 2, y + 2, w - 4, h - 4);
+        ctx.drawImage(this.img, x + 3, y + 3, w - 6, h - 6);
 
-        // Frame border
-        ctx.lineWidth = 1.5;
+        // Elegant Card Border
+        ctx.lineWidth = 2.0;
         ctx.strokeStyle = this.data.category === 'National Flag' ? '#dc2626' : '#059669';
         ctx.strokeRect(x, y, w, h);
 
@@ -818,7 +822,7 @@
     }
 
     sizeCanvas();
-    const balls = Array.from({ length: 26 }, () => new Ball());
+    const balls = Array.from({ length: 24 }, () => new Ball());
 
     function resolveBallCollisions() {
       if (isModalOpen || speedLevels[speedIndex].mult === 0) return;
