@@ -6,6 +6,39 @@
   <title>Natural Philosophy : Natural Forestry</title>
   <link rel="stylesheet" href="style.css">
   <style>
+    /* Layer hierarchy: canvas behind, nodes and modals in front */
+    #canvas-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: auto;
+    }
+    #interactive-map {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10;
+      pointer-events: none;
+    }
+    .node {
+      pointer-events: auto;
+    }
+    .ui-header {
+      position: absolute;
+      top: 1.5rem;
+      left: 1.5rem;
+      z-index: 20;
+      pointer-events: none;
+    }
+    #ball-tooltip {
+      z-index: 30;
+    }
+
     /* Modal Backdrop & Overlay */
     .tree-modal-backdrop {
       position: fixed;
@@ -123,7 +156,7 @@
   <header class="ui-header">
     <h1 class="ui-header__title">Natural Philosophy : Natural Forestry</h1>
     <p class="ui-header__desc">
-      Click a root sphere to <strong>expand / collapse</strong> branches. Click any floating tree for detailed botanical data. Click empty canvas space to cycle speed:
+      Click a root sphere to <strong>expand / collapse</strong> branches. Click any floating tree box for details. Click background to cycle speed:
       <span id="speed-indicator" class="speed-badge">Moderate</span>
     </p>
   </header>
@@ -152,7 +185,7 @@
     </div>
   </div>
 
-  <!-- Background Canvas -->
+  <!-- Background Canvas: Floating Behind Spheres -->
   <canvas id="canvas-bg"></canvas>
 
   <!-- Elastic Graph Mind Map Layer -->
@@ -545,7 +578,7 @@
         const f = (dist - restLength(edge, a, b)) * stiff * dt;
         const fx = (dx / dist) * f, fy = (dy / dist) * f;
         if (!drag || drag.id !== a.id) { a.vx += fx * a.invMass; a.vy += fy * a.invMass; }
-        if (!drag || drag.id !== b.id) { b.vx -= fx * b.invMass; b.vy -= fy * b.invMass; }
+        if (!drag || drag.id !== b.id) { b.vx -= fx * b.invMass; b.vy += fy * b.invMass; }
       });
 
       const damp = Math.pow(PHYS.damping, dt);
@@ -729,7 +762,8 @@
 
     class Ball {
       constructor() {
-        this.radius = (Math.random() * 8 + 18) * 1.333;
+        // Original baseline radius size
+        this.radius = Math.random() * 8 + 16;
         this.mass = this.radius;
         this.x = Math.random() * (cw - this.radius * 2) + this.radius;
         this.y = Math.random() * (ch - this.radius * 2) + this.radius;
@@ -756,23 +790,35 @@
       draw() {
         if (!this.img || !this.img.complete || !this.img.naturalWidth) return;
         ctx.save();
-        ctx.globalAlpha = 0.85;
+        ctx.globalAlpha = 0.9;
 
-        if (this.data.category === 'National Flag') {
-          const w = this.radius * 2.2;
-          const h = this.radius * 1.46;
-          ctx.drawImage(this.img, this.x - w / 2, this.y - h / 2, w, h);
-        } else {
-          const size = this.radius * 2.0;
-          ctx.drawImage(this.img, this.x - size / 2, this.y - size / 2, size, size);
-        }
+        // Draw as clean rectangular boxes with subtle border
+        const w = this.radius * 2.2;
+        const h = this.radius * 1.6;
+        const x = this.x - w / 2;
+        const y = this.y - h / 2;
+
+        // Box shadow / fill
+        ctx.fillStyle = '#ffffff';
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.12)';
+        ctx.shadowBlur = 6;
+        ctx.fillRect(x, y, w, h);
+
+        // Image tile
+        ctx.shadowColor = 'transparent';
+        ctx.drawImage(this.img, x + 2, y + 2, w - 4, h - 4);
+
+        // Frame border
+        ctx.lineWidth = 1.5;
+        ctx.strokeStyle = this.data.category === 'National Flag' ? '#dc2626' : '#059669';
+        ctx.strokeRect(x, y, w, h);
 
         ctx.restore();
       }
     }
 
     sizeCanvas();
-    const balls = Array.from({ length: 28 }, () => new Ball());
+    const balls = Array.from({ length: 26 }, () => new Ball());
 
     function resolveBallCollisions() {
       if (isModalOpen || speedLevels[speedIndex].mult === 0) return;
@@ -859,7 +905,6 @@
     window.addEventListener('click', e => {
       if (isModalOpen || e.target.closest('.node') || e.target.closest('.tree-modal-card')) return;
 
-      // 1. Check if a floating tree or flag sprite was clicked
       let clickedBall = null;
       for (let i = balls.length - 1; i >= 0; i--) {
         if (Math.hypot(balls[i].x - e.clientX, balls[i].y - e.clientY) <= balls[i].radius) {
@@ -873,7 +918,6 @@
         return;
       }
 
-      // 2. Empty space click: cycle floating speed and deflect
       speedIndex = (speedIndex + 1) % speedLevels.length;
       if (speedIndicator) {
         speedIndicator.textContent = speedLevels[speedIndex].label;
