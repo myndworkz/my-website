@@ -3,32 +3,32 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="How an eight-month volunteer journey through South American reforestation projects inspired a Dyfed temperate rainforest and agroforestry initiative in Wales.">
+  <meta name="description" content="A concise history of agroforestry: from ancient forest gardens and modern pioneers to the UK revival and the particular promise of agroforestry in Wales.">
   <meta name="author" content="Bryn & Elle, myndworkz">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://myndworkz.uk/forest-history.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="myndworkz.uk">
-  <meta property="og:title" content="History of the Natural Forest Project | myndworkz.uk">
-  <meta property="og:description" content="How an eight-month volunteer journey through South American reforestation projects inspired a Dyfed temperate rainforest and agroforestry initiative in Wales.">
+  <meta property="og:title" content="History of Agroforestry | myndworkz.uk">
+  <meta property="og:description" content="A concise history of agroforestry: from ancient forest gardens and modern pioneers to the UK revival and the particular promise of agroforestry in Wales.">
   <meta property="og:url" content="https://myndworkz.uk/forest-history.html">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="History of the Natural Forest Project | myndworkz.uk">
-  <meta name="twitter:description" content="How an eight-month volunteer journey through South American reforestation projects inspired a Dyfed temperate rainforest and agroforestry initiative in Wales.">
+  <meta name="twitter:title" content="History of Agroforestry | myndworkz.uk">
+  <meta name="twitter:description" content="A concise history of agroforestry: from ancient forest gardens and modern pioneers to the UK revival and the particular promise of agroforestry in Wales.">
   <title>History : Natural Forest</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body {
-      background-color: #f4f6f4; /* Forest Mist */
+      background-color: #f4f6f4;
       background-image: radial-gradient(circle at 80% 20%, rgba(22, 101, 52, 0.08) 0%, transparent 40%),
                         radial-gradient(circle at 15% 70%, rgba(217, 119, 6, 0.08) 0%, transparent 50%);
     }
-    /* 3D Glass Bubble in Sage Green & Earthy Terracotta */
     .bubble-sage-3d {
       background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.95) 0%, rgba(22, 101, 52, 0.4) 45%, rgba(22, 101, 52, 0.7) 85%, rgba(217, 119, 6, 0.85) 100%);
-      box-shadow: 0 15px 35px -5px rgba(22, 101, 52, 0.3), 
+      box-shadow: 0 15px 35px -5px rgba(22, 101, 52, 0.3),
                   inset 0 -5px 15px rgba(0, 0, 0, 0.2);
       position: relative;
+      overflow: hidden;
     }
     .bubble-sage-3d::after {
       content: '';
@@ -46,7 +46,6 @@
 </head>
 <body class="font-sans text-stone-900 antialiased min-h-screen py-8 px-4 sm:px-6 lg:px-8 select-none">
 
-  <!-- Top Navigation -->
   <div class="max-w-6xl mx-auto mb-10 flex justify-between items-center">
     <a href="index.html" class="inline-flex items-center text-sm font-semibold text-emerald-800 bg-emerald-100/80 hover:bg-emerald-200/90 px-4 py-2 rounded-full border border-emerald-300 transition-all shadow-sm hover:shadow-md">
       <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -55,113 +54,220 @@
       Back to Map
     </a>
     <div class="text-xs font-bold uppercase tracking-widest text-emerald-700 bg-emerald-50 px-3.5 py-1.5 rounded-full border border-emerald-200 shadow-sm">
-      Our Ecological Roots
+      Natural Forest • History
     </div>
   </div>
 
-  <!-- Main Grid Layout -->
   <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12 items-start">
-    
-    <!-- LEFT COLUMN -->
     <div class="md:col-span-5 lg:col-span-4 space-y-10 flex flex-col items-center md:items-stretch">
-      
-      <!-- 3D Bubble Photo Frame -->
       <div class="flex flex-col items-center">
-        <div class="w-64 h-64 sm:w-72 sm:h-72 rounded-full bubble-sage-3d flex flex-col items-center justify-center text-center p-6 border border-emerald-600/30">
-          <svg class="w-12 h-12 text-emerald-100 drop-shadow mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3v1m6.364.364l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
-          </svg>
-          <span class="text-xs font-black uppercase tracking-widest text-emerald-50 drop-shadow">Root System</span>
-          <span class="text-[10px] font-bold text-emerald-200/80 mt-1">Nursery Origins</span>
-        </div>
+        <button onclick="openMediaModal()" class="group w-64 h-64 sm:w-72 sm:h-72 rounded-full bubble-sage-3d flex flex-col items-center justify-center text-center p-6 border border-emerald-600/30 transition-transform hover:scale-105 focus:outline-none">
+          <div class="absolute inset-4 rounded-full bg-cover bg-center opacity-35 mix-blend-multiply transition-transform duration-700 group-hover:scale-110" style="background-image: url('images/planting_and_tea.png');"></div>
+          <div class="relative z-10 w-14 h-14 rounded-full bg-white/80 text-emerald-900 flex items-center justify-center shadow-lg mb-3">
+            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-9-8h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+            </svg>
+          </div>
+          <span class="relative z-10 text-xs font-black uppercase tracking-widest text-emerald-50 drop-shadow">Project Image</span>
+          <span class="relative z-10 text-[10px] font-bold text-emerald-200/90 mt-1 px-4">Click to open media</span>
+        </button>
+        <p class="mt-3 text-xs text-stone-500 font-medium italic text-center max-w-[260px]">
+          The sphere holds an archive image from the practical growing journey behind the project.
+        </p>
       </div>
 
-      <!-- History Directory Sidebar -->
       <div class="w-full max-w-sm bg-white/95 border-2 border-emerald-500/20 rounded-2xl shadow-xl p-6">
         <h3 class="text-lg font-black text-stone-800 border-b-2 border-dashed border-stone-200 pb-3 mb-4 flex items-center">
           <span class="inline-block w-3 h-3 rounded-full bg-emerald-600 mr-2 shadow-sm"></span>
           Timeline Chapters
         </h3>
-        
+
         <div class="space-y-3">
-          <button onclick="toggleSection('sa')" class="w-full text-left p-3 rounded-xl border border-stone-200 hover:border-emerald-400 bg-stone-50/50 hover:bg-emerald-50/50 transition-all flex items-center justify-between group focus:outline-none">
+          <button onclick="toggleSection('roots')" class="w-full text-left p-3 rounded-xl border border-stone-200 hover:border-emerald-400 bg-stone-50/50 hover:bg-emerald-50/50 transition-all flex items-center justify-between group focus:outline-none">
             <div class="flex items-center space-x-3">
-              <div class="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-sm">SA</div>
+              <div class="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-sm">01</div>
               <div>
-                <h4 class="font-bold text-stone-800 text-sm">South America</h4>
-                <p class="text-[10px] text-stone-500">The Seeds of the Dream</p>
+                <h4 class="font-bold text-stone-800 text-sm">Ancient Roots</h4>
+                <p class="text-[10px] text-stone-500">Trees, crops, livestock together</p>
               </div>
             </div>
-            <svg id="chevron-sa" class="w-4 h-4 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
+            <svg id="chevron-roots" class="w-4 h-4 text-stone-400 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
           </button>
-          <div id="section-sa" class="hidden px-3 pb-3 pt-1 text-xs text-stone-600 leading-relaxed space-y-2">
-            <p><strong>Experience:</strong> Two stints volunteering in the South American rainforests [6].</p>
-            <p><strong>Ethos:</strong> Witnessing large-scale rewilding and community-led reforestation efforts first-hand inspired us to attempt the same back home in Wales [6].</p>
+          <div id="section-roots" class="hidden px-3 pb-3 pt-1 text-xs text-stone-600 leading-relaxed space-y-2">
+            <p><strong>Long history:</strong> Agroforestry is not new; it is one of humanity's oldest land-use patterns.</p>
+            <p><strong>Examples:</strong> Forest gardens, wood pasture, orchard grazing, shaded coffee and cacao, and hedgerow farming all combine productivity with ecological structure.</p>
           </div>
 
-          <button onclick="toggleSection('cat')" class="w-full text-left p-3 rounded-xl border border-stone-200 hover:border-amber-400 bg-stone-50/50 hover:bg-amber-50/50 transition-all flex items-center justify-between group focus:outline-none">
+          <button onclick="toggleSection('pioneers')" class="w-full text-left p-3 rounded-xl border border-stone-200 hover:border-amber-400 bg-stone-50/50 hover:bg-amber-50/50 transition-all flex items-center justify-between group focus:outline-none">
             <div class="flex items-center space-x-3">
-              <div class="w-8 h-8 rounded-full bg-amber-600 text-white flex items-center justify-center font-bold text-sm">CAT</div>
+              <div class="w-8 h-8 rounded-full bg-amber-600 text-white flex items-center justify-center font-bold text-sm">02</div>
               <div>
-                <h4 class="font-bold text-stone-800 text-sm">Woodland Placement</h4>
-                <p class="text-[10px] text-stone-500">CAT Trials, Sept 2026</p>
+                <h4 class="font-bold text-stone-800 text-sm">Modern Pioneers</h4>
+                <p class="text-[10px] text-stone-500">Smith, Hart, Crawford</p>
               </div>
             </div>
-            <svg id="chevron-cat" class="w-4 h-4 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
+            <svg id="chevron-pioneers" class="w-4 h-4 text-stone-400 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
           </button>
-          <div id="section-cat" class="hidden px-3 pb-3 pt-1 text-xs text-stone-600 leading-relaxed space-y-2">
-            <p><strong>Placement:</strong> Applying to the woodlands and waterways team [1].</p>
-            <p><strong>Timeline:</strong> Accepted for the 4-day assessment in September 2026, leading to a potential 6-month hands-on placement [1].</p>
+          <div id="section-pioneers" class="hidden px-3 pb-3 pt-1 text-xs text-stone-600 leading-relaxed space-y-2">
+            <p><strong>J. Russell Smith:</strong> Argued for tree crops on vulnerable land and helped frame agroforestry as an answer to erosion and degraded soils.</p>
+            <p><strong>Robert Hart:</strong> Showed in Britain that layered forest gardening could be productive, beautiful, and small-scale.</p>
+            <p><strong>Martin Crawford:</strong> Helped translate forest gardening into practical UK experimentation and public education.</p>
+          </div>
+
+          <button onclick="toggleSection('uk')" class="w-full text-left p-3 rounded-xl border border-stone-200 hover:border-teal-400 bg-stone-50/50 hover:bg-teal-50/50 transition-all flex items-center justify-between group focus:outline-none">
+            <div class="flex items-center space-x-3">
+              <div class="w-8 h-8 rounded-full bg-teal-600 text-white flex items-center justify-center font-bold text-sm">03</div>
+              <div>
+                <h4 class="font-bold text-stone-800 text-sm">UK Revival</h4>
+                <p class="text-[10px] text-stone-500">From margins to mainstream</p>
+              </div>
+            </div>
+            <svg id="chevron-uk" class="w-4 h-4 text-stone-400 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
+          </button>
+          <div id="section-uk" class="hidden px-3 pb-3 pt-1 text-xs text-stone-600 leading-relaxed space-y-2">
+            <p><strong>Evidence base:</strong> Shelterbelts, riparian planting, silvopasture, and alley cropping are now valued for resilience as well as yield.</p>
+            <p><strong>Why it matters:</strong> British farming increasingly needs systems that hold water, reduce wind stress, store carbon, and diversify income.</p>
+          </div>
+
+          <button onclick="toggleSection('wales')" class="w-full text-left p-3 rounded-xl border border-stone-200 hover:border-rose-400 bg-stone-50/50 hover:bg-rose-50/50 transition-all flex items-center justify-between group focus:outline-none">
+            <div class="flex items-center space-x-3">
+              <div class="w-8 h-8 rounded-full bg-rose-600 text-white flex items-center justify-center font-bold text-sm">04</div>
+              <div>
+                <h4 class="font-bold text-stone-800 text-sm">Wales</h4>
+                <p class="text-[10px] text-stone-500">Rain, pasture, hedges, valleys</p>
+              </div>
+            </div>
+            <svg id="chevron-wales" class="w-4 h-4 text-stone-400 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
+          </button>
+          <div id="section-wales" class="hidden px-3 pb-3 pt-1 text-xs text-stone-600 leading-relaxed space-y-2">
+            <p><strong>Natural fit:</strong> Wales already has the ingredients for agroforestry: livestock farms, hedgerows, wet valleys, steep ground, and a temperate rainforest fringe.</p>
+            <p><strong>Manifestation:</strong> The Welsh version is likely to mean shelter trees, riparian woodland, orchard pasture, and habitat corridors rather than industrial monoculture.</p>
           </div>
         </div>
       </div>
-
     </div>
 
-    <!-- RIGHT COLUMN (CONTENT) -->
     <div class="md:col-span-7 lg:col-span-8 bg-white border border-stone-200 rounded-2xl shadow-xl p-6 sm:p-8 lg:p-10 space-y-8">
-      
       <div class="border-b border-stone-100 pb-6">
-        <span class="text-emerald-700 font-extrabold uppercase tracking-widest text-xs">The Forest Project Roots</span>
-        <h2 class="text-3xl sm:text-4xl font-black text-stone-900 tracking-tight mt-1">
-          Bringing Rewilding Lessons Home
-        </h2>
+        <span class="text-emerald-700 font-extrabold uppercase tracking-widest text-xs">Agroforestry Through Time</span>
+        <h1 class="text-3xl sm:text-4xl font-black text-stone-900 tracking-tight mt-1">
+          From Ancient Practice to Welsh Possibility
+        </h1>
+        <p class="text-sm text-stone-500 mt-2">
+          A history of farming with trees, and why that history matters in Britain and West Wales now.
+        </p>
       </div>
 
       <div class="prose prose-stone max-w-none text-stone-700 leading-relaxed space-y-6 text-sm sm:text-base">
+        <p class="text-base sm:text-lg leading-relaxed text-stone-900 font-medium">
+          Agroforestry is best understood not as a fashionable add-on, but as the rediscovery of a very old truth: land is often healthiest when trees, animals, water, and crops are designed to support one another.
+        </p>
+
+        <h3 class="text-xl font-bold text-stone-800 mt-6">Before the Name, There Was the Practice</h3>
         <p>
-          Our rewilding dream didn't start in Wales—it was born on the other side of the Atlantic [6]. During our eight months exploring South America [1], we spent two intensive periods volunteering on ecological restoration projects in degraded rainforest zones [6]. We lived in jungles, climbed volcanoes, and worked directly with soil, seed-saving, and community tree nurseries [5, 6]. 
+          Long before the term <strong>agroforestry</strong> existed, communities around the world were already practicing it. Indigenous forest gardens in the tropics, Mediterranean wood pasture, orchard meadows, coppice systems, and grazed commons all worked from the same principle: trees are not obstacles to food production, but part of the farm itself. They shade animals, build soil, draw up nutrients, slow wind, hold water, host pollinators, and provide fuel, fruit, fodder, timber, and shelter.
         </p>
         <p>
-          Witnessing how forests could regenerate with adaptive, close-to-nature management led us to a shared realization: <strong>we wanted to do this closer to home</strong> [6]. Bryn had always dreamed of returning to Wales [6], and its valleys, historically stripped of their native oak and birch, felt like the perfect canvas for rewilding.
+          In that sense, agroforestry is not a novelty but a recovery of relationship. It emerged wherever people paid close attention to ecology and understood that permanent fertility usually comes from structure, diversity, and time rather than repeated simplification.
+        </p>
+
+        <h3 class="text-xl font-bold text-stone-800 mt-6">The Modern Pioneers</h3>
+        <p>
+          In the twentieth century, several thinkers helped give this ancient practice a modern vocabulary. The American geographer <strong>J. Russell Smith</strong>, especially through <em>Tree Crops</em> in 1929, argued that fragile slopes should grow perennial tree crops rather than be forced into erosive annual agriculture. His work helped shape the idea that trees could be a rational answer to soil loss, not just a romantic one.
+        </p>
+        <p>
+          In Britain, <strong>Robert Hart</strong> became one of the key pioneers of forest gardening. On a small site in Shropshire, he showed that a layered planting system of canopy, shrub, herb, groundcover, root, and climber species could create a highly productive edible landscape. Hart's importance lies not only in what he grew, but in the way he changed imagination: he made it easier to picture a British agroforestry system that was intimate, ecological, and human-scaled.
+        </p>
+        <p>
+          That practical lineage was carried forward by figures such as <strong>Martin Crawford</strong> and the Agroforestry Research Trust, whose work helped translate theory into species trials, public education, and replicable UK practice. Together these pioneers showed that agroforestry could succeed across scales: from the homestead garden to the working farm.
+        </p>
+
+        <div class="p-6 bg-stone-50 border border-stone-200 rounded-xl space-y-4">
+          <h4 class="font-black text-stone-800 text-sm uppercase tracking-wider">Why Agroforestry Succeeds</h4>
+          <ul class="space-y-2 text-xs sm:text-sm text-stone-700 list-disc pl-5">
+            <li><strong>Resilience:</strong> Diverse systems cope better with heat, drought, wind, and intense rainfall.</li>
+            <li><strong>Soil repair:</strong> Tree roots stabilize slopes, feed soil biology, and reduce erosion.</li>
+            <li><strong>Water regulation:</strong> Trees slow runoff, improve infiltration, and protect streams.</li>
+            <li><strong>Farm economics:</strong> Timber, fruit, nuts, fodder, and livestock shelter create multiple outputs from one holding.</li>
+            <li><strong>Habitat recovery:</strong> Trees reconnect fragmented landscapes for birds, insects, fungi, and mammals.</li>
+          </ul>
+        </div>
+
+        <h3 class="text-xl font-bold text-stone-800 mt-6">How It Shows Up in the UK</h3>
+        <p>
+          For a long time, modern British agriculture treated trees as separate from productive land: woods were woods, fields were fields. But climate pressure, biodiversity loss, and declining soil health have pushed a different view back into the foreground. Agroforestry in the UK now appears in several practical forms: <strong>silvopasture</strong> for grazing livestock among trees, <strong>alley cropping</strong> on arable land, <strong>riparian planting</strong> beside watercourses, <strong>shelterbelts</strong> against wind exposure, and <strong>wood pasture</strong> systems that blend browsing, grass, and canopy.
+        </p>
+        <p>
+          The strongest British successes are often not flashy. They are quieter gains that accumulate year after year: lambs protected from exposure, cattle shaded in summer, streams kept cooler, fields less waterlogged after storms, pollinators returning along tree lines, and farms gaining a second or third income stream. Agroforestry works in the UK precisely because it does not ask farmers to stop producing; it asks how production can become more stable, more ecological, and less brittle.
+        </p>
+
+        <h3 class="text-xl font-bold text-stone-800 mt-6">Why Wales Is Especially Suited</h3>
+        <p>
+          Wales is particularly well placed for agroforestry. Much of the country is pastoral, wet, sloping, and exposed to Atlantic weather. These are exactly the conditions in which trees become functional partners. Carefully placed shelter trees can reduce wind stress on stock; riparian planting can stabilize streams and reduce sediment loss; hedgerow expansion can reconnect habitat; orchard pasture can diversify smaller holdings; and native broadleaf corridors can help the surviving fragments of the Celtic rainforest breathe outward into the farmed landscape.
+        </p>
+        <p>
+          In Welsh terms, agroforestry should not mean blanketing the land in commercial blocks. It should mean fitting trees into the logic of place: alder and willow in wetter ground, oak and birch where long-term habitat structure is needed, shelter lines on exposed pasture, productive edges around homesteads, and wooded corridors that connect valley, stream, hedge, and hill. In a landscape like the Dyfi and wider West Wales, that approach offers both ecological repair and cultural continuity.
         </p>
 
         <div class="p-5 bg-emerald-50 border-l-4 border-emerald-600 rounded-r-xl space-y-2">
-          <h4 class="font-bold text-emerald-950 text-sm uppercase">The CAT Milestone</h4>
+          <h4 class="font-bold text-emerald-950 text-sm uppercase">Why This Matters Here</h4>
           <p class="text-xs sm:text-sm text-emerald-900 font-medium">
-            "We applied to the Centre for Alternative Technology (CAT) in Machynlleth for their volunteer woodlands and waterways team [1]. This September, we begin our 4-day trial [1]—the final hurdle to establishing our native nursery trials on Welsh soil."
+            For this project, the history of agroforestry is not background reading. It is a reminder that rebuilding Welsh tree cover, habitat corridors, and small-scale abundance is part of a much older tradition of working with land rather than against it.
           </p>
         </div>
       </div>
-
     </div>
-
   </div>
 
+  <footer class="max-w-6xl mx-auto mt-16 pt-8 border-t border-stone-200 flex justify-between items-center text-xs text-stone-500">
+    <a href="index.html" class="font-bold text-emerald-800 hover:underline">Back to Hub Network</a>
+    <p>&copy; 2026 Natural Philosophy : Natural Forestry</p>
+  </footer>
+
+  <div id="media-modal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="relative w-full max-w-4xl bg-white rounded-2xl shadow-2xl overflow-hidden border border-white/10">
+      <button onclick="closeMediaModal()" class="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/70 transition-all focus:outline-none">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+      </button>
+      <div class="bg-stone-100">
+        <img src="images/planting_and_tea.png" alt="Project archive illustration" class="w-full max-h-[80vh] object-contain">
+      </div>
+      <div class="p-4 sm:p-5 border-t border-stone-200 bg-white">
+        <p class="text-sm font-semibold text-stone-800">Project archive image</p>
+        <p class="text-xs text-stone-500 mt-1">An image kept in the sphere as a visual anchor for the practical, lived side of the land journey.</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="audio.js"></script>
   <script>
     function toggleSection(id) {
       playSwish();
       const sec = document.getElementById(`section-${id}`);
       const chevron = document.getElementById(`chevron-${id}`);
+      if (!sec) return;
       if (sec.classList.contains('hidden')) {
         sec.classList.remove('hidden');
-        chevron.style.transform = 'rotate(180deg)';
+        if (chevron) chevron.style.transform = 'rotate(180deg)';
       } else {
         sec.classList.add('hidden');
-        chevron.style.transform = 'rotate(0deg)';
+        if (chevron) chevron.style.transform = 'rotate(0deg)';
       }
     }
+
+    function openMediaModal() {
+      playBoing();
+      document.getElementById('media-modal').classList.remove('hidden');
+    }
+
+    function closeMediaModal() {
+      playWoop();
+      document.getElementById('media-modal').classList.add('hidden');
+    }
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') closeMediaModal();
+    });
   </script>
-  <script src="audio.js"></script>
 </body>
 </html>
