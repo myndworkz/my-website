@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /Archive/
+Disallow: /designing-for-freedom/
+Disallow: /qgis2web/
+
+Sitemap: https://myndworkz.uk/sitemap.xml
