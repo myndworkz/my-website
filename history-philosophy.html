@@ -3,6 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="The story of Pub Philosophy from its origins in London's Soho, to Costa Coffee sponsorship, BBC coverage, New Zealand tours, and Geneva's international café philosophy scene.">
+  <meta name="author" content="Bryn & Elle, myndworkz">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://myndworkz.uk/history-philosophy.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="myndworkz.uk">
+  <meta property="og:title" content="History of Natural Philosophy | myndworkz.uk">
+  <meta property="og:description" content="The story of Pub Philosophy from its origins in London's Soho, to Costa Coffee sponsorship, BBC coverage, New Zealand tours, and Geneva's international café philosophy scene.">
+  <meta property="og:url" content="https://myndworkz.uk/history-philosophy.html">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="History of Natural Philosophy | myndworkz.uk">
+  <meta name="twitter:description" content="The story of Pub Philosophy from its origins in London's Soho, to Costa Coffee sponsorship, BBC coverage, New Zealand tours, and Geneva's international café philosophy scene.">
   <title>History : Natural Philosophy</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
@@ -40,7 +52,7 @@
       <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
       </svg>
-      ← Back to Map
+      Back to Map
     </a>
     <div class="text-xs font-bold uppercase tracking-widest text-teal-700 bg-teal-50 px-3.5 py-1.5 rounded-full border border-teal-200 shadow-sm">
       Our Evolution
@@ -80,7 +92,7 @@
                 <p class="text-[10px] text-stone-500">1997-2000</p>
               </div>
             </div>
-            <svg id="chevron-soho" class="w-4 h-4 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+            <svg id="chevron-soho" class="w-4 h-4 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
           </button>
           <div id="section-soho" class="hidden px-3 pb-3 pt-1 text-xs text-stone-600 leading-relaxed space-y-2">
             <p><strong>Location:</strong> London, UK.</p>
@@ -95,7 +107,7 @@
                 <p class="text-[10px] text-stone-500">1998-2000</p>
               </div>
             </div>
-            <svg id="chevron-costa" class="w-4 h-4 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+            <svg id="chevron-costa" class="w-4 h-4 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
           </button>
           <div id="section-costa" class="hidden px-3 pb-3 pt-1 text-xs text-stone-600 leading-relaxed space-y-2">
             <p><strong>Location:</strong> London, UK / North Island, NZ</p>
@@ -110,7 +122,7 @@
                 <p class="text-[10px] text-stone-500">2022-Present</p>
               </div>
             </div>
-            <svg id="chevron-london2" class="w-4 h-4 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+            <svg id="chevron-london2" class="w-4 h-4 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
           </button>
           <div id="section-london2" class="hidden px-3 pb-3 pt-1 text-xs text-stone-600 leading-relaxed space-y-2">
             <p><strong>Location:</strong> Hoxton Cabin, Hackney, London.</p>
@@ -184,6 +196,7 @@
 
   <script>
     function toggleSection(id) {
+      playSwish();
       const sec = document.getElementById(`section-${id}`);
       const chevron = document.getElementById(`chevron-${id}`);
       if (sec.classList.contains('hidden')) {
@@ -195,5 +208,6 @@
       }
     }
   </script>
+  <script src="audio.js"></script>
 </body>
 </html>
