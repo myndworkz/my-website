@@ -39,6 +39,32 @@
       z-index: 30;
     }
 
+    /* 2x Sphere Sizing & Typography */
+    .sphere--lg {
+      width: 220px !important;
+      height: 220px !important;
+      min-width: 220px !important;
+      min-height: 220px !important;
+      font-size: 1.15rem !important;
+    }
+    .sphere--md {
+      width: 184px !important;
+      height: 184px !important;
+      min-width: 184px !important;
+      min-height: 184px !important;
+      font-size: 1.05rem !important;
+    }
+    .sphere__glyph {
+      font-size: 2.6rem !important;
+      line-height: 1 !important;
+      margin-bottom: 4px !important;
+    }
+    .sphere__icon {
+      width: 48px !important;
+      height: 48px !important;
+      margin-bottom: 4px !important;
+    }
+
     /* Modal Backdrop & Overlay */
     .tree-modal-backdrop {
       position: fixed;
@@ -213,7 +239,7 @@
 
     const GRAPH = [
       {
-        id: 'natphil', size: 'sphere--lg', theme: 'theme-natphil', anchor: [0.50, 0.50],
+        id: 'natphil', size: 'sphere--lg', theme: 'theme-natphil', anchor: [0.50, 0.48],
         aria: 'Natural Philosophy',
         html: `${BOOK_ICON}<span class="sphere__label" style="color:#451a03">Natural<br>Philosophy</span>`,
         children: [
@@ -223,7 +249,7 @@
         ]
       },
       {
-        id: 'perma', size: 'sphere--md', theme: 'theme-perma', anchor: [0.28, 0.55],
+        id: 'perma', size: 'sphere--md', theme: 'theme-perma', anchor: [0.22, 0.58],
         aria: 'Permaculture',
         html: `<span class="sphere__glyph">Ⓐ</span><span class="sphere__label" style="color:#ffe4e6">Permaculture</span>`,
         children: [
@@ -232,7 +258,7 @@
         ]
       },
       {
-        id: 'natforest', size: 'sphere--md', theme: 'theme-natforest', anchor: [0.72, 0.55],
+        id: 'natforest', size: 'sphere--md', theme: 'theme-natforest', anchor: [0.78, 0.58],
         aria: 'Natural Forestry',
         html: `${LEAF_ICON}<span class="sphere__label" style="color:#ecfdf5">Natural<br>Forestry</span>`,
         children: [
@@ -368,12 +394,13 @@
       }
     }, { passive: true });
 
+    // Adjusted physics for 2x spheres
     const PHYS = {
-      repel: 2.8, repelPad: 35,
+      repel: 3.2, repelPad: 45,
       stiffChild: 0.055, stiffRoot: 0.022,
-      gapChild: 42, restRoot: 300,
+      gapChild: 56, restRoot: 480,
       damping: 0.87, maxSpeed: 46,
-      anchorPull: 0.0018, restitution: 0.45, wallPad: 8
+      anchorPull: 0.0018, restitution: 0.45, wallPad: 12
     };
 
     let screenW = window.innerWidth;
@@ -413,9 +440,9 @@
 
       nodes.set(cfg.id, {
         id: cfg.id, el: wrap, body,
-        x: 0, y: 0, vx: 0, vy: 0, r: 40,
+        x: 0, y: 0, vx: 0, vy: 0, r: isRoot ? 92 : 24,
         active: isRoot, isRoot, parent: parentId || null,
-        invMass: isRoot ? 0.55 : 1,
+        invMass: isRoot ? 0.45 : 1,
         anchor: cfg.anchor || null
       });
 
@@ -440,7 +467,7 @@
     });
 
     function measureNodes() {
-      nodes.forEach(n => { n.r = Math.max(18, n.body.offsetWidth / 2); });
+      nodes.forEach(n => { n.r = Math.max(22, n.body.offsetWidth / 2); });
     }
 
     function layoutInitial() {
@@ -478,8 +505,8 @@
         k.x = root.x;
         k.y = root.y;
         const spread = (i / kids.length) * Math.PI * 2 + (Math.random() - 0.5) * 0.5;
-        k.vx = Math.cos(spread) * 17;
-        k.vy = Math.sin(spread) * 17;
+        k.vx = Math.cos(spread) * 22;
+        k.vy = Math.sin(spread) * 22;
         k.el.classList.remove('is-collapsed');
         k.el.removeAttribute('inert');
       });
@@ -547,8 +574,8 @@
 
     function restLength(edge, a, b) {
       if (edge.kind === 'child') return a.r + b.r + PHYS.gapChild;
-      if (edge.kind === 'thick') return 340;
-      return 250;
+      if (edge.kind === 'thick') return 520;
+      return 420;
     }
 
     function simulate(dt) {
@@ -649,7 +676,6 @@
     ];
 
     const treesDb = [
-      // Welsh Native Species
       { 
         name: "Sessile Oak", 
         latin: "Quercus petraea (Deri)", 
@@ -686,8 +712,6 @@
         description: "Hardy high-altitude tree celebrated in Celtic folklore; produces nutrient-rich red autumn berries vital for resident and migratory birds.",
         detailUrl: "https://www.woodlandtrust.org.uk/trees-woods-and-wildlife/british-trees/a-z-of-british-trees/rowan/"
       },
-
-      // South American Species (Linked to Useful Tropical Plants & PFAF)
       { 
         name: "Ice Cream Bean", 
         latin: "Inga edulis (Guaba)", 
@@ -765,7 +789,6 @@
 
     class Ball {
       constructor() {
-        // Generous size for clear visibility with borders
         this.radius = Math.random() * 8 + 22;
         this.mass = this.radius;
         this.x = Math.random() * (cw - this.radius * 2) + this.radius;
@@ -795,24 +818,20 @@
         ctx.save();
         ctx.globalAlpha = 0.95;
 
-        // Clean enlarged framed boxes (approx 58px x 42px)
         const w = this.radius * 2.3;
         const h = this.radius * 1.65;
         const x = this.x - w / 2;
         const y = this.y - h / 2;
 
-        // Shadow & White Card Base
         ctx.fillStyle = '#ffffff';
         ctx.shadowColor = 'rgba(0, 0, 0, 0.16)';
         ctx.shadowBlur = 8;
         ctx.shadowOffsetY = 2;
         ctx.fillRect(x, y, w, h);
 
-        // Photo Inset
         ctx.shadowColor = 'transparent';
         ctx.drawImage(this.img, x + 3, y + 3, w - 6, h - 6);
 
-        // Elegant Card Border
         ctx.lineWidth = 2.0;
         ctx.strokeStyle = this.data.category === 'National Flag' ? '#dc2626' : '#059669';
         ctx.strokeRect(x, y, w, h);

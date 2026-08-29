@@ -193,6 +193,32 @@ html, body {
   transition: none;
 }
 
+/* 2x Sphere Scale Overrides */
+.sphere--lg {
+  width: 220px !important;
+  height: 220px !important;
+  min-width: 220px !important;
+  min-height: 220px !important;
+  font-size: 1.15rem !important;
+}
+
+.sphere--md {
+  width: 184px !important;
+  height: 184px !important;
+  min-width: 184px !important;
+  min-height: 184px !important;
+  font-size: 1.05rem !important;
+}
+
+.sphere__glyph {
+  font-size: 2.5rem !important;
+  line-height: 1 !important;
+}
+
+.sphere__icon {
+  width: 48px !important;
+  height: 48px !important;
+}
 /* =====================================================================
    ROOT GLASS SPHERES
    ===================================================================== */
