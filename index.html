@@ -272,15 +272,17 @@
         ]
       },
       {
-        id: 'perma', size: 'sphere--md', theme: 'theme-perma', anchor: [0.22, 0.58],
-        aria: 'Permaculture',
-        html: `<span class="sphere__glyph">Ⓐ</span><span class="sphere__label">Permaculture</span>`,
-        children: [
+        {
+        id: 'perma', size: 'sphere--md', theme: 'theme-inactive', anchor: [0.22, 0.58],
+        aria: 'Permaculture (Under Construction)',
+        html: `<span class="sphere__glyph" style="opacity:0.6">Ⓐ</span><span class="sphere__label" style="color:#475569">Permaculture</span>`,
+        children: []
+      },
           /* TEMPORARILY DISABLED SUB-PAGES - UNCOMMENT WHEN READY TO RETRIEVE:
           { id: 'perma-data',   label: 'Data',   href: 'permaculture-data.html', chip: 'chip--rose' },
           { id: 'perma-action', label: 'Action', href: 'action.html',            chip: 'chip--indigo' }
           */
-        ]
+       
       },
       {
         id: 'natforest', size: 'sphere--md', theme: 'theme-natforest', anchor: [0.78, 0.58],
@@ -297,7 +299,7 @@
     const TOOLTIP_TEXT = {
       natphil: "This is the term I am adopting for the philosophy that we do in person, in real time and with others.",
       natforest: "This is what we're learning, and where we will add things as we go",
-      perma: "This is the big picture, where we will try to pull everything together"
+      perma: "This is the big picture, where we will try to pull everything together — it's not quite ready yet."
     };
 
     const ballTooltip = document.getElementById('ball-tooltip');

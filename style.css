@@ -227,7 +227,15 @@ html, body {
   position: relative;
   box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.18), inset 0 -8px 15px rgba(0, 0, 0, 0.15);
 }
-
+/* Greayed-out inactive sphere */
+    .theme-inactive {
+      background: radial-gradient(circle at 35% 35%, #f1f5f9 0%, #cbd5e1 45%, #94a3b8 85%, #64748b 100%) !important;
+      border: 2px solid #94a3b8 !important;
+      box-shadow: 0 10px 25px -5px rgba(100, 116, 139, 0.3) !important;
+      filter: grayscale(0.85);
+      opacity: 0.75;
+      cursor: not-allowed !important;
+    }
 .sphere::after,
 .chip::after {
   content: '';
