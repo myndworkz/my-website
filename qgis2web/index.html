@@ -47,6 +47,34 @@
     right: 10px !important;
     z-index: 10000 !important;
   }
+  /* Clean Leaflet Popup Card */
+  .leaflet-popup-content-wrapper {
+    background: #ffffff !important;
+    border-radius: 12px !important;
+    border: 1.5px solid #059669 !important;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2) !important;
+    padding: 2px !important;
+  }
+  .leaflet-popup-content {
+    margin: 10px 14px !important;
+    line-height: 1.4 !important;
+  }
+  .leaflet-popup-tip {
+    background: #ffffff !important;
+  }
+  .custom-map-popup .popup-title {
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    color: #047857 !important;
+    margin-bottom: 3px !important;
+  }
+  .custom-map-popup .popup-value {
+    font-size: 15px !important;
+    font-weight: 800 !important;
+    color: #1c1917 !important;
+  }
 <style>
   /* 1. Vector SVG Layers Icon for Collapsed State */
   .leaflet-control-layers-toggle {
@@ -585,18 +613,13 @@
                 },
                 mouseover: highlightFeature,
             });
-            var popupContent = '<table>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['fid'] !== null ? autolinker.link(String(feature.properties['fid']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['DN'] !== null ? autolinker.link(String(feature.properties['DN']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <th scope="row">area_ha</th>\
-                        <td class="visible-with-data" id="area_ha">' + (feature.properties['area_ha'] !== null ? autolinker.link(String(feature.properties['area_ha']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
-                    </tr>\
-                </table>';
+            var popupContent = var rawArea = parseFloat(feature.properties['area_ha']);
+            var formattedArea = !isNaN(rawArea) ? rawArea.toFixed(2) + ' hectares' : 'N/A';
+
+            var popupContent = '<div class="custom-map-popup">' +
+                    '<div class="popup-title">Micro-Corridor Candidate</div>' +
+                    '<div class="popup-value">' + formattedArea + '</div>' +
+                '</div>';
             var content = removeEmptyRowsFromPopupContent(popupContent, feature);
 			layer.on('popupopen', function(e) {
 				addClassToPopupIfMedia(content, e.popup);
@@ -646,18 +669,13 @@
                 },
                 mouseover: highlightFeature,
             });
-            var popupContent = '<table>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['fid'] !== null ? autolinker.link(String(feature.properties['fid']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <td colspan="2">' + (feature.properties['DN'] !== null ? autolinker.link(String(feature.properties['DN']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <th scope="row">area_ha</th>\
-                        <td class="visible-with-data" id="area_ha">' + (feature.properties['area_ha'] !== null ? autolinker.link(String(feature.properties['area_ha']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
-                    </tr>\
-                </table>';
+            var popupContent = var rawArea = parseFloat(feature.properties['area_ha']);
+            var formattedArea = !isNaN(rawArea) ? rawArea.toFixed(2) + ' hectares' : 'N/A';
+
+            var popupContent = '<div class="custom-map-popup">' +
+                    '<div class="popup-title">Commercial Agroforestry Candidate</div>' +
+                    '<div class="popup-value">' + formattedArea + '</div>' +
+                '</div>';
             var content = removeEmptyRowsFromPopupContent(popupContent, feature);
 			layer.on('popupopen', function(e) {
 				addClassToPopupIfMedia(content, e.popup);
