@@ -243,6 +243,10 @@
   <script>
     let lastFocusedElement = null;
 
+    function isMediaModalOpen() {
+      return !document.getElementById('media-modal').classList.contains('hidden');
+    }
+
     function toggleSection(id) {
       playSwish();
       const sec = document.getElementById(`section-${id}`);
@@ -265,13 +269,32 @@
     }
 
     function closeMediaModal() {
+      if (!isMediaModalOpen()) return;
       playWoop();
       document.getElementById('media-modal').classList.add('hidden');
       if (lastFocusedElement) lastFocusedElement.focus();
     }
 
     document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape') closeMediaModal();
+      if (!isMediaModalOpen()) return;
+      if (event.key === 'Escape') {
+        closeMediaModal();
+        return;
+      }
+      if (event.key === 'Tab') {
+        const focusable = Array.from(document.querySelectorAll('#media-dialog button, #media-dialog [href], #media-dialog input, #media-dialog select, #media-dialog textarea, #media-dialog [tabindex]:not([tabindex="-1"])'))
+          .filter((element) => !element.hasAttribute('disabled'));
+        if (!focusable.length) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      }
     });
   </script>
 </body>
