@@ -90,21 +90,42 @@ const LEAF_ICON = `<span class="sphere__glyph" aria-hidden="true">🍃</span>`;
       perma: "This is the big picture, where we will try to pull everything together"
     };
 
-    const ballTooltip = document.getElementById('ball-tooltip');
-    function showBallTooltip(id, e) {
+const ballTooltip = document.getElementById('ball-tooltip');
+
+    function showBallTooltip(id, e, data) {
       const titleEl = document.getElementById('tooltip-title');
       const latinEl = document.getElementById('tooltip-latin');
       const catEl = document.getElementById('tooltip-category');
-      const text = TOOLTIP_TEXT[id] || '';
-      titleEl.textContent = text;
-      latinEl.textContent = '';
-      catEl.textContent = '';
+      if (!ballTooltip || !titleEl) return;
+
+      // 1. If a tree/ball data object is passed directly
+      if (data && typeof data === 'object') {
+        titleEl.textContent = data.title || data.name || '';
+        if (latinEl) latinEl.textContent = data.latin || data.botanical || '';
+        if (catEl) catEl.textContent = data.category || data.region || '';
+      } 
+      // 2. Otherwise look up via ID in TOOLTIP_TEXT
+      else if (typeof TOOLTIP_TEXT !== 'undefined' && TOOLTIP_TEXT[id]) {
+        const item = TOOLTIP_TEXT[id];
+        if (typeof item === 'object') {
+          titleEl.textContent = item.title || item.name || '';
+          if (latinEl) latinEl.textContent = item.latin || item.botanical || '';
+          if (catEl) catEl.textContent = item.category || item.region || '';
+        } else {
+          titleEl.textContent = item;
+          if (latinEl) latinEl.textContent = '';
+          if (catEl) catEl.textContent = '';
+        }
+      }
+
       ballTooltip.style.opacity = '1';
       ballTooltip.classList.remove('hidden');
+
       let x = null, y = null;
       if (e && typeof e.clientX === 'number' && isFinite(e.clientX) && typeof e.clientY === 'number' && isFinite(e.clientY)) {
-        x = e.clientX; y = e.clientY;
-      } else {
+        x = e.clientX; 
+        y = e.clientY;
+      } else if (typeof nodes !== 'undefined' && nodes.get) {
         const node = nodes.get(id);
         if (node && node.body && node.body.getBoundingClientRect) {
           const rect = node.body.getBoundingClientRect();
@@ -467,18 +488,60 @@ const LEAF_ICON = `<span class="sphere__glyph" aria-hidden="true">🍃</span>`;
       { name: "Wales",     latin: "Cymru / Wales",                     category: "Flag", imgUrl: "https://flagcdn.com/w160/gb-wls.png" }
     ];
 
-    const treesDb = [
-      { name: "Brazil Nut Tree",      latin: "Bertholletia excelsa", category: "Amazon Rainforest",   imgUrl: "https://images.unsplash.com/photo-1596436889106-be35e843f974?auto=format&fit=crop&w=400&q=70" },
-      { name: "Kapok Tree",           latin: "Ceiba pentandra",      category: "Amazon Rainforest",   imgUrl: "https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?auto=format&fit=crop&w=400&q=70" },
-      { name: "Rubber Tree",          latin: "Hevea brasiliensis",   category: "Amazon Rainforest",   imgUrl: "https://images.unsplash.com/photo-1528183429752-a97d0bf99b5a?auto=format&fit=crop&w=400&q=70" },
-      { name: "Golden Trumpet Tree",  latin: "Handroanthus albus",   category: "Atlantic Rainforest", imgUrl: "https://images.unsplash.com/photo-1569154941061-e231b4725ef1?auto=format&fit=crop&w=400&q=70" },
-      { name: "Brazilwood",           latin: "Paubrasilia echinata", category: "Atlantic Rainforest", imgUrl: "https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&w=400&q=70" },
-      { name: "Jequitibá-rosa",       latin: "Cariniana legalis",    category: "Atlantic Rainforest", imgUrl: "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=400&q=70" },
-      { name: "Sessile Oak",          latin: "Quercus petraea",      category: "Welsh Rainforest",    imgUrl: "https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=400&q=70" },
-      { name: "Rowan",                latin: "Sorbus aucuparia",     category: "Welsh Rainforest",    imgUrl: "https://images.unsplash.com/photo-1605335133612-404c0bc6ee6a?auto=format&fit=crop&w=400&q=70" },
-      { name: "Silver Birch",         latin: "Betula pendula",       category: "Welsh Rainforest",    imgUrl: "https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?auto=format&fit=crop&w=400&q=70" },
-      { name: "Hazel",                latin: "Corylus avellana",     category: "Welsh Rainforest",    imgUrl: "https://images.unsplash.com/photo-1501183007986-d0d080b147f9?auto=format&fit=crop&w=400&q=70" }
-    ];
+    // --- COMBINED BOTANICAL CATALOG (WELSH & SOUTH AMERICAN SPECIES) ---
+    const treeCatalog = [
+  // --- Welsh Native Trees ---
+  {
+    title: "Sessile Oak",
+    latin: "Quercus petraea (Deri)",
+    category: "🏴󠁧󠁢󠁷󠁬󠁳󠁿 Welsh Temperate Rainforest",
+    url: "https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?auto=format&fit=crop&w=160&q=80"
+  },
+  {
+    title: "Scots Pine",
+    latin: "Pinus sylvestris",
+    category: "🏴󠁧󠁢󠁷󠁬󠁳󠁿 Welsh Native Woodland",
+    url: "https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?auto=format&fit=crop&w=160&q=80"
+  },
+  {
+    title: "Silver Birch",
+    latin: "Betula pendula (Bedwen)",
+    category: "🏴󠁧󠁢󠁷󠁬󠁳󠁿 Welsh Pioneer Species",
+    url: "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=160&q=80"
+  },
+  {
+    title: "Rowan / Mountain Ash",
+    latin: "Sorbus aucuparia (Cerddinen)",
+    category: "🏴󠁧󠁢󠁷󠁬󠁳󠁿 Upland Hardwood",
+    url: "https://images.unsplash.com/photo-1473448912268-2022ce9509d8?auto=format&fit=crop&w=160&q=80"
+  },
+
+  // --- South American & Neotropical Agroforestry Trees ---
+  {
+    title: "Ice Cream Bean",
+    latin: "Inga edulis (Guaba)",
+    category: "🇵🇪 Peru • Syntropic Nitrogen Fixer",
+    url: "https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=160&q=80"
+  },
+  {
+    title: "Brazil Nut Tree",
+    latin: "Bertholletia excelsa (Castanheira)",
+    category: "🇧🇷 Brazil • Amazon Primary Canopy",
+    url: "https://images.unsplash.com/photo-1426604966848-d7adac402bff?auto=format&fit=crop&w=160&q=80"
+  },
+  {
+    title: "Paraná Pine",
+    latin: "Araucaria angustifolia (Curi)",
+    category: "🇧🇷 Brazil • Atlantic Forest",
+    url: "https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?auto=format&fit=crop&w=160&q=80"
+  },
+  {
+    title: "Pink Peppercorn",
+    latin: "Schinus molle (Aguaribay)",
+    category: "🇦🇷 Argentina • Andean Slope",
+    url: "https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?auto=format&fit=crop&w=160&q=80"
+  }
+];
 
     const preloaded = {};
     function preload(url) {
