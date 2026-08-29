@@ -290,9 +290,10 @@
         layer_Basemap_1;
         map.createPane('pane_TerrainTopography_2');
         map.getPane('pane_TerrainTopography_2').style.zIndex = 402;
+		map.getPane('pane_TerrainTopography_2').style['mix-blend-mode'] = 'multiply'; /* <-- Blends relief cleanly into the basemap */
         var layer_TerrainTopography_2 = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Elevation/World_Hillshade/MapServer/tile/{z}/{y}/{x}', {
             pane: 'pane_TerrainTopography_2',
-            opacity: 1.0,
+            opacity: 0.35,
             attribution: 'Tiles &copy; Esri &mdash; Source: USGS, Esri, TANA, DeLorme, METI',
             minZoom: 8,
             maxZoom: 18
