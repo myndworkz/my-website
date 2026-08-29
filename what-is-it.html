@@ -174,8 +174,106 @@
   </div>
 
   <script>
+  // --- WEB AUDIO SOUND ENGINE ---
+let audioCtx = null;
+
+function initAudio() {
+  if (!audioCtx) {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (AudioContext) audioCtx = new AudioContext();
+  }
+  if (audioCtx && audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+}
+
+// 1. "Boing" sound for node clicks / drag releases
+function playBoing() {
+  initAudio();
+  if (!audioCtx) return;
+  const now = audioCtx.currentTime;
+
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+
+  osc.type = 'sine';
+  // Pitch rises quickly and vibrates down
+  osc.frequency.setValueAtTime(140, now);
+  osc.frequency.exponentialRampToValueAtTime(380, now + 0.08);
+  osc.frequency.exponentialRampToValueAtTime(180, now + 0.35);
+
+  gain.gain.setValueAtTime(0.3, now);
+  gain.gain.exponentialRampToValueAtTime(0.001, now + 0.38);
+
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+
+  osc.start(now);
+  osc.stop(now + 0.4);
+}
+
+// 2. "Woop" sound for opening links, sub-nodes, or modal cards
+function playWoop() {
+  initAudio();
+  if (!audioCtx) return;
+  const now = audioCtx.currentTime;
+
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+
+  osc.type = 'triangle';
+  // Smooth upward sweep
+  osc.frequency.setValueAtTime(220, now);
+  osc.frequency.exponentialRampToValueAtTime(650, now + 0.18);
+
+  gain.gain.setValueAtTime(0.25, now);
+  gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+
+  osc.start(now);
+  osc.stop(now + 0.25);
+}
+
+// 3. "Swish" sound for expanding branches & concertinas
+function playSwish() {
+  initAudio();
+  if (!audioCtx) return;
+  const now = audioCtx.currentTime;
+
+  // Filtered white noise burst
+  const bufferSize = audioCtx.sampleRate * 0.2;
+  const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < bufferSize; i++) {
+    data[i] = Math.random() * 2 - 1;
+  }
+
+  const noise = audioCtx.createBufferSource();
+  noise.buffer = buffer;
+
+  const filter = audioCtx.createBiquadFilter();
+  filter.type = 'bandpass';
+  filter.frequency.setValueAtTime(800, now);
+  filter.frequency.exponentialRampToValueAtTime(2400, now + 0.12);
+  filter.Q.value = 1.8;
+
+  const gain = audioCtx.createGain();
+  gain.gain.setValueAtTime(0.2, now);
+  gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+
+  noise.connect(filter);
+  filter.connect(gain);
+  gain.connect(audioCtx.destination);
+
+  noise.start(now);
+}
     function toggleSection(id) {
-      const sec = document.getElementById(`section-${id}`);
+  playSwish();
+  const sec = document.getElementById(`section-${id}`);
+  // ... rest of accordion toggle
+}
       const chevron = document.getElementById(`chevron-${id}`);
       if (sec.classList.contains('hidden')) {
         sec.classList.remove('hidden');
