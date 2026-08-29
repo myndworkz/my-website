@@ -39,7 +39,7 @@
       z-index: 30;
     }
 
-    /* 2x Sphere Sizing & Typography */
+    /* 2x Sphere Sizing */
     .sphere--lg {
       width: 220px !important;
       height: 220px !important;
@@ -59,13 +59,8 @@
       line-height: 1 !important;
       margin-bottom: 4px !important;
     }
-    .sphere__icon {
-      width: 48px !important;
-      height: 48px !important;
-      margin-bottom: 4px !important;
-    }
 
-    /* Modal Backdrop & Overlay */
+    /* Modal Card */
     .tree-modal-backdrop {
       position: fixed;
       inset: 0;
@@ -211,7 +206,7 @@
     </div>
   </div>
 
-  <!-- Background Canvas: Floating Behind Spheres -->
+  <!-- Background Canvas -->
   <canvas id="canvas-bg"></canvas>
 
   <!-- Elastic Graph Mind Map Layer -->
@@ -233,7 +228,97 @@
   </noscript>
 
   <script>
-    // Safe icon fallbacks
+    // --- NATIVE WEB AUDIO SYNTHESIZER ---
+    let audioCtx = null;
+
+    function initAudio() {
+      if (!audioCtx) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (AudioContext) audioCtx = new AudioContext();
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    // 1. "Boing" on node contact / tap
+    function playBoing() {
+      try {
+        initAudio();
+        if (!audioCtx) return;
+        const now = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(140, now);
+        osc.frequency.exponentialRampToValueAtTime(360, now + 0.08);
+        osc.frequency.exponentialRampToValueAtTime(170, now + 0.32);
+
+        gain.gain.setValueAtTime(0.28, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + 0.38);
+      } catch (_) {}
+    }
+
+    // 2. "Woop" on opening sub-pages / modals
+    function playWoop() {
+      try {
+        initAudio();
+        if (!audioCtx) return;
+        const now = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(220, now);
+        osc.frequency.exponentialRampToValueAtTime(680, now + 0.16);
+
+        gain.gain.setValueAtTime(0.22, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.20);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + 0.22);
+      } catch (_) {}
+    }
+
+    // 3. "Swish" on branch expansion
+    function playSwish() {
+      try {
+        initAudio();
+        if (!audioCtx) return;
+        const now = audioCtx.currentTime;
+        const bufferSize = audioCtx.sampleRate * 0.16;
+        const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+
+        const noise = audioCtx.createBufferSource();
+        noise.buffer = buffer;
+        const filter = audioCtx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.setValueAtTime(750, now);
+        filter.frequency.exponentialRampToValueAtTime(2200, now + 0.12);
+        filter.Q.value = 1.6;
+
+        const gain = audioCtx.createGain();
+        gain.gain.setValueAtTime(0.18, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(audioCtx.destination);
+        noise.start(now);
+      } catch (_) {}
+    }
+
+    // Graph Definitions
     const BOOK_ICON = `<span class="sphere__glyph" aria-hidden="true">💬</span>`;
     const LEAF_ICON = `<span class="sphere__glyph" aria-hidden="true">🍃</span>`;
 
@@ -342,6 +427,7 @@
 
     function openModal(data) {
       if (!data) return;
+      playWoop();
       isModalOpen = true;
       hideBallTooltip();
       modalImg.src = data.largeImg || data.imgUrl || '';
@@ -394,7 +480,6 @@
       }
     }, { passive: true });
 
-    // Adjusted physics for 2x spheres
     const PHYS = {
       repel: 3.2, repelPad: 45,
       stiffChild: 0.055, stiffRoot: 0.022,
@@ -490,6 +575,7 @@
       root.body.setAttribute('aria-expanded', String(!isOpen));
 
       if (isOpen) {
+        playBoing();
         expanded.delete(rootId);
         kids.forEach(k => {
           k.active = false;
@@ -499,6 +585,7 @@
         return;
       }
 
+      playSwish();
       expanded.add(rootId);
       kids.forEach((k, i) => {
         k.active = true;
@@ -568,6 +655,8 @@
         if (isRoot) {
           e.preventDefault();
           toggleCluster(id);
+        } else {
+          playWoop();
         }
       });
     }
@@ -839,101 +928,7 @@
         ctx.restore();
       }
     }
-// --- WEB AUDIO SOUND ENGINE ---
-let audioCtx = null;
 
-function initAudio() {
-  if (!audioCtx) {
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    if (AudioContext) audioCtx = new AudioContext();
-  }
-  if (audioCtx && audioCtx.state === 'suspended') {
-    audioCtx.resume();
-  }
-}
-
-// 1. "Boing" sound for node clicks / drag releases
-function playBoing() {
-  initAudio();
-  if (!audioCtx) return;
-  const now = audioCtx.currentTime;
-
-  const osc = audioCtx.createOscillator();
-  const gain = audioCtx.createGain();
-
-  osc.type = 'sine';
-  // Pitch rises quickly and vibrates down
-  osc.frequency.setValueAtTime(140, now);
-  osc.frequency.exponentialRampToValueAtTime(380, now + 0.08);
-  osc.frequency.exponentialRampToValueAtTime(180, now + 0.35);
-
-  gain.gain.setValueAtTime(0.3, now);
-  gain.gain.exponentialRampToValueAtTime(0.001, now + 0.38);
-
-  osc.connect(gain);
-  gain.connect(audioCtx.destination);
-
-  osc.start(now);
-  osc.stop(now + 0.4);
-}
-
-// 2. "Woop" sound for opening links, sub-nodes, or modal cards
-function playWoop() {
-  initAudio();
-  if (!audioCtx) return;
-  const now = audioCtx.currentTime;
-
-  const osc = audioCtx.createOscillator();
-  const gain = audioCtx.createGain();
-
-  osc.type = 'triangle';
-  // Smooth upward sweep
-  osc.frequency.setValueAtTime(220, now);
-  osc.frequency.exponentialRampToValueAtTime(650, now + 0.18);
-
-  gain.gain.setValueAtTime(0.25, now);
-  gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
-
-  osc.connect(gain);
-  gain.connect(audioCtx.destination);
-
-  osc.start(now);
-  osc.stop(now + 0.25);
-}
-
-// 3. "Swish" sound for expanding branches & concertinas
-function playSwish() {
-  initAudio();
-  if (!audioCtx) return;
-  const now = audioCtx.currentTime;
-
-  // Filtered white noise burst
-  const bufferSize = audioCtx.sampleRate * 0.2;
-  const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-  const data = buffer.getChannelData(0);
-  for (let i = 0; i < bufferSize; i++) {
-    data[i] = Math.random() * 2 - 1;
-  }
-
-  const noise = audioCtx.createBufferSource();
-  noise.buffer = buffer;
-
-  const filter = audioCtx.createBiquadFilter();
-  filter.type = 'bandpass';
-  filter.frequency.setValueAtTime(800, now);
-  filter.frequency.exponentialRampToValueAtTime(2400, now + 0.12);
-  filter.Q.value = 1.8;
-
-  const gain = audioCtx.createGain();
-  gain.gain.setValueAtTime(0.2, now);
-  gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
-
-  noise.connect(filter);
-  filter.connect(gain);
-  gain.connect(audioCtx.destination);
-
-  noise.start(now);
-}
     sizeCanvas();
     const balls = Array.from({ length: 24 }, () => new Ball());
 
@@ -1035,6 +1030,7 @@ function playSwish() {
         return;
       }
 
+      playBoing();
       speedIndex = (speedIndex + 1) % speedLevels.length;
       if (speedIndicator) {
         speedIndicator.textContent = speedLevels[speedIndex].label;
