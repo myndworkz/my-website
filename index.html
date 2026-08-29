@@ -3,19 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Explore the intersection of live philosophical discussion, agroforestry, and climate action in Dyfed, Wales. Hub for Natural Philosophy, Permaculture, and the Dyfed Temperate Rainforest project.">
-  <meta name="author" content="Bryn & Elle, myndworkz">
-  <meta name="robots" content="index, follow">
-  <meta name="google-site-verification" content="GUoQMw3-xPBrbAXltBUOMH75CRQW-HVYdQBM6HfGd34">
-  <link rel="canonical" href="https://myndworkz.uk/">
-  <meta property="og:type" content="website">
-  <meta property="og:site_name" content="myndworkz.uk">
-  <meta property="og:title" content="Natural Philosophy & Natural Forestry | myndworkz.uk">
-  <meta property="og:description" content="Explore the intersection of live philosophical discussion, agroforestry, and climate action in Dyfed, Wales. Hub for Natural Philosophy, Permaculture, and the Dyfed Temperate Rainforest project.">
-  <meta property="og:url" content="https://myndworkz.uk/">
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Natural Philosophy & Natural Forestry | myndworkz.uk">
-  <meta name="twitter:description" content="Explore the intersection of live philosophical discussion, agroforestry, and climate action in Dyfed, Wales. Hub for Natural Philosophy, Permaculture, and the Dyfed Temperate Rainforest project.">
   <title>Natural Philosophy : Natural Forestry</title>
   <link rel="stylesheet" href="style.css">
   <style>
@@ -52,28 +39,36 @@
       z-index: 30;
     }
 
-    /* 2x Sphere Sizing */
+    /* 2x Sphere Dimensions, +2pt Font Sizing & Universal Black Text */
     .sphere--lg {
       width: 220px !important;
       height: 220px !important;
       min-width: 220px !important;
       min-height: 220px !important;
-      font-size: 1.15rem !important;
+      font-size: 1.35rem !important; /* +2pt larger */
+      color: #000000 !important;
     }
     .sphere--md {
       width: 184px !important;
       height: 184px !important;
       min-width: 184px !important;
       min-height: 184px !important;
-      font-size: 1.05rem !important;
+      font-size: 1.25rem !important; /* +2pt larger */
+      color: #000000 !important;
+    }
+    .sphere__label {
+      color: #000000 !important;
+      font-weight: 800 !important;
+      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.4);
     }
     .sphere__glyph {
-      font-size: 2.6rem !important;
+      font-size: 2.8rem !important;
       line-height: 1 !important;
       margin-bottom: 4px !important;
+      color: #000000 !important;
     }
 
-    /* Modal Card */
+    /* Modal Backdrop & Overlay */
     .tree-modal-backdrop {
       position: fixed;
       inset: 0;
@@ -240,98 +235,9 @@
     </nav>
   </noscript>
 
+  <script src="audio.js"></script>
   <script>
-    // --- NATIVE WEB AUDIO SYNTHESIZER ---
-    let audioCtx = null;
-
-    function initAudio() {
-      if (!audioCtx) {
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        if (AudioContext) audioCtx = new AudioContext();
-      }
-      if (audioCtx && audioCtx.state === 'suspended') {
-        audioCtx.resume();
-      }
-    }
-
-    // 1. "Boing" on node contact / tap
-    function playBoing() {
-      try {
-        initAudio();
-        if (!audioCtx) return;
-        const now = audioCtx.currentTime;
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(140, now);
-        osc.frequency.exponentialRampToValueAtTime(360, now + 0.08);
-        osc.frequency.exponentialRampToValueAtTime(170, now + 0.32);
-
-        gain.gain.setValueAtTime(0.28, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
-
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start(now);
-        osc.stop(now + 0.38);
-      } catch (_) {}
-    }
-
-    // 2. "Woop" on opening sub-pages / modals
-    function playWoop() {
-      try {
-        initAudio();
-        if (!audioCtx) return;
-        const now = audioCtx.currentTime;
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(220, now);
-        osc.frequency.exponentialRampToValueAtTime(680, now + 0.16);
-
-        gain.gain.setValueAtTime(0.22, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.20);
-
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start(now);
-        osc.stop(now + 0.22);
-      } catch (_) {}
-    }
-
-    // 3. "Swish" on branch expansion
-    function playSwish() {
-      try {
-        initAudio();
-        if (!audioCtx) return;
-        const now = audioCtx.currentTime;
-        const bufferSize = audioCtx.sampleRate * 0.16;
-        const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-        const data = buffer.getChannelData(0);
-        for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
-
-        const noise = audioCtx.createBufferSource();
-        noise.buffer = buffer;
-        const filter = audioCtx.createBiquadFilter();
-        filter.type = 'bandpass';
-        filter.frequency.setValueAtTime(750, now);
-        filter.frequency.exponentialRampToValueAtTime(2200, now + 0.12);
-        filter.Q.value = 1.6;
-
-        const gain = audioCtx.createGain();
-        gain.gain.setValueAtTime(0.18, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
-
-        noise.connect(filter);
-        filter.connect(gain);
-        gain.connect(audioCtx.destination);
-        noise.start(now);
-      } catch (_) {}
-    }
-
-    // Graph Definitions
+    // Universal Black Typography on Spheres
     const BOOK_ICON = `<span class="sphere__glyph" aria-hidden="true">💬</span>`;
     const LEAF_ICON = `<span class="sphere__glyph" aria-hidden="true">🍃</span>`;
 
@@ -339,17 +245,17 @@
       {
         id: 'natphil', size: 'sphere--lg', theme: 'theme-natphil', anchor: [0.50, 0.48],
         aria: 'Natural Philosophy',
-        html: `${BOOK_ICON}<span class="sphere__label" style="color:#451a03">Natural<br>Philosophy</span>`,
+        html: `${BOOK_ICON}<span class="sphere__label">Natural<br>Philosophy</span>`,
         children: [
           { id: 'natphil-events',  label: 'Events',      href: 'events.html',             chip: 'chip--amber' },
-          { id: 'natphil-what',    label: 'What Is It?', href: 'what-is-it.html',         chip: 'chip--orange' },
+          { id: 'natphil-what',    label: 'What It Is',  href: 'what-is-it.html',         chip: 'chip--orange' },
           { id: 'natphil-history', label: 'History',     href: 'history-philosophy.html', chip: 'chip--amberdeep' }
         ]
       },
       {
         id: 'perma', size: 'sphere--md', theme: 'theme-perma', anchor: [0.22, 0.58],
         aria: 'Permaculture',
-        html: `<span class="sphere__glyph">Ⓐ</span><span class="sphere__label" style="color:#ffe4e6">Permaculture</span>`,
+        html: `<span class="sphere__glyph">Ⓐ</span><span class="sphere__label">Permaculture</span>`,
         children: [
           { id: 'perma-data',   label: 'Data',   href: 'permaculture-data.html', chip: 'chip--rose' },
           { id: 'perma-action', label: 'Action', href: 'action.html',            chip: 'chip--indigo' }
@@ -358,7 +264,7 @@
       {
         id: 'natforest', size: 'sphere--md', theme: 'theme-natforest', anchor: [0.78, 0.58],
         aria: 'Natural Forestry',
-        html: `${LEAF_ICON}<span class="sphere__label" style="color:#ecfdf5">Natural<br>Forestry</span>`,
+        html: `${LEAF_ICON}<span class="sphere__label">Natural<br>Forestry</span>`,
         children: [
           { id: 'natforest-journal', label: 'Journal', href: 'journal.html',        chip: 'chip--emerald' },
           { id: 'natforest-data',    label: 'Data',    href: 'forest-data.html',    chip: 'chip--teal' },
@@ -440,7 +346,7 @@
 
     function openModal(data) {
       if (!data) return;
-      playWoop();
+      if (typeof playWoop === 'function') playWoop();
       isModalOpen = true;
       hideBallTooltip();
       modalImg.src = data.largeImg || data.imgUrl || '';
@@ -493,6 +399,7 @@
       }
     }, { passive: true });
 
+    // Adjusted physics for 2x spheres
     const PHYS = {
       repel: 3.2, repelPad: 45,
       stiffChild: 0.055, stiffRoot: 0.022,
@@ -581,14 +488,14 @@
       });
     }
 
-    function toggleCluster(rootId) {
+    function toggleCluster(rootId, silent = false) {
       const root = nodes.get(rootId);
       const kids = GRAPH.find(g => g.id === rootId).children.map(c => nodes.get(c.id));
       const isOpen = expanded.has(rootId);
       root.body.setAttribute('aria-expanded', String(!isOpen));
 
       if (isOpen) {
-        playBoing();
+        if (!silent && typeof playBoing === 'function') playBoing();
         expanded.delete(rootId);
         kids.forEach(k => {
           k.active = false;
@@ -598,7 +505,7 @@
         return;
       }
 
-      playSwish();
+      if (!silent && typeof playSwish === 'function') playSwish();
       expanded.add(rootId);
       kids.forEach((k, i) => {
         k.active = true;
@@ -669,7 +576,7 @@
           e.preventDefault();
           toggleCluster(id);
         } else {
-          playWoop();
+          if (typeof playWoop === 'function') playWoop();
         }
       });
     }
@@ -985,6 +892,27 @@
     renderGraph();
     requestAnimationFrame(frame);
 
+    // --- ON LOAD: BLOOM & RETRACT REVEAL ANIMATION ---
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        // Expand all 3 clusters in sequence
+        ['natphil', 'perma', 'natforest'].forEach((id, idx) => {
+          setTimeout(() => {
+            if (!expanded.has(id)) toggleCluster(id, true);
+          }, idx * 160);
+        });
+
+        // Automatically collapse back after user gets a glimpse of the branches
+        setTimeout(() => {
+          ['natphil', 'perma', 'natforest'].forEach((id, idx) => {
+            setTimeout(() => {
+              if (expanded.has(id)) toggleCluster(id, true);
+            }, idx * 120);
+          });
+        }, 1800);
+      }, 500);
+    });
+
     let resizeTimer;
     window.addEventListener('resize', () => {
       screenW = window.innerWidth;
@@ -1043,7 +971,7 @@
         return;
       }
 
-      playBoing();
+      if (typeof playBoing === 'function') playBoing();
       speedIndex = (speedIndex + 1) % speedLevels.length;
       if (speedIndicator) {
         speedIndicator.textContent = speedLevels[speedIndex].label;
