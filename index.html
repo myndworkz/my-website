@@ -1,4 +1,745 @@
-// South American Species (Useful Tropical Plants Database)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Natural Philosophy : Natural Forestry</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Layer hierarchy: canvas behind, nodes and modals in front */
+    #canvas-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: auto;
+    }
+    #interactive-map {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10;
+      pointer-events: none;
+    }
+    .node {
+      pointer-events: auto;
+    }
+    #ball-tooltip {
+      z-index: 30;
+    }
+
+    /* Floating speed indicator pill (replaces header text) */
+    .speed-pill-control {
+      position: fixed;
+      bottom: 1.25rem;
+      right: 1.25rem;
+      z-index: 40;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(8px);
+      border: 1px solid #cbd5e1;
+      border-radius: 9999px;
+      padding: 6px 14px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #334155;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      pointer-events: auto;
+      user-select: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+    .speed-pill-control:hover {
+      background: #ffffff;
+      border-color: #059669;
+      color: #059669;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+    }
+
+    /* 2x Sphere Dimensions, +2pt Font Sizing & Universal Black Text */
+    .sphere--lg {
+      width: 220px !important;
+      height: 220px !important;
+      min-width: 220px !important;
+      min-height: 220px !important;
+      font-size: 1.35rem !important;
+      color: #000000 !important;
+    }
+    .sphere--md {
+      width: 184px !important;
+      height: 184px !important;
+      min-width: 184px !important;
+      min-height: 184px !important;
+      font-size: 1.25rem !important;
+      color: #000000 !important;
+    }
+    .sphere__label {
+      color: #000000 !important;
+      font-weight: 800 !important;
+      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.4);
+    }
+    .sphere__glyph {
+      font-size: 2.8rem !important;
+      line-height: 1 !important;
+      margin-bottom: 4px !important;
+      color: #000000 !important;
+    }
+
+    /* Modal Backdrop & Overlay */
+    .tree-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease-out;
+    }
+    .tree-modal-backdrop.is-active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .tree-modal-card {
+      background: #ffffff;
+      border-radius: 20px;
+      max-width: 480px;
+      width: 100%;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+      border: 1.5px solid #059669;
+      overflow: hidden;
+      transform: scale(0.95);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .tree-modal-backdrop.is-active .tree-modal-card {
+      transform: scale(1);
+    }
+    .tree-modal-image {
+      width: 100%;
+      height: 230px;
+      object-fit: cover;
+      background-color: #f1f5f9;
+    }
+    .tree-modal-body {
+      padding: 1.5rem;
+    }
+    .tree-modal-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #047857;
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      margin-bottom: 0.5rem;
+    }
+    .tree-modal-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin: 0;
+      line-height: 1.2;
+    }
+    .tree-modal-latin {
+      font-size: 0.95rem;
+      font-style: italic;
+      color: #059669;
+      margin-top: 0.25rem;
+      margin-bottom: 0.85rem;
+    }
+    .tree-modal-desc {
+      font-size: 0.875rem;
+      line-height: 1.55;
+      color: #475569;
+      margin-bottom: 1.25rem;
+    }
+    .tree-modal-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 1rem;
+    }
+    .tree-modal-link {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #059669;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .tree-modal-link:hover {
+      text-decoration: underline;
+    }
+    .tree-modal-close-btn {
+      background: #f1f5f9;
+      border: none;
+      color: #475569;
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .tree-modal-close-btn:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating Speed Control Pill -->
+  <div id="speed-toggle-pill" class="speed-pill-control" title="Click to cycle drift speed">
+    <span>Float Speed:</span>
+    <span id="speed-indicator" style="color:#059669">Moderate</span>
+  </div>
+
+  <!-- Species Hover Tooltip -->
+  <div id="ball-tooltip" class="hidden">
+    <div id="tooltip-title" class="tooltip-title"></div>
+    <div id="tooltip-latin" class="tooltip-latin"></div>
+    <div id="tooltip-category" class="tooltip-cat"></div>
+  </div>
+
+  <!-- Detail Modal Card -->
+  <div id="tree-modal" class="tree-modal-backdrop" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="tree-modal-card">
+      <img id="modal-img" class="tree-modal-image" src="" alt="Botanical Photograph">
+      <div class="tree-modal-body">
+        <span id="modal-category" class="tree-modal-badge">Category</span>
+        <h2 id="modal-title" class="tree-modal-title">Common Name</h2>
+        <div id="modal-latin" class="tree-modal-latin">Scientific Name</div>
+        <p id="modal-desc" class="tree-modal-desc">Description of species.</p>
+        <div class="tree-modal-footer">
+          <a id="modal-link" class="tree-modal-link" href="#" target="_blank" rel="noopener noreferrer">Database Profile →</a>
+          <button id="modal-close" class="tree-modal-close-btn" type="button">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Background Canvas -->
+  <canvas id="canvas-bg"></canvas>
+
+  <!-- Elastic Graph Mind Map Layer -->
+  <main id="interactive-map">
+    <svg id="svg-connections" class="w-full h-full absolute inset-0 pointer-events-none"></svg>
+  </main>
+
+  <noscript>
+    <nav style="position:fixed;bottom:1rem;left:1rem;z-index:50;font-size:0.875rem">
+      <a href="permaculture-data.html">Permaculture Data</a> ·
+      <a href="action.html">Action</a> ·
+      <a href="events.html">Events</a> ·
+      <a href="what-is-it.html">What It Is</a> ·
+      <a href="history-philosophy.html">History</a> ·
+      <a href="journal.html">Journal</a> ·
+      <a href="forest-data.html">Forest Data</a> ·
+      <a href="forest-history.html">Forest History</a>
+    </nav>
+  </noscript>
+
+  <script src="audio.js"></script>
+  <script>
+    const BOOK_ICON = `<span class="sphere__glyph" aria-hidden="true">💬</span>`;
+    const LEAF_ICON = `<span class="sphere__glyph" aria-hidden="true">🍃</span>`;
+
+    const GRAPH = [
+      {
+        id: 'natphil', size: 'sphere--lg', theme: 'theme-natphil', anchor: [0.50, 0.48],
+        aria: 'Natural Philosophy',
+        html: `${BOOK_ICON}<span class="sphere__label">Natural<br>Philosophy</span>`,
+        children: [
+          { id: 'natphil-events',  label: 'Events',      href: 'events.html',             chip: 'chip--amber' },
+          { id: 'natphil-what',    label: 'What It Is',  href: 'what-is-it.html',         chip: 'chip--orange' },
+          { id: 'natphil-history', label: 'History',     href: 'history-philosophy.html', chip: 'chip--amberdeep' }
+        ]
+      },
+      {
+        id: 'perma', size: 'sphere--md', theme: 'theme-perma', anchor: [0.22, 0.58],
+        aria: 'Permaculture',
+        html: `<span class="sphere__glyph">Ⓐ</span><span class="sphere__label">Permaculture</span>`,
+        children: [
+          { id: 'perma-data',   label: 'Data',   href: 'permaculture-data.html', chip: 'chip--rose' },
+          { id: 'perma-action', label: 'Action', href: 'action.html',            chip: 'chip--indigo' }
+        ]
+      },
+      {
+        id: 'natforest', size: 'sphere--md', theme: 'theme-natforest', anchor: [0.78, 0.58],
+        aria: 'Natural Forestry',
+        html: `${LEAF_ICON}<span class="sphere__label">Natural<br>Forestry</span>`,
+        children: [
+          { id: 'natforest-journal', label: 'Journal', href: 'journal.html',        chip: 'chip--emerald' },
+          { id: 'natforest-data',    label: 'Data',    href: 'forest-data.html',    chip: 'chip--teal' },
+          { id: 'natforest-history', label: 'History', href: 'forest-history.html', chip: 'chip--emerdeep' }
+        ]
+      }
+    ];
+
+    const TOOLTIP_TEXT = {
+      natphil: "This is the term I am adopting for the philosophy that we do in person, in real time and with others.",
+      natforest: "This is what we're learning, and where we will add things as we go",
+      perma: "This is the big picture, where we will try to pull everything together"
+    };
+
+    const ballTooltip = document.getElementById('ball-tooltip');
+
+    function showBallTooltip(id, e, data) {
+      const titleEl = document.getElementById('tooltip-title');
+      const latinEl = document.getElementById('tooltip-latin');
+      const catEl = document.getElementById('tooltip-category');
+      if (!ballTooltip || !titleEl) return;
+
+      if (data && typeof data === 'object') {
+        titleEl.textContent = data.name || data.title || '';
+        if (latinEl) latinEl.textContent = data.latin || data.botanical || '';
+        if (catEl) catEl.textContent = data.category || data.region || '';
+      } else if (typeof TOOLTIP_TEXT !== 'undefined' && TOOLTIP_TEXT[id]) {
+        titleEl.textContent = TOOLTIP_TEXT[id];
+        if (latinEl) latinEl.textContent = '';
+        if (catEl) catEl.textContent = '';
+      }
+
+      ballTooltip.style.opacity = '1';
+      ballTooltip.classList.remove('hidden');
+
+      let x = null, y = null;
+      if (e && typeof e.clientX === 'number' && isFinite(e.clientX)) {
+        x = e.clientX; 
+        y = e.clientY;
+      } else if (nodes.get(id)) {
+        const node = nodes.get(id);
+        if (node && node.body) {
+          const rect = node.body.getBoundingClientRect();
+          x = rect.left + rect.width / 2;
+          y = rect.top + rect.height / 2;
+        }
+      }
+      if (x !== null && y !== null) positionBallTooltip(x, y);
+    }
+
+    function hideBallTooltip() {
+      if (!ballTooltip) return;
+      ballTooltip.classList.add('hidden');
+      ballTooltip.style.opacity = '0';
+    }
+
+    function positionBallTooltip(x, y) {
+      if (!ballTooltip) return;
+      const pad = 12;
+      const ttW = Math.min(320, window.innerWidth - 2 * pad);
+      let left = x + 14;
+      let top = y + 14;
+      if (left + ttW > window.innerWidth - pad) left = x - ttW - 14;
+      if (top + 60 > window.innerHeight - pad) top = y - 60 - 14;
+      ballTooltip.style.left = left + 'px';
+      ballTooltip.style.top = top + 'px';
+    }
+
+    // Modal Controller
+    const modalBackdrop = document.getElementById('tree-modal');
+    const modalImg = document.getElementById('modal-img');
+    const modalCat = document.getElementById('modal-category');
+    const modalTitle = document.getElementById('modal-title');
+    const modalLatin = document.getElementById('modal-latin');
+    const modalDesc = document.getElementById('modal-desc');
+    const modalLink = document.getElementById('modal-link');
+    const modalClose = document.getElementById('modal-close');
+    let isModalOpen = false;
+
+    function openModal(data) {
+      if (!data) return;
+      if (typeof playWoop === 'function') playWoop();
+      isModalOpen = true;
+      hideBallTooltip();
+      modalImg.src = data.largeImg || data.imgUrl || '';
+      modalCat.textContent = data.category || '';
+      modalTitle.textContent = data.name || data.title || '';
+      modalLatin.textContent = data.latin || '';
+      modalDesc.textContent = data.description || 'Native & Agroforestry key species with integral ecological support functions.';
+      if (data.detailUrl) {
+        modalLink.href = data.detailUrl;
+        modalLink.style.display = 'inline-flex';
+      } else {
+        modalLink.style.display = 'none';
+      }
+      modalBackdrop.classList.add('is-active');
+      modalBackdrop.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeModal() {
+      isModalOpen = false;
+      modalBackdrop.classList.remove('is-active');
+      modalBackdrop.setAttribute('aria-hidden', 'true');
+    }
+
+    modalClose.addEventListener('click', closeModal);
+    modalBackdrop.addEventListener('click', e => {
+      if (e.target === modalBackdrop) closeModal();
+    });
+    window.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && isModalOpen) closeModal();
+    });
+
+    let lastHoverId = null;
+    window.addEventListener('mousemove', e => {
+      if (drag || isModalOpen) return;
+      const el = document.elementFromPoint(e.clientX, e.clientY);
+      if (!el) { if (lastHoverId) { lastHoverId = null; hideBallTooltip(); } return; }
+      const body = el.closest && el.closest('.node__body');
+      if (body && body.dataset && body.dataset.nodeId) {
+        const id = body.dataset.nodeId;
+        if (id !== lastHoverId) {
+          lastHoverId = id;
+          if (nodes.get(id) && nodes.get(id).isRoot) {
+            requestAnimationFrame(() => { showBallTooltip(id, e); });
+          }
+        } else {
+          positionBallTooltip(e.clientX, e.clientY);
+        }
+      } else {
+        if (lastHoverId) { lastHoverId = null; hideBallTooltip(); }
+      }
+    }, { passive: true });
+
+    const PHYS = {
+      repel: 3.2, repelPad: 45,
+      stiffChild: 0.055, stiffRoot: 0.022,
+      gapChild: 56, restRoot: 480,
+      damping: 0.87, maxSpeed: 46,
+      anchorPull: 0.0018, restitution: 0.45, wallPad: 12
+    };
+
+    let screenW = window.innerWidth;
+    let screenH = window.innerHeight;
+    const nodes = new Map();
+    const edges = [];
+    const expanded = new Set();
+    const map = document.getElementById('interactive-map');
+    const svg = document.getElementById('svg-connections');
+    const SVG_NS = 'http://www.w3.org/2000/svg';
+
+    function buildNode(cfg, parentId) {
+      const wrap = document.createElement('div');
+      wrap.className = 'node' + (parentId ? ' is-collapsed' : '');
+      wrap.id = 'node-' + cfg.id;
+      const isRoot = !parentId;
+      const body = document.createElement(isRoot ? 'button' : 'a');
+
+      if (isRoot) {
+        body.type = 'button';
+        body.className = `node__body sphere ${cfg.size} ${cfg.theme}`;
+        body.setAttribute('aria-expanded', 'false');
+        body.setAttribute('aria-label', cfg.aria);
+        body.innerHTML = cfg.html;
+        body.dataset.nodeId = cfg.id;
+      } else {
+        body.href = cfg.href;
+        body.className = `node__body chip ${cfg.chip}`;
+        body.setAttribute('draggable', 'false');
+        body.textContent = cfg.label;
+        body.dataset.nodeId = cfg.id;
+      }
+
+      wrap.appendChild(body);
+      if (parentId) wrap.setAttribute('inert', '');
+      map.appendChild(wrap);
+
+      nodes.set(cfg.id, {
+        id: cfg.id, el: wrap, body,
+        x: 0, y: 0, vx: 0, vy: 0, r: isRoot ? 92 : 24,
+        active: isRoot, isRoot, parent: parentId || null,
+        invMass: isRoot ? 0.45 : 1,
+        anchor: cfg.anchor || null
+      });
+
+      attachPointer(cfg.id, body, wrap, isRoot);
+    }
+
+    GRAPH.forEach(root => {
+      buildNode(root, null);
+      root.children.forEach(child => buildNode(child, root.id));
+      edges.push(...root.children.map(c => ({ from: root.id, to: c.id, kind: 'child' })));
+    });
+
+    edges.push({ from: 'natphil', to: 'perma',     kind: 'root' });
+    edges.push({ from: 'natphil', to: 'natforest', kind: 'root' });
+    edges.push({ from: 'perma',   to: 'natforest', kind: 'thick' });
+
+    edges.forEach(edge => {
+      const path = document.createElementNS(SVG_NS, 'path');
+      path.setAttribute('class', edge.kind === 'thick' ? 'connection-line--thick' : 'connection-line');
+      svg.appendChild(path);
+      edge.pathEl = path;
+    });
+
+    function measureNodes() {
+      nodes.forEach(n => { n.r = Math.max(22, n.body.offsetWidth / 2); });
+    }
+
+    function layoutInitial() {
+      nodes.forEach(n => {
+        if (n.isRoot) {
+          n.x = screenW * n.anchor[0];
+          n.y = screenH * n.anchor[1];
+        } else {
+          const p = nodes.get(n.parent);
+          n.x = p.x; n.y = p.y;
+        }
+        n.vx = n.vy = 0;
+      });
+    }
+
+    function toggleCluster(rootId, silent = false) {
+      const root = nodes.get(rootId);
+      const kids = GRAPH.find(g => g.id === rootId).children.map(c => nodes.get(c.id));
+      const isOpen = expanded.has(rootId);
+      root.body.setAttribute('aria-expanded', String(!isOpen));
+
+      if (isOpen) {
+        if (!silent && typeof playBoing === 'function') playBoing();
+        expanded.delete(rootId);
+        kids.forEach(k => {
+          k.active = false;
+          k.el.classList.add('is-collapsed');
+          k.el.setAttribute('inert', '');
+        });
+        return;
+      }
+
+      if (!silent && typeof playSwish === 'function') playSwish();
+      expanded.add(rootId);
+      kids.forEach((k, i) => {
+        k.active = true;
+        k.x = root.x;
+        k.y = root.y;
+        const spread = (i / kids.length) * Math.PI * 2 + (Math.random() - 0.5) * 0.5;
+        k.vx = Math.cos(spread) * 22;
+        k.vy = Math.sin(spread) * 22;
+        k.el.classList.remove('is-collapsed');
+        k.el.removeAttribute('inert');
+      });
+    }
+
+    let drag = null;
+    let suppressClick = false;
+
+    function attachPointer(id, body, wrap, isRoot) {
+      body.addEventListener('dragstart', e => e.preventDefault());
+
+      body.addEventListener('pointerdown', e => {
+        if (e.button !== 0 && e.pointerType === 'mouse') return;
+        const n = nodes.get(id);
+        suppressClick = false;
+        drag = {
+          id,
+          ox: n.x - e.clientX, oy: n.y - e.clientY,
+          lastX: e.clientX, lastY: e.clientY,
+          startX: e.clientX, startY: e.clientY,
+          moved: false
+        };
+        wrap.classList.add('is-dragging');
+        try { body.setPointerCapture(e.pointerId); } catch (_) {}
+      });
+
+      body.addEventListener('pointermove', e => {
+        if (!drag || drag.id !== id) return;
+        if (!drag.moved && Math.hypot(e.clientX - drag.startX, e.clientY - drag.startY) > 6) {
+          drag.moved = true;
+        }
+        const n = nodes.get(id);
+        n.x = e.clientX + drag.ox;
+        n.y = e.clientY + drag.oy;
+        n.vx = e.clientX - drag.lastX;
+        n.vy = e.clientY - drag.lastY;
+        drag.lastX = e.clientX;
+        drag.lastY = e.clientY;
+      });
+
+      const endDrag = e => {
+        if (!drag || drag.id !== id) return;
+        suppressClick = drag.moved;
+        wrap.classList.remove('is-dragging');
+        try { body.releasePointerCapture(e.pointerId); } catch (_) {}
+        drag = null;
+      };
+
+      body.addEventListener('pointerup', endDrag);
+      body.addEventListener('pointercancel', endDrag);
+
+      body.addEventListener('click', e => {
+        e.stopPropagation();
+        if (suppressClick) {
+          e.preventDefault();
+          suppressClick = false;
+          return;
+        }
+        if (isRoot) {
+          e.preventDefault();
+          toggleCluster(id);
+        } else {
+          if (typeof playWoop === 'function') playWoop();
+        }
+      });
+    }
+
+    function restLength(edge, a, b) {
+      if (edge.kind === 'child') return a.r + b.r + PHYS.gapChild;
+      if (edge.kind === 'thick') return 520;
+      return 420;
+    }
+
+    function simulate(dt) {
+      if (isModalOpen) return;
+      const list = [...nodes.values()].filter(n => n.active);
+
+      for (let i = 0; i < list.length; i++) {
+        for (let j = i + 1; j < list.length; j++) {
+          const a = list[i], b = list[j];
+          const dx = b.x - a.x, dy = b.y - a.y;
+          const dist = Math.hypot(dx, dy) || 0.01;
+          const minDist = a.r + b.r + PHYS.repelPad;
+          if (dist >= minDist) continue;
+          const f = ((minDist - dist) / minDist) * PHYS.repel * dt;
+          const nx = dx / dist, ny = dy / dist;
+          if (!drag || drag.id !== a.id) { a.vx -= nx * f * a.invMass; a.vy -= ny * f * a.invMass; }
+          if (!drag || drag.id !== b.id) { b.vx += nx * f * b.invMass; b.vy += ny * f * b.invMass; }
+        }
+      }
+
+      edges.forEach(edge => {
+        const a = nodes.get(edge.from), b = nodes.get(edge.to);
+        if (!a.active || !b.active) return;
+        const dx = b.x - a.x, dy = b.y - a.y;
+        const dist = Math.hypot(dx, dy) || 0.01;
+        const stiff = edge.kind === 'root' ? PHYS.stiffRoot : PHYS.stiffChild;
+        const f = (dist - restLength(edge, a, b)) * stiff * dt;
+        const fx = (dx / dist) * f, fy = (dy / dist) * f;
+        if (!drag || drag.id !== a.id) { a.vx += fx * a.invMass; a.vy += fy * a.invMass; }
+        if (!drag || drag.id !== b.id) { b.vx -= fx * b.invMass; b.vy -= fy * b.invMass; }
+      });
+
+      const damp = Math.pow(PHYS.damping, dt);
+      list.forEach(n => {
+        if (drag && drag.id === n.id) return;
+        if (n.isRoot) {
+          n.vx += (screenW * n.anchor[0] - n.x) * PHYS.anchorPull * dt;
+          n.vy += (screenH * n.anchor[1] - n.y) * PHYS.anchorPull * dt;
+        }
+        n.vx *= damp;
+        n.vy *= damp;
+        const speed = Math.hypot(n.vx, n.vy);
+        if (speed > PHYS.maxSpeed) {
+          n.vx = (n.vx / speed) * PHYS.maxSpeed;
+          n.vy = (n.vy / speed) * PHYS.maxSpeed;
+        }
+        n.x += n.vx * dt;
+        n.y += n.vy * dt;
+
+        const pad = n.r + PHYS.wallPad;
+        if (n.x < pad)                { n.x = pad;                n.vx = Math.abs(n.vx) * PHYS.restitution; }
+        else if (n.x > screenW - pad) { n.x = screenW - pad;     n.vx = -Math.abs(n.vx) * PHYS.restitution; }
+        if (n.y < pad)                { n.y = pad;                n.vy = Math.abs(n.vy) * PHYS.restitution; }
+        else if (n.y > screenH - pad) { n.y = screenH - pad;     n.vy = -Math.abs(n.vy) * PHYS.restitution; }
+      });
+    }
+
+    function renderGraph() {
+      nodes.forEach(n => {
+        n.el.style.transform = `translate3d(${n.x}px, ${n.y}px, 0)`;
+      });
+
+      edges.forEach(edge => {
+        const a = nodes.get(edge.from);
+        const b = nodes.get(edge.to);
+
+        if (!a || !b || !a.active || !b.active) {
+          edge.pathEl.style.display = 'none';
+          return;
+        }
+
+        const dx = b.x - a.x;
+        const dy = b.y - a.y;
+        const dist = Math.hypot(dx, dy) || 1;
+        const nx = dx / dist;
+        const ny = dy / dist;
+
+        const startX = a.x + nx * Math.min(a.r - 2, dist * 0.4);
+        const startY = a.y + ny * Math.min(a.r - 2, dist * 0.4);
+        const endX   = b.x - nx * Math.min(b.r - 2, dist * 0.4);
+        const endY   = b.y - ny * Math.min(b.r - 2, dist * 0.4);
+
+        edge.pathEl.style.display = 'block';
+        edge.pathEl.setAttribute('d', `M ${startX} ${startY} L ${endX} ${endY}`);
+      });
+    }
+
+    const flagsDb = [
+      { 
+        name: "Wales", 
+        latin: "Cymru / Wales", 
+        category: "National Flag", 
+        imgUrl: "https://flagcdn.com/w160/gb-wls.png",
+        largeImg: "https://flagcdn.com/w640/gb-wls.png",
+        description: "Y Ddraig Goch (The Red Dragon) of Wales, reflecting the Atlantic temperate rainforests of the Dyfi Biosphere.",
+        detailUrl: "https://en.wikipedia.org/wiki/Flag_of_Wales"
+      }
+    ];
+
+    const treesDb = [
+      { 
+        name: "Sessile Oak", 
+        latin: "Quercus petraea (Deri)", 
+        category: "Welsh Rainforest", 
+        imgUrl: "https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?auto=format&fit=crop&w=160&q=80",
+        largeImg: "https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?auto=format&fit=crop&w=1200&q=85",
+        description: "The primary native canopy tree of upland Welsh temperate rainforests, hosting hundreds of epiphytic lichens, bryophytes, and insect communities.",
+        detailUrl: "https://www.woodlandtrust.org.uk/trees-woods-and-wildlife/british-trees/a-z-of-british-trees/sessile-oak/"
+      },
+      { 
+        name: "Scots Pine", 
+        latin: "Pinus sylvestris", 
+        category: "Welsh Native", 
+        imgUrl: "https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?auto=format&fit=crop&w=160&q=80",
+        largeImg: "https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?auto=format&fit=crop&w=1200&q=85",
+        description: "An ancient native conifer capable of thriving on poor upland soils, providing crucial shelter and habitat for biodiversity.",
+        detailUrl: "https://www.woodlandtrust.org.uk/trees-woods-and-wildlife/british-trees/a-z-of-british-trees/scots-pine/"
+      },
+      { 
+        name: "Silver Birch", 
+        latin: "Betula pendula (Bedwen)", 
+        category: "Welsh Pioneer", 
+        imgUrl: "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=160&q=80",
+        largeImg: "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1200&q=85",
+        description: "Fast-growing light-demanding pioneer tree that enriches soil structure and prepares clearings for climax broadleaf succession.",
+        detailUrl: "https://www.woodlandtrust.org.uk/trees-woods-and-wildlife/british-trees/a-z-of-british-trees/silver-birch/"
+      },
+      { 
+        name: "Rowan / Mountain Ash", 
+        latin: "Sorbus aucuparia (Cerddinen)", 
+        category: "Welsh Upland", 
+        imgUrl: "https://images.unsplash.com/photo-1473448912268-2022ce9509d8?auto=format&fit=crop&w=160&q=80",
+        largeImg: "https://images.unsplash.com/photo-1473448912268-2022ce9509d8?auto=format&fit=crop&w=1200&q=85",
+        description: "Hardy high-altitude tree celebrated in Celtic folklore; produces nutrient-rich red autumn berries vital for resident and migratory birds.",
+        detailUrl: "https://www.woodlandtrust.org.uk/trees-woods-and-wildlife/british-trees/a-z-of-british-trees/rowan/"
+      },
+      // South American Species (Useful Tropical Plants Database)
       { 
         name: "Ice Cream Bean", 
         latin: "Inga edulis (Guaba)", 
@@ -35,3 +776,241 @@
         description: "Drought-tolerant Andean tree celebrated for aromatic leaves, soil conservation on dry slopes, and culinary pink peppercorn berries.",
         detailUrl: "https://tropical.theferns.info/viewtropical.php?id=Schinus+molle"
       }
+    ];
+
+    const preloaded = {};
+    function preload(url) {
+      if (!preloaded[url]) {
+        const img = new Image();
+        img.decoding = 'async';
+        img.src = url;
+        preloaded[url] = img;
+      }
+      return preloaded[url];
+    }
+    [...flagsDb, ...treesDb].forEach(d => {
+      preload(d.imgUrl);
+      if (d.largeImg) preload(d.largeImg);
+    });
+
+    const canvas = document.getElementById('canvas-bg');
+    const ctx = canvas.getContext('2d');
+    let cw = window.innerWidth, ch = window.innerHeight;
+
+    function sizeCanvas() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      cw = window.innerWidth;
+      ch = window.innerHeight;
+      canvas.width = Math.round(cw * dpr);
+      canvas.height = Math.round(ch * dpr);
+      canvas.style.width = cw + 'px';
+      canvas.style.height = ch + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    const speedLevels = [
+      { label: 'Stopped',    mult: 0.0 },
+      { label: 'Slow Float', mult: 0.4 },
+      { label: 'Moderate',   mult: 1.0 }
+    ];
+    let speedIndex = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 1 : 2;
+
+    class Ball {
+      constructor() {
+        this.radius = Math.random() * 8 + 22;
+        this.mass = this.radius;
+        this.x = Math.random() * (cw - this.radius * 2) + this.radius;
+        this.y = Math.random() * (ch - this.radius * 2) + this.radius;
+        const a = Math.random() * Math.PI * 2;
+        const s = Math.random() * 1.5 + 1.2;
+        this.vx = Math.cos(a) * s;
+        this.vy = Math.sin(a) * s;
+        this.data = Math.random() < 0.12
+          ? flagsDb[Math.floor(Math.random() * flagsDb.length)]
+          : treesDb[Math.floor(Math.random() * treesDb.length)];
+        this.img = preload(this.data.imgUrl);
+      }
+      update(dt) {
+        if (isModalOpen) return;
+        const m = speedLevels[speedIndex].mult;
+        if (m === 0) return;
+        this.x += this.vx * m * dt;
+        this.y += this.vy * m * dt;
+        if (this.x - this.radius <= 0)       { this.x = this.radius;      this.vx = Math.abs(this.vx); }
+        else if (this.x + this.radius >= cw) { this.x = cw - this.radius; this.vx = -Math.abs(this.vx); }
+        if (this.y - this.radius <= 0)       { this.y = this.radius;      this.vy = Math.abs(this.vy); }
+        else if (this.y + this.radius >= ch) { this.y = ch - this.radius; this.vy = -Math.abs(this.vy); }
+      }
+      draw() {
+        if (!this.img || !this.img.complete || !this.img.naturalWidth) return;
+        ctx.save();
+        ctx.globalAlpha = 0.95;
+
+        const w = this.radius * 2.3;
+        const h = this.radius * 1.65;
+        const x = this.x - w / 2;
+        const y = this.y - h / 2;
+
+        ctx.fillStyle = '#ffffff';
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.16)';
+        ctx.shadowBlur = 8;
+        ctx.shadowOffsetY = 2;
+        ctx.fillRect(x, y, w, h);
+
+        ctx.shadowColor = 'transparent';
+        ctx.drawImage(this.img, x + 3, y + 3, w - 6, h - 6);
+
+        ctx.lineWidth = 2.0;
+        ctx.strokeStyle = this.data.category === 'National Flag' ? '#dc2626' : '#059669';
+        ctx.strokeRect(x, y, w, h);
+
+        ctx.restore();
+      }
+    }
+
+    sizeCanvas();
+    const balls = Array.from({ length: 24 }, () => new Ball());
+
+    function resolveBallCollisions() {
+      if (isModalOpen || speedLevels[speedIndex].mult === 0) return;
+      for (let i = 0; i < balls.length; i++) {
+        for (let j = i + 1; j < balls.length; j++) {
+          const b1 = balls[i], b2 = balls[j];
+          const dx = b2.x - b1.x, dy = b2.y - b1.y;
+          const dist = Math.hypot(dx, dy);
+          if (dist >= b1.radius + b2.radius) continue;
+          const overlap = b1.radius + b2.radius - dist;
+          const nx = dx / (dist || 1), ny = dy / (dist || 1);
+          b1.x -= nx * overlap * 0.5; b1.y -= ny * overlap * 0.5;
+          b2.x += nx * overlap * 0.5; b2.y += ny * overlap * 0.5;
+          const kx = b1.vx - b2.vx, ky = b1.vy - b2.vy;
+          const p = 2 * (nx * kx + ny * ky) / (b1.mass + b2.mass);
+          b1.vx -= p * b2.mass * nx; b1.vy -= p * b2.mass * ny;
+          b2.vx += p * b1.mass * nx; b2.vy += p * b1.mass * ny;
+        }
+      }
+    }
+
+    let lastFrame = performance.now();
+
+    function frame(now) {
+      let dt = (now - lastFrame) / 16.6667;
+      lastFrame = now;
+      dt = Math.max(0.2, Math.min(dt, 3));
+
+      ctx.clearRect(0, 0, cw, ch);
+      resolveBallCollisions();
+      balls.forEach(b => { b.update(dt); b.draw(); });
+      simulate(dt);
+      renderGraph();
+      requestAnimationFrame(frame);
+    }
+
+    measureNodes();
+    layoutInitial();
+    renderGraph();
+    requestAnimationFrame(frame);
+
+    // Initial Bloom & Retract
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        ['natphil', 'perma', 'natforest'].forEach((id, idx) => {
+          setTimeout(() => {
+            if (!expanded.has(id)) toggleCluster(id, true);
+          }, idx * 160);
+        });
+
+        setTimeout(() => {
+          ['natphil', 'perma', 'natforest'].forEach((id, idx) => {
+            setTimeout(() => {
+              if (expanded.has(id)) toggleCluster(id, true);
+            }, idx * 120);
+          });
+        }, 1800);
+      }, 500);
+    });
+
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      screenW = window.innerWidth;
+      screenH = window.innerHeight;
+      sizeCanvas();
+      balls.forEach(b => {
+        b.x = Math.min(Math.max(b.x, b.radius), cw - b.radius);
+        b.y = Math.min(Math.max(b.y, b.radius), ch - b.radius);
+      });
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(measureNodes, 120);
+    });
+
+    window.addEventListener('mousemove', e => {
+      if (drag || isModalOpen) { hideBallTooltip(); return; }
+      
+      const el = document.elementFromPoint(e.clientX, e.clientY);
+      const body = el && el.closest && el.closest('.node__body');
+      if (body && body.dataset && body.dataset.nodeId) {
+        return;
+      }
+
+      let hit = null;
+      for (let i = balls.length - 1; i >= 0; i--) {
+        if (Math.hypot(balls[i].x - e.clientX, balls[i].y - e.clientY) <= balls[i].radius) {
+          hit = balls[i];
+          break;
+        }
+      }
+      
+      if (hit) {
+        showBallTooltip(null, e, hit.data);
+      } else {
+        hideBallTooltip();
+      }
+    });
+
+    function cycleSpeed(e) {
+      if (typeof playBoing === 'function') playBoing();
+      speedIndex = (speedIndex + 1) % speedLevels.length;
+      const speedIndicator = document.getElementById('speed-indicator');
+      if (speedIndicator) {
+        speedIndicator.textContent = speedLevels[speedIndex].label;
+      }
+      if (e) {
+        balls.forEach(b => {
+          const dx = b.x - e.clientX, dy = b.y - e.clientY;
+          const dist = Math.hypot(dx, dy) || 1;
+          const force = Math.min(15, 250 / dist);
+          b.vx += (dx / dist) * force;
+          b.vy += (dy / dist) * force;
+        });
+      }
+    }
+
+    const speedPill = document.getElementById('speed-toggle-pill');
+    if (speedPill) {
+      speedPill.addEventListener('click', e => {
+        e.stopPropagation();
+        cycleSpeed(e);
+      });
+    }
+
+    window.addEventListener('click', e => {
+      if (isModalOpen || e.target.closest('.node') || e.target.closest('.tree-modal-card') || e.target.closest('#speed-toggle-pill')) return;
+
+      let clickedBall = null;
+      for (let i = balls.length - 1; i >= 0; i--) {
+        if (Math.hypot(balls[i].x - e.clientX, balls[i].y - e.clientY) <= balls[i].radius) {
+          clickedBall = balls[i];
+          break;
+        }
+      }
+
+      if (clickedBall && clickedBall.data) {
+        openModal(clickedBall.data);
+        return;
+      }
+
+      cycleSpeed(e);
+    });
+  </script>
+</body>
+</html>
