@@ -5,6 +5,117 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Natural Philosophy : Natural Forestry</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    /* Modal Backdrop & Overlay */
+    .tree-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease-out;
+    }
+    .tree-modal-backdrop.is-active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .tree-modal-card {
+      background: #ffffff;
+      border-radius: 20px;
+      max-width: 460px;
+      width: 100%;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+      border: 1.5px solid #059669;
+      overflow: hidden;
+      transform: scale(0.95);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .tree-modal-backdrop.is-active .tree-modal-card {
+      transform: scale(1);
+    }
+    .tree-modal-image {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      background-color: #f1f5f9;
+    }
+    .tree-modal-body {
+      padding: 1.5rem;
+    }
+    .tree-modal-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #047857;
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      margin-bottom: 0.5rem;
+    }
+    .tree-modal-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin: 0;
+      line-height: 1.2;
+    }
+    .tree-modal-latin {
+      font-size: 0.95rem;
+      font-style: italic;
+      color: #059669;
+      margin-top: 0.25rem;
+      margin-bottom: 0.85rem;
+    }
+    .tree-modal-desc {
+      font-size: 0.875rem;
+      line-height: 1.55;
+      color: #475569;
+      margin-bottom: 1.25rem;
+    }
+    .tree-modal-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 1rem;
+    }
+    .tree-modal-link {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #059669;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .tree-modal-link:hover {
+      text-decoration: underline;
+    }
+    .tree-modal-close-btn {
+      background: #f1f5f9;
+      border: none;
+      color: #475569;
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .tree-modal-close-btn:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+  </style>
 </head>
 <body>
 
@@ -12,17 +123,33 @@
   <header class="ui-header">
     <h1 class="ui-header__title">Natural Philosophy : Natural Forestry</h1>
     <p class="ui-header__desc">
-      Click a root sphere to <strong>expand / collapse</strong> its subfolders. Drag any sphere to stretch the elastic
-      network. Click the canvas to cycle speed:
+      Click a root sphere to <strong>expand / collapse</strong> branches. Click any floating tree for detailed botanical data. Click empty canvas space to cycle speed:
       <span id="speed-indicator" class="speed-badge">Moderate</span>
     </p>
   </header>
 
-  <!-- Species Tooltip -->
+  <!-- Species Hover Tooltip -->
   <div id="ball-tooltip" class="hidden">
     <div id="tooltip-title" class="tooltip-title"></div>
     <div id="tooltip-latin" class="tooltip-latin"></div>
     <div id="tooltip-category" class="tooltip-cat"></div>
+  </div>
+
+  <!-- Detail Modal Card -->
+  <div id="tree-modal" class="tree-modal-backdrop" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="tree-modal-card">
+      <img id="modal-img" class="tree-modal-image" src="" alt="Botanical Photograph">
+      <div class="tree-modal-body">
+        <span id="modal-category" class="tree-modal-badge">Category</span>
+        <h2 id="modal-title" class="tree-modal-title">Common Name</h2>
+        <div id="modal-latin" class="tree-modal-latin">Scientific Name</div>
+        <p id="modal-desc" class="tree-modal-desc">Description of species.</p>
+        <div class="tree-modal-footer">
+          <a id="modal-link" class="tree-modal-link" href="#" target="_blank" rel="noopener noreferrer">Database Profile →</a>
+          <button id="modal-close" class="tree-modal-close-btn" type="button">Close</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Background Canvas -->
@@ -143,9 +270,53 @@
       ballTooltip.style.top = top + 'px';
     }
 
+    // Modal Controller
+    const modalBackdrop = document.getElementById('tree-modal');
+    const modalImg = document.getElementById('modal-img');
+    const modalCat = document.getElementById('modal-category');
+    const modalTitle = document.getElementById('modal-title');
+    const modalLatin = document.getElementById('modal-latin');
+    const modalDesc = document.getElementById('modal-desc');
+    const modalLink = document.getElementById('modal-link');
+    const modalClose = document.getElementById('modal-close');
+    let isModalOpen = false;
+
+    function openModal(data) {
+      if (!data) return;
+      isModalOpen = true;
+      hideBallTooltip();
+      modalImg.src = data.largeImg || data.imgUrl || '';
+      modalCat.textContent = data.category || '';
+      modalTitle.textContent = data.name || data.title || '';
+      modalLatin.textContent = data.latin || '';
+      modalDesc.textContent = data.description || 'Native & Agroforestry key species with integral ecological support functions.';
+      if (data.detailUrl) {
+        modalLink.href = data.detailUrl;
+        modalLink.style.display = 'inline-flex';
+      } else {
+        modalLink.style.display = 'none';
+      }
+      modalBackdrop.classList.add('is-active');
+      modalBackdrop.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeModal() {
+      isModalOpen = false;
+      modalBackdrop.classList.remove('is-active');
+      modalBackdrop.setAttribute('aria-hidden', 'true');
+    }
+
+    modalClose.addEventListener('click', closeModal);
+    modalBackdrop.addEventListener('click', e => {
+      if (e.target === modalBackdrop) closeModal();
+    });
+    window.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && isModalOpen) closeModal();
+    });
+
     let lastHoverId = null;
     window.addEventListener('mousemove', e => {
-      if (drag) return;
+      if (drag || isModalOpen) return;
       const el = document.elementFromPoint(e.clientX, e.clientY);
       if (!el) { if (lastHoverId) { lastHoverId = null; hideBallTooltip(); } return; }
       const body = el.closest && el.closest('.node__body');
@@ -348,6 +519,7 @@
     }
 
     function simulate(dt) {
+      if (isModalOpen) return;
       const list = [...nodes.values()].filter(n => n.active);
 
       for (let i = 0; i < list.length; i++) {
@@ -432,21 +604,90 @@
     }
 
     const flagsDb = [
-      { name: "Wales",     latin: "Cymru / Wales",                     category: "Flag", imgUrl: "https://flagcdn.com/w160/gb-wls.png" }
+      { 
+        name: "Wales", 
+        latin: "Cymru / Wales", 
+        category: "National Flag", 
+        imgUrl: "https://flagcdn.com/w160/gb-wls.png",
+        largeImg: "https://flagcdn.com/w640/gb-wls.png",
+        description: "Y Ddraig Goch (The Red Dragon) of Wales, reflecting the Atlantic temperate rainforests of the Dyfi Biosphere.",
+        detailUrl: "https://en.wikipedia.org/wiki/Flag_of_Wales"
+      }
     ];
 
     const treesDb = [
-      // Welsh Native Species
-      { name: "Sessile Oak", latin: "Quercus petraea (Deri)", category: "Welsh Rainforest", imgUrl: "https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?auto=format&fit=crop&w=160&q=80" },
-      { name: "Scots Pine", latin: "Pinus sylvestris", category: "Welsh Native", imgUrl: "https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?auto=format&fit=crop&w=160&q=80" },
-      { name: "Silver Birch", latin: "Betula pendula (Bedwen)", category: "Welsh Pioneer", imgUrl: "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=160&q=80" },
-      { name: "Rowan / Mountain Ash", latin: "Sorbus aucuparia (Cerddinen)", category: "Welsh Upland", imgUrl: "https://images.unsplash.com/photo-1473448912268-2022ce9509d8?auto=format&fit=crop&w=160&q=80" },
-
-      // South American Species
-      { name: "Ice Cream Bean", latin: "Inga edulis (Guaba)", category: "Amazon Agroforestry", imgUrl: "https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=160&q=80" },
-      { name: "Brazil Nut Tree", latin: "Bertholletia excelsa (Castanheira)", category: "Amazon Canopy", imgUrl: "https://images.unsplash.com/photo-1426604966848-d7adac402bff?auto=format&fit=crop&w=160&q=80" },
-      { name: "Paraná Pine", latin: "Araucaria angustifolia (Curi)", category: "Atlantic Rainforest", imgUrl: "https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?auto=format&fit=crop&w=160&q=80" },
-      { name: "Pink Peppercorn", latin: "Schinus molle (Aguaribay)", category: "Andean Slope", imgUrl: "https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?auto=format&fit=crop&w=160&q=80" }
+      { 
+        name: "Sessile Oak", 
+        latin: "Quercus petraea (Deri)", 
+        category: "Welsh Rainforest", 
+        imgUrl: "https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?auto=format&fit=crop&w=160&q=80",
+        largeImg: "https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?auto=format&fit=crop&w=1200&q=85",
+        description: "The primary native canopy tree of upland Welsh temperate rainforests, hosting hundreds of epiphytic lichens, bryophytes, and insect communities.",
+        detailUrl: "https://www.woodlandtrust.org.uk/trees-woods-and-wildlife/british-trees/a-z-of-british-trees/sessile-oak/"
+      },
+      { 
+        name: "Scots Pine", 
+        latin: "Pinus sylvestris", 
+        category: "Welsh Native", 
+        imgUrl: "https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?auto=format&fit=crop&w=160&q=80",
+        largeImg: "https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?auto=format&fit=crop&w=1200&q=85",
+        description: "An ancient native conifer capable of thriving on poor upland soils, providing crucial shelter and habitat for biodiversity.",
+        detailUrl: "https://www.woodlandtrust.org.uk/trees-woods-and-wildlife/british-trees/a-z-of-british-trees/scots-pine/"
+      },
+      { 
+        name: "Silver Birch", 
+        latin: "Betula pendula (Bedwen)", 
+        category: "Welsh Pioneer", 
+        imgUrl: "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=160&q=80",
+        largeImg: "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1200&q=85",
+        description: "Fast-growing light-demanding pioneer tree that enriches soil structure and prepares clearings for climax broadleaf succession.",
+        detailUrl: "https://www.woodlandtrust.org.uk/trees-woods-and-wildlife/british-trees/a-z-of-british-trees/silver-birch/"
+      },
+      { 
+        name: "Rowan / Mountain Ash", 
+        latin: "Sorbus aucuparia (Cerddinen)", 
+        category: "Welsh Upland", 
+        imgUrl: "https://images.unsplash.com/photo-1473448912268-2022ce9509d8?auto=format&fit=crop&w=160&q=80",
+        largeImg: "https://images.unsplash.com/photo-1473448912268-2022ce9509d8?auto=format&fit=crop&w=1200&q=85",
+        description: "Hardy high-altitude tree celebrated in Celtic folklore; produces nutrient-rich red autumn berries vital for resident and migratory birds.",
+        detailUrl: "https://www.woodlandtrust.org.uk/trees-woods-and-wildlife/british-trees/a-z-of-british-trees/rowan/"
+      },
+      { 
+        name: "Ice Cream Bean", 
+        latin: "Inga edulis (Guaba)", 
+        category: "Amazon Agroforestry", 
+        imgUrl: "https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=160&q=80",
+        largeImg: "https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=1200&q=85",
+        description: "Fast-growing leguminous canopy tree used in syntropic agroforestry systems for heavy biomass production, deep taproots, and active nitrogen fixation.",
+        detailUrl: "https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:500966-1"
+      },
+      { 
+        name: "Brazil Nut Tree", 
+        latin: "Bertholletia excelsa (Castanheira)", 
+        category: "Amazon Canopy", 
+        imgUrl: "https://images.unsplash.com/photo-1426604966848-d7adac402bff?auto=format&fit=crop&w=160&q=80",
+        largeImg: "https://images.unsplash.com/photo-1426604966848-d7adac402bff?auto=format&fit=crop&w=1200&q=85",
+        description: "One of the largest emergent trees of the Amazon rainforest, dependent on pristine primary forest networks and specialized native bee pollinators.",
+        detailUrl: "https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:591456-1"
+      },
+      { 
+        name: "Paraná Pine", 
+        latin: "Araucaria angustifolia (Curi)", 
+        category: "Atlantic Rainforest", 
+        imgUrl: "https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?auto=format&fit=crop&w=160&q=80",
+        largeImg: "https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?auto=format&fit=crop&w=1200&q=85",
+        description: "Critically endangered evergreen conifer of the southern Brazilian highlands; an essential keystone species providing edible pine nuts (pinhão).",
+        detailUrl: "https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:261681-1"
+      },
+      { 
+        name: "Pink Peppercorn", 
+        latin: "Schinus molle (Aguaribay)", 
+        category: "Andean Slope", 
+        imgUrl: "https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?auto=format&fit=crop&w=160&q=80",
+        largeImg: "https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?auto=format&fit=crop&w=1200&q=85",
+        description: "Drought-tolerant Andean tree celebrated for aromatic leaves, soil conservation on dry slopes, and culinary pink peppercorn berries.",
+        detailUrl: "https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:70685-1"
+      }
     ];
 
     const preloaded = {};
@@ -459,7 +700,10 @@
       }
       return preloaded[url];
     }
-    [...flagsDb, ...treesDb].forEach(d => preload(d.imgUrl));
+    [...flagsDb, ...treesDb].forEach(d => {
+      preload(d.imgUrl);
+      if (d.largeImg) preload(d.largeImg);
+    });
 
     const canvas = document.getElementById('canvas-bg');
     const ctx = canvas.getContext('2d');
@@ -485,7 +729,6 @@
 
     class Ball {
       constructor() {
-        // Scaled up by 1.333x (approx 24px to 35px radius)
         this.radius = (Math.random() * 8 + 18) * 1.333;
         this.mass = this.radius;
         this.x = Math.random() * (cw - this.radius * 2) + this.radius;
@@ -500,6 +743,7 @@
         this.img = preload(this.data.imgUrl);
       }
       update(dt) {
+        if (isModalOpen) return;
         const m = speedLevels[speedIndex].mult;
         if (m === 0) return;
         this.x += this.vx * m * dt;
@@ -514,8 +758,7 @@
         ctx.save();
         ctx.globalAlpha = 0.85;
 
-        // Uncontained image sprites (1.333x scale, no clipping path or border stroke)
-        if (this.data.category === 'Flag') {
+        if (this.data.category === 'National Flag') {
           const w = this.radius * 2.2;
           const h = this.radius * 1.46;
           ctx.drawImage(this.img, this.x - w / 2, this.y - h / 2, w, h);
@@ -532,7 +775,7 @@
     const balls = Array.from({ length: 28 }, () => new Ball());
 
     function resolveBallCollisions() {
-      if (speedLevels[speedIndex].mult === 0) return;
+      if (isModalOpen || speedLevels[speedIndex].mult === 0) return;
       for (let i = 0; i < balls.length; i++) {
         for (let j = i + 1; j < balls.length; j++) {
           const b1 = balls[i], b2 = balls[j];
@@ -585,7 +828,7 @@
     });
 
     window.addEventListener('mousemove', e => {
-      if (drag) { hideBallTooltip(); return; }
+      if (drag || isModalOpen) { hideBallTooltip(); return; }
       
       const el = document.elementFromPoint(e.clientX, e.clientY);
       const body = el && el.closest && el.closest('.node__body');
@@ -614,7 +857,23 @@
     }
 
     window.addEventListener('click', e => {
-      if (e.target.closest('.node')) return;
+      if (isModalOpen || e.target.closest('.node') || e.target.closest('.tree-modal-card')) return;
+
+      // 1. Check if a floating tree or flag sprite was clicked
+      let clickedBall = null;
+      for (let i = balls.length - 1; i >= 0; i--) {
+        if (Math.hypot(balls[i].x - e.clientX, balls[i].y - e.clientY) <= balls[i].radius) {
+          clickedBall = balls[i];
+          break;
+        }
+      }
+
+      if (clickedBall && clickedBall.data) {
+        openModal(clickedBall.data);
+        return;
+      }
+
+      // 2. Empty space click: cycle floating speed and deflect
       speedIndex = (speedIndex + 1) % speedLevels.length;
       if (speedIndicator) {
         speedIndicator.textContent = speedLevels[speedIndex].label;
