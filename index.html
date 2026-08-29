@@ -432,10 +432,6 @@
     }
 
     const flagsDb = [
-      { name: "Brazil",    latin: "República Federativa do Brasil",    category: "Flag", imgUrl: "https://flagcdn.com/w160/br.png" },
-      { name: "Peru",      latin: "República del Perú",                category: "Flag", imgUrl: "https://flagcdn.com/w160/pe.png" },
-      { name: "Argentina", latin: "República Argentina",               category: "Flag", imgUrl: "https://flagcdn.com/w160/ar.png" },
-      { name: "Bolivia",   latin: "Estado Plurinacional de Bolivia",   category: "Flag", imgUrl: "https://flagcdn.com/w160/bo.png" },
       { name: "Wales",     latin: "Cymru / Wales",                     category: "Flag", imgUrl: "https://flagcdn.com/w160/gb-wls.png" }
     ];
 
@@ -489,7 +485,8 @@
 
     class Ball {
       constructor() {
-        this.radius = Math.random() * 8 + 18;
+        // Scaled up by 1.333x (approx 24px to 35px radius)
+        this.radius = (Math.random() * 8 + 18) * 1.333;
         this.mass = this.radius;
         this.x = Math.random() * (cw - this.radius * 2) + this.radius;
         this.y = Math.random() * (ch - this.radius * 2) + this.radius;
@@ -497,7 +494,7 @@
         const s = Math.random() * 1.5 + 1.2;
         this.vx = Math.cos(a) * s;
         this.vy = Math.sin(a) * s;
-        this.data = Math.random() < 0.25
+        this.data = Math.random() < 0.12
           ? flagsDb[Math.floor(Math.random() * flagsDb.length)]
           : treesDb[Math.floor(Math.random() * treesDb.length)];
         this.img = preload(this.data.imgUrl);
@@ -513,28 +510,26 @@
         else if (this.y + this.radius >= ch) { this.y = ch - this.radius; this.vy = -Math.abs(this.vy); }
       }
       draw() {
+        if (!this.img || !this.img.complete || !this.img.naturalWidth) return;
         ctx.save();
-        ctx.globalAlpha = 0.65;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.clip();
-        if (this.img && this.img.complete && this.img.naturalWidth) {
-          ctx.drawImage(this.img, this.x - this.radius, this.y - this.radius, this.radius * 2, this.radius * 2);
+        ctx.globalAlpha = 0.85;
+
+        // Uncontained image sprites (1.333x scale, no clipping path or border stroke)
+        if (this.data.category === 'Flag') {
+          const w = this.radius * 2.2;
+          const h = this.radius * 1.46;
+          ctx.drawImage(this.img, this.x - w / 2, this.y - h / 2, w, h);
         } else {
-          ctx.fillStyle = '#cbd5e1';
-          ctx.fill();
+          const size = this.radius * 2.0;
+          ctx.drawImage(this.img, this.x - size / 2, this.y - size / 2, size, size);
         }
+
         ctx.restore();
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.lineWidth = 1.5;
-        ctx.strokeStyle = this.data.category.includes('Welsh') ? '#16a34a' : 'rgba(148,163,184,.5)';
-        ctx.stroke();
       }
     }
 
     sizeCanvas();
-    const balls = Array.from({ length: 32 }, () => new Ball());
+    const balls = Array.from({ length: 28 }, () => new Ball());
 
     function resolveBallCollisions() {
       if (speedLevels[speedIndex].mult === 0) return;
@@ -595,7 +590,7 @@
       const el = document.elementFromPoint(e.clientX, e.clientY);
       const body = el && el.closest && el.closest('.node__body');
       if (body && body.dataset && body.dataset.nodeId) {
-        return; // Handled by node pointer hover listener
+        return;
       }
 
       let hit = null;
