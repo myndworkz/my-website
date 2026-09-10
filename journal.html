@@ -65,96 +65,50 @@
 
       <!-- Left Sidebar Accordion: Journal Timeline -->
       <div class="w-full max-w-sm bg-white/95 border-2 border-emerald-500/20 rounded-2xl shadow-xl p-6 relative">
-        <div class="absolute -top-3 -right-3 w-8 h-8 bg-emerald-200 rounded-full border border-emerald-400 flex items-center justify-center transform rotate-12 font-black text-xs text-emerald-900 shadow">
-          🧭
-        </div>
-        
         <h3 class="text-lg font-black text-stone-800 border-b-2 border-dashed border-stone-200 pb-3 mb-4 flex items-center">
           <span class="inline-block w-3 h-3 rounded-full bg-emerald-600 mr-2 shadow-sm"></span>
-          Chronicle Index
+          Journal Entries
         </h3>
         
         <div class="space-y-3">
-          <!-- Accordion 1: Page 1 -->
-          <button onclick="toggleSection('page1')" class="w-full text-left p-3 rounded-xl border border-stone-200 hover:border-emerald-400 bg-stone-50/50 hover:bg-emerald-50/50 transition-all flex items-center justify-between group focus:outline-none">
-            <div class="flex items-center space-x-3">
-              <div class="w-8 h-8 rounded-full bg-emerald-700 text-white flex items-center justify-center font-bold text-xs">P1</div>
-              <div>
-                <h4 class="font-bold text-stone-800 text-sm">August 2026</h4>
-                <p class="text-[10px] text-stone-500">London Preparation &amp; COP 30</p>
-              </div>
-            </div>
-            <svg id="chevron-page1" class="w-4 h-4 text-stone-400 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
+          <button onclick="toggleSection('entry1')" class="w-full text-left p-3 rounded-xl border border-stone-200 hover:border-emerald-400 bg-stone-50/50 hover:bg-emerald-50/50 transition-all flex items-center justify-between group focus:outline-none">
+            <span class="font-bold text-stone-800 text-sm">August 2026 • Page 1</span>
+            <svg id="chevron-entry1" class="w-4 h-4 text-stone-400 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
           </button>
-          <div id="section-page1" class="hidden px-3 pb-3 pt-2 text-xs text-stone-600 space-y-1.5 leading-relaxed">
-            <p><strong>Location:</strong> London, UK</p>
-            <p><strong>Focus:</strong> Flotilla for Change, Avontuur, and the journey toward Wales.</p>
-            <a href="#page-1" class="font-bold text-emerald-800 hover:underline block pt-1">Jump to entry →</a>
+          <div id="section-entry1" class="hidden px-3 pb-2 pt-1 text-xs text-stone-600">
+            <a href="#entry-1" class="font-bold text-emerald-800 hover:underline">View Entry →</a>
           </div>
 
-          <!-- Accordion 2: Page 2 -->
-          <button onclick="toggleSection('page2')" class="w-full text-left p-3 rounded-xl border border-stone-200 hover:border-emerald-400 bg-stone-50/50 hover:bg-emerald-50/50 transition-all flex items-center justify-between group focus:outline-none">
-            <div class="flex items-center space-x-3">
-              <div class="w-8 h-8 rounded-full bg-emerald-700 text-white flex items-center justify-center font-bold text-xs">P2</div>
-              <div>
-                <h4 class="font-bold text-stone-800 text-sm">31st August</h4>
-                <p class="text-[10px] text-stone-500">Arrival at CAT &amp; First Impressions</p>
-              </div>
-            </div>
-            <svg id="chevron-page2" class="w-4 h-4 text-stone-400 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
+          <button onclick="toggleSection('entry2')" class="w-full text-left p-3 rounded-xl border border-stone-200 hover:border-emerald-400 bg-stone-50/50 hover:bg-emerald-50/50 transition-all flex items-center justify-between group focus:outline-none">
+            <span class="font-bold text-stone-800 text-sm">Monday 31st August • Page 2</span>
+            <svg id="chevron-entry2" class="w-4 h-4 text-stone-400 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
           </button>
-          <div id="section-page2" class="hidden px-3 pb-3 pt-2 text-xs text-stone-600 space-y-1.5 leading-relaxed">
-            <p><strong>Location:</strong> Machynlleth (Wales)</p>
-            <p><strong>Focus:</strong> Trains, the uphill hike, the WISE centre, and missing boots.</p>
-            <a href="#page-2" class="font-bold text-emerald-800 hover:underline block pt-1">Jump to entry →</a>
+          <div id="section-entry2" class="hidden px-3 pb-2 pt-1 text-xs text-stone-600">
+            <a href="#entry-2" class="font-bold text-emerald-800 hover:underline">View Entry →</a>
           </div>
 
-          <!-- Accordion 3: Page 3 (Day 1) -->
-          <button onclick="toggleSection('page3')" class="w-full text-left p-3 rounded-xl border border-stone-200 hover:border-emerald-400 bg-stone-50/50 hover:bg-emerald-50/50 transition-all flex items-center justify-between group focus:outline-none">
-            <div class="flex items-center space-x-3">
-              <div class="w-8 h-8 rounded-full bg-emerald-700 text-white flex items-center justify-center font-bold text-xs">P3</div>
-              <div>
-                <h4 class="font-bold text-stone-800 text-sm">1st September</h4>
-                <p class="text-[10px] text-stone-500">Quarry Trail &amp; First Cuts</p>
-              </div>
-            </div>
-            <svg id="chevron-page3" class="w-4 h-4 text-stone-400 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
+          <button onclick="toggleSection('entry3')" class="w-full text-left p-3 rounded-xl border border-stone-200 hover:border-emerald-400 bg-stone-50/50 hover:bg-emerald-50/50 transition-all flex items-center justify-between group focus:outline-none">
+            <span class="font-bold text-stone-800 text-sm">Tuesday 1st September • Page 3</span>
+            <svg id="chevron-entry3" class="w-4 h-4 text-stone-400 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
           </button>
-          <div id="section-page3" class="hidden px-3 pb-3 pt-2 text-xs text-stone-600 space-y-1.5 leading-relaxed">
-            <p><strong>Focus:</strong> Trail exploration with Sven, the TeaChest, and clearing fir &amp; holly.</p>
-            <a href="#page-3" class="font-bold text-emerald-800 hover:underline block pt-1">Jump to entry →</a>
+          <div id="section-entry3" class="hidden px-3 pb-2 pt-1 text-xs text-stone-600">
+            <a href="#entry-3" class="font-bold text-emerald-800 hover:underline">View Entry →</a>
           </div>
 
-          <!-- Accordion 4: Page 4 (Rain & Winch) -->
-          <button onclick="toggleSection('page4')" class="w-full text-left p-3 rounded-xl border border-stone-200 hover:border-emerald-400 bg-stone-50/50 hover:bg-emerald-50/50 transition-all flex items-center justify-between group focus:outline-none">
-            <div class="flex items-center space-x-3">
-              <div class="w-8 h-8 rounded-full bg-emerald-700 text-white flex items-center justify-center font-bold text-xs">P4</div>
-              <div>
-                <h4 class="font-bold text-stone-800 text-sm">3rd &amp; 9th September</h4>
-                <p class="text-[10px] text-stone-500">The Winch, Rain &amp; Haverfordwest</p>
-              </div>
-            </div>
-            <svg id="chevron-page4" class="w-4 h-4 text-stone-400 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
+          <button onclick="toggleSection('entry4')" class="w-full text-left p-3 rounded-xl border border-stone-200 hover:border-emerald-400 bg-stone-50/50 hover:bg-emerald-50/50 transition-all flex items-center justify-between group focus:outline-none">
+            <span class="font-bold text-stone-800 text-sm">Wednesday 9th of September • Page 3</span>
+            <svg id="chevron-entry4" class="w-4 h-4 text-stone-400 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
           </button>
-          <div id="section-page4" class="hidden px-3 pb-3 pt-2 text-xs text-stone-600 space-y-1.5 leading-relaxed">
-            <p><strong>Focus:</strong> Rhododendron eradication in the pouring rain, and an animal homestead.</p>
-            <a href="#page-4" class="font-bold text-emerald-800 hover:underline block pt-1">Jump to entry →</a>
+          <div id="section-entry4" class="hidden px-3 pb-2 pt-1 text-xs text-stone-600">
+            <a href="#entry-4" class="font-bold text-emerald-800 hover:underline">View Entry →</a>
           </div>
 
-          <!-- Accordion 5: Page 5 (Success) -->
-          <button onclick="toggleSection('page5')" class="w-full text-left p-3 rounded-xl border border-stone-200 hover:border-emerald-400 bg-stone-50/50 hover:bg-emerald-50/50 transition-all flex items-center justify-between group focus:outline-none">
-            <div class="flex items-center space-x-3">
-              <div class="w-8 h-8 rounded-full bg-emerald-700 text-white flex items-center justify-center font-bold text-xs">P5</div>
-              <div>
-                <h4 class="font-bold text-stone-800 text-sm">10th September</h4>
-                <p class="text-[10px] text-stone-500">Accepted into CAT!</p>
-              </div>
-            </div>
-            <svg id="chevron-page5" class="w-4 h-4 text-stone-400 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
+          <button onclick="toggleSection('entry5')" class="w-full text-left p-3 rounded-xl border border-stone-200 hover:border-emerald-400 bg-stone-50/50 hover:bg-emerald-50/50 transition-all flex items-center justify-between group focus:outline-none">
+            <span class="font-bold text-stone-800 text-sm">Thursday 10th of September • Page 4</span>
+            <svg id="chevron-entry5" class="w-4 h-4 text-stone-400 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
           </button>
-          <div id="section-page5" class="hidden px-3 pb-3 pt-2 text-xs text-stone-600 space-y-1.5 leading-relaxed">
-            <p><strong>Focus:</strong> Orchard scything, Tafarn Dwynant, and confirmation of our volunteer place.</p>
-            <a href="#page-5" class="font-bold text-emerald-800 hover:underline block pt-1">Jump to entry →</a>
+          <div id="section-entry5" class="hidden px-3 pb-2 pt-1 text-xs text-stone-600">
+            <a href="#entry-5" class="font-bold text-emerald-800 hover:underline">View Entry →</a>
           </div>
         </div>
       </div>
@@ -166,20 +120,25 @@
       
       <!-- Top Title Header -->
       <div class="border-b border-stone-100 pb-6">
-        <span class="text-emerald-800 font-extrabold uppercase tracking-widest text-xs">Field Journal • Chronicles</span>
-        <h1 class="text-3xl sm:text-4xl font-black text-stone-900 tracking-tight mt-1">
+        <h1 class="text-3xl sm:text-4xl font-black text-stone-900 tracking-tight">
           Journal — London to Wales
         </h1>
-        <p class="text-stone-500 text-sm font-medium mt-1 italic">
+        <p class="text-stone-600 text-base mt-2">
           So, every journal, like every journey, needs to start somewhere...
         </p>
       </div>
 
       <!-- ENTRY 1 -->
-      <article id="page-1" class="space-y-4 border-b border-stone-100 pb-10">
-        <div class="flex flex-wrap items-center gap-2 text-xs font-bold text-emerald-800 bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-200 w-fit">
-          <span>Date: August 2026</span> • <span>Location: London, UK</span> • <span>Trial stage: Preparing</span>
+      <article id="entry-1" class="space-y-4 border-b border-stone-100 pb-10">
+        <div>
+          <span class="inline-block px-4 py-1.5 rounded-full text-sm font-bold text-emerald-900 bg-emerald-50 border border-emerald-300">
+            August 2026 • Page 1
+          </span>
         </div>
+
+        <p class="text-xs font-semibold text-stone-500">
+          Date: August 2026 | Location: London, UK | Trial stage: Preparing
+        </p>
 
         <p class="text-stone-700 leading-relaxed">
           So, every journal, like every journey, needs to start somewhere, and this one starts in London, on Tuesday the 18th of August, where Elle and I are staying with Elle’s mum Mary while we wait until September when we arrive at the Centre for Alternative Technology in Machynlleth (Wales). We will stay there for 4 days, where they will get to have a look at us and we get to have a look at them, and if we like the look of each other, then our adventure will truly begin.
@@ -193,12 +152,13 @@
           That possible future will unfold itself on these pages, but if you’ve read this far you might be interested in who we are, and what our plans are. To find out who we are, have a look at our bios. To understand our plan, then we need to go back in time a bit. About a year I think. Then, we had no real plan, no jobs, and were soon to be homeless, as we had to leave Geneva and return to London. Fortunately, despite these circumstances we were not penniless, and we had many options - our task was to choose between them. After discarding many we came up with one we could agree on. We decided to go to COP 30, in Belém (Brazil).
         </p>
 
-        <div class="my-6 p-5 bg-stone-50 border-l-4 border-emerald-600 rounded-r-xl">
-          <h3 class="font-black text-stone-900 text-base mb-1">Sailing to COP 30</h3>
-          <blockquote class="italic text-stone-700 text-sm leading-relaxed">
-            “Only a few seconds after deciding that we were going to Brazil, we realised how incredibly crass it would be to fly there, so we modified our decision and now it was clear – and exciting - that we were going to sail to Belém for COP 30.”
-          </blockquote>
-        </div>
+        <p class="font-bold text-stone-900 text-base pt-2">
+          Sailing to COP 30
+        </p>
+
+        <p class="text-stone-700 leading-relaxed italic">
+          “Only a few seconds after deciding that we were going to Brazil, we realised how incredibly crass it would be to fly there, so we modified our decision and now it was clear – and exciting - that we were going to sail to Belém for COP 30.”
+        </p>
 
         <p class="text-stone-700 leading-relaxed">
           That decision, I see now, was the first in a series of events, adventures – and misadventures – that led us to where we are now. While trying to find a ship we fell in with a group of young activists organising Flotilla for Change, collecting an array of seacraft to coordinate their journey to Belem so that we all arrive together as a symbol of solidarity and sustainability. I was way out of my depth, but this kind of thing was Elle’s bread and butter. We found ourselves organising and hosting a series of interviews with indigenous representatives heading to COP to tell their stories of how climate change was disproportionately affecting them. Some of the most tragic stories I’d ever heard.
@@ -216,20 +176,25 @@
           Our experience, the people we met, and two stints volunteering to help reforest the South American rainforests led us to the desire to do the same thing, but closer to home. I’d always wanted to return to Wales, and where better to help maintain (and possibly expand) a rainforest?
         </p>
 
-        <p class="text-stone-800 font-semibold">
-          That’s page 1 of this journal. Elle and I are busy learning Cymraeg, more later.<br>
-          <span class="text-emerald-800 font-bold">Diolch yn Fawr</span>
+        <p class="text-stone-700 leading-relaxed">
+          That’s page 1 of this journal. Elle and I are busy learning Cymraeg, more later.
+        </p>
+
+        <p class="text-stone-900 font-bold">
+          Diolch yn Fawr
         </p>
       </article>
 
       <!-- ENTRY 2 -->
-      <article id="page-2" class="space-y-4 border-b border-stone-100 pb-10">
-        <div class="flex items-center gap-2 text-xs font-bold text-emerald-800 bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-200 w-fit">
-          Monday 31st August • Page 2
+      <article id="entry-2" class="space-y-4 border-b border-stone-100 pb-10">
+        <div>
+          <span class="inline-block px-4 py-1.5 rounded-full text-sm font-bold text-emerald-900 bg-emerald-50 border border-emerald-300">
+            Monday 31st August • Page 2
+          </span>
         </div>
 
         <p class="text-stone-700 leading-relaxed">
-          So, here we are at CAT. 4 hours on trains, which included 2 hours having a great chat with Aberystwythians Henry and Linda who were just returning from their holiday in Portugal. They gave us some great info about Mach and helped us with our Welsh pronunciation. Also invited us to visit if we’re in Aber – which we hope to be and will. Quick tour of Mach and then on the Bus to near CAT. 18 minutes uphill with a months’ worth of stuff on our backs and fronts got us to the front door.
+          So, here we are at CAT. 4 hours on trains, which included 2 hours having a great chat with Aberystwythians Henry and Linda who were just returning from their holiday in Portugal. They gave us some great info about Mach and helped us with our Welsh pronunciation. Also invited us to visit if we’re in Aber – which we hope to be and will. Quick tour of Mach and then on the Bus to near CAT. 18 minutes uohill with a months’ worth of stuff on our backs and fronts got us to the front door.
         </p>
 
         <p class="text-stone-700 leading-relaxed">
@@ -237,7 +202,7 @@
         </p>
 
         <p class="text-stone-700 leading-relaxed">
-          We also met our fellow volunteer trialists, mostly young women with a smattering of men and oldies like us. Dave, the chef was very keen to hear our verdict on his vegan dinner, and we were all pleased to tell him it was delicious – bodes well for the next few days. We continued getting to know each other after dinner by wandering around the now abandoned (although still flourishing – the beds are being tended, and the plants and trees are all healthy) and rusting weed swept structures, each of which used to tell a story.
+          We also met our fellow volunteer trialists, mostly young women with a smattering of men and oldies like us. Dave, the chef was very keen to hear our verdict on his vegan dinner, and we were all pleased to tell him it was delicious – bodes well for the next few days. We continued getting to know each other after dinner by wandering around the now abandoned (although still flourishing – the beds are being tended, and the plants and trees are all healthy) and rusting weed swept structures, each of which which used to tell a story.
         </p>
 
         <p class="text-stone-700 leading-relaxed">
@@ -250,22 +215,17 @@
       </article>
 
       <!-- ENTRY 3 -->
-      <article id="page-3" class="space-y-6 border-b border-stone-100 pb-10">
-        <div class="flex items-center gap-2 text-xs font-bold text-emerald-800 bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-200 w-fit">
-          Tuesday 1st September • Page 3
+      <article id="entry-3" class="space-y-4 border-b border-stone-100 pb-10">
+        <div>
+          <span class="inline-block px-4 py-1.5 rounded-full text-sm font-bold text-emerald-900 bg-emerald-50 border border-emerald-300">
+            Tuesday 1st September • Page 3
+          </span>
         </div>
 
-        <!-- Inline Journal Photos -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <figure class="rounded-xl overflow-hidden border border-stone-200 shadow-sm">
-            <img src="images/cat-view.jpg" alt="The view from CAT" class="w-full h-48 object-cover">
-            <figcaption class="p-2 text-[11px] text-stone-500 bg-stone-50 text-center italic">The view from CAT</figcaption>
-          </figure>
-          <!-- <figure class="rounded-xl overflow-hidden border border-stone-200 shadow-sm">
-            <img src="images/rhododendron-roots.jpg" alt="Rhododendron Roots" class="w-full h-48 object-cover">
-            <figcaption class="p-2 text-[11px] text-stone-500 bg-stone-50 text-center italic">Rhododendron Roots</figcaption>
-          </figure> -->
-        </div>>
+        <figure class="rounded-xl overflow-hidden border border-stone-200 shadow-sm max-w-xl mx-auto my-4">
+          <img src="images/cat-view.jpg" alt="The view from CAT" class="w-full h-64 object-cover">
+          <figcaption class="p-2 text-xs text-stone-600 bg-stone-50 text-center">The view from CAT</figcaption>
+        </figure>
 
         <p class="text-stone-700 leading-relaxed">
           So our morning starts with a lovely breakfast of vegan sausages, hash browns, beans and Welsh rarebit. Sadly, the rarebit had mustard in it and I had to put it into the food waste. Not sure whether that will ruin our chances. Still not clear about what happened to the visitor centre but some of the displays we saw today included endorsements from Chris Tarrant and Noel Edmonds(!) Moreover the prediction was Net Zero Britain by 2030, which seems a bit ambitious in 2026.
@@ -289,54 +249,78 @@
       </article>
 
       <!-- ENTRY 4 -->
-      <article id="page-4" class="space-y-6 border-b border-stone-100 pb-10">
-        <div class="flex items-center gap-2 text-xs font-bold text-emerald-800 bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-200 w-fit">
-          Wednesday 9th of September • Timeslip &amp; Day 2 Retrospective
+      <article id="entry-4" class="space-y-4 border-b border-stone-100 pb-10">
+        <div>
+          <span class="inline-block px-4 py-1.5 rounded-full text-sm font-bold text-emerald-900 bg-emerald-50 border border-emerald-300">
+            Wednesday 9th of September • Page 3
+          </span>
         </div>
 
-        <p class="text-stone-700 leading-relaxed italic">
-          As the sharp-eyed of you will have noticed, there has been a time slip...
+        <p class="text-stone-700 leading-relaxed">
+          As the sharp-eyed of you will have noticed, there has been a time slip. We are no longer at CAT, but in a homestead in Haverford West looking after two collies (Flight &amp; Ted) one dog centenarian (Marley) of unknown pedigree, 4 chickens, 3 sheep, and an uncountable number of ducks (they wont stand still) that probably number more than 30. But that is a story many pages to come.
         </p>
 
-        <h3 class="font-bold text-stone-900 text-base pt-2">Wednesday the 3rd of September: Rain, Chains &amp; Rhododendrons</h3>
+        <p class="text-stone-700 leading-relaxed">
+          At the time of writing, we are still unaware whether we have been successful or not in our bid to be volonteers for the next 6 months at CAT.
+        </p>
+
+        <p class="text-stone-700 leading-relaxed">
+          For now we must continue with our second full day at CAT; day 2.
+        </p>
+
+        <p class="font-bold text-stone-900 text-base pt-2">
+          Wednesday the 3rd of September.
+        </p>
 
         <p class="text-stone-700 leading-relaxed">
           It rained! It rained and rained and rained!! It did not stop raining!!!
         </p>
 
-        <!-- Rhododendron Roots Photo -->
         <figure class="rounded-xl overflow-hidden border border-stone-200 shadow-sm max-w-xl mx-auto my-4">
-          <img src="images/rhododendron-roots.jpg" alt="Rhododendron Roots" class="w-full h-64 sm:h-72 object-cover">
-          <figcaption class="p-2.5 text-[11px] text-stone-500 bg-stone-50 text-center italic">Rhododendron Roots</figcaption>
+          <img src="images/rhododendron-roots.jpg" alt="Rhododendron Roots" class="w-full h-64 object-cover">
+          <figcaption class="p-2 text-xs text-stone-600 bg-stone-50 text-center">Rhododendron Roots</figcaption>
         </figure>
 
         <p class="text-stone-700 leading-relaxed">
-          Waterproofs on (we’d bought some new over trousers the week before, along with the workboots, believing that they were necessary, but everything was provided for trialists, so it turns out we might have lightened our backpacks instead of our wallets). Fully kitted out, we all marched up to the top of the quarry trail...
+          Waterproofs on (we’d bought some new over trousers the week before, along with the workboots, believing that they were necessary, but everything was provided for trialists, so it turns out we might have lightened our backpacks instead of our wallets). Fully kitted out, we all marched up to the top of the quarry trail, where we had left some tools overnight. Sven had spotted some jobs the previous day and didn’t want us to have to haul them all up again. Nice, but we still ended up with a big lift, as we were now going to deal with an infestation of Rhododendron’s (their an invasive species – at least, one kind is [fill in name here]. That required taking up a winch and a chain along with some a lot of other havy tools – in our wetgear. Did I mention it was raining?
         </p>
-        <!-- (Rest of Wednesday text continues unchanged) -->
+
+        <p class="text-stone-700 leading-relaxed">
+          So, I volunteered to carry the winch, regretting it for each metre of the 20m elevation. But what fun we had! The rain was literally like water off a duck’s back as we became fully engaged with our tasks. Elle went with Sven, Mark and Peggy to thin out the holly and use it to make dead hedges [link to definition here] and Ella and I went with Chris and the winch to pull up a Rhododendron by its roots. Quite an operation involving clearing out the branches that were in our way while leaving enough height in the trunk for the chain to gain purchase. Then you attache the chain from a distance of about 10 metres up the hill and start using a very long lever to rip it up and move it along. Tou our surpeise, after that you just ensured the Rhododendron was cleably upturned and left it where it lay. The root would die quickly and the threat ended…for that one. There were plenty more and the winching continued until after lunch.
+        </p>
+
+        <p class="text-stone-700 leading-relaxed">
+          Then, after a brief visit to the TeaChest to warm up and get a cup of something, back up the hill to attack the holly while the others winched and high pruned [link to description here]. During a quick visit to check on our work, Sven spotted a fir that would be good for making poles etc, and said we should take it doen! My first fell! With help from Ella, who turned out to be experienced in woodcraft (she has a chainsaw license – a very valuable qualification at CAT). She reassured me about what a “step cut” entailed and let me have the satisfaction of bringing the fr down, having seen my excitement at the prospect, and having felled quite a few in her young life already.
+        </p>
+
+        <p class="text-stone-700 leading-relaxed">
+          Successfully felled and manoeuvred through the brush onto the trail, we carried on to join the high-pruners and help them prep the branches they’d brought down. I was so satisfied with my day that I volunteered to take the winch down (it felt like my responsibility now) and endured the pain that brought stoically and with a smile on my rain-soaked face.
+        </p>
+
+        <p class="text-stone-700 leading-relaxed">
+          Other stuff may have happened, but after dinner I was pretty much in bed and snoring snugly, all thoughts of maintaining my journal a distant dream.
+        </p>
       </article>
 
       <!-- ENTRY 5 -->
-      <article id="page-5" class="space-y-6">
-        <div class="flex items-center gap-2 text-xs font-bold text-emerald-800 bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-200 w-fit">
-          Thursday 10th of September • Outcome &amp; Orchard Day
+      <article id="entry-5" class="space-y-4">
+        <div>
+          <span class="inline-block px-4 py-1.5 rounded-full text-sm font-bold text-emerald-900 bg-emerald-50 border border-emerald-300">
+            Thursday 10th of September • Page 4
+          </span>
         </div>
 
-        <div class="p-5 bg-emerald-50 border-2 border-emerald-500 rounded-xl space-y-2">
-          <h2 class="text-xl font-black text-emerald-950">We’ve done it!</h2>
-          <p class="text-emerald-900 leading-relaxed text-sm font-medium">
-            At 10:05 this morning I received an email congratulating me on being invited to CAT’s Natural Resources team for their winter residential volunteer programme. Elle got the same email (phew!). We both accepted.
-          </p>
-        </div>
+        <p class="text-stone-700 leading-relaxed">
+          We’ve done it! At10:05 this morning I received an email congratulating me on being invited to CAT’s Natural Resources team for their winter residential volunteer programme. Elle got the same email (phew!). We both accepted. Now, back to the narrative timeline;
+        </p>
 
-        <h3 class="font-bold text-stone-900 text-base pt-2">Thursday the 4th of September: The Orchard &amp; The Scythe</h3>
+        <p class="font-bold text-stone-900 text-base pt-2">
+          Thursday the 4th of September
+        </p>
 
-        <!-- Local Orchard Photo -->
-        <figure class="rounded-xl overflow-hidden border border-stone-200 shadow-sm max-w-xl mx-auto">
-          <img src="images/Orchard.jpg" alt="Work in the Orchard" class="w-full h-64 sm:h-72 object-cover">
-          <figcaption class="p-2.5 text-[11px] text-stone-500 bg-stone-50 text-center italic">
-            the orchard
-          </figcaption>
+        <figure class="rounded-xl overflow-hidden border border-stone-200 shadow-sm max-w-xl mx-auto my-4">
+          <img src="images/orchard.jpg" alt="Orchard" class="w-full h-64 object-cover">
+          <figcaption class="p-2 text-xs text-stone-600 bg-stone-50 text-center">Orchard</figcaption>
         </figure>
 
         <p class="text-stone-700 leading-relaxed">
@@ -348,15 +332,15 @@
         </p>
 
         <p class="text-stone-700 leading-relaxed">
-          Thursday evening most of us went to the local Pub, Tafarn Dwynant, 40 mins walk away. We received a warm welcome there, with some of the locals saying that it was CAT that had brought them to the town. A pint of lager was £3.70 (!!!) That should shock any other Londoners reading this as much as it did me.
+          Thursday evening most of us went to the local Pub, Tafarn Dwynant, 40 mins walk away. We received a warm welcome there, with some of the locals saying that it was CAT that had brought them to the town. A pint of lager was £3.70 (!!!) That should shock any other Londoner’s reading this as much as it did me.
         </p>
 
         <p class="text-stone-700 leading-relaxed">
           On the walk home we all got drenched when the rain returned, in force. Very grateful to Beth, an outgoing Woodie volunteer, for leading us back up the hill with the only torch anyone had thought to bring.
         </p>
 
-        <p class="text-stone-900 font-black text-lg pt-2 text-emerald-800">
-          That’s all for today… We are going to CAT! Yaaaaaaay!
+        <p class="text-stone-700 leading-relaxed">
+          That’s all for today…We are going to CAT! Yaaaaaaay!
         </p>
       </article>
 
