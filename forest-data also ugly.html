@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dyfi Biosphere Agroforestry Opportunity Mapping | Myndworkz</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      color: #2b2b2b;
+      margin: 0;
+      padding: 0;
+      background-color: #fcfcfc;
+    }
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2.5rem 1.25rem;
+    }
+    header {
+      margin-bottom: 2rem;
+      border-bottom: 1px solid #e0e0e0;
+      padding-bottom: 1.5rem;
+    }
+    h1 {
+      font-size: 2.2rem;
+      color: #1b4332;
+      margin-bottom: 0.5rem;
+    }
+    .lead {
+      font-size: 1.15rem;
+      color: #4a5568;
+    }
+    .map-wrapper {
+      position: relative;
+      width: 100%;
+      height: 650px;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+      margin-bottom: 2.5rem;
+      border: 1px solid #dcdcdc;
+    }
+    .map-wrapper iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 2.5rem;
+    }
+    @media (max-width: 850px) {
+      .grid { grid-template-columns: 1fr; }
+      .map-wrapper { height: 450px; }
+    }
+    h2 {
+      color: #2d6a4f;
+      border-bottom: 2px solid #d8f3dc;
+      padding-bottom: 0.3rem;
+      margin-top: 1.5rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 0.95rem;
+    }
+    th, td {
+      border: 1px solid #e2e8f0;
+      padding: 8px 12px;
+      text-align: left;
+    }
+    th {
+      background-color: #f0fdf4;
+      color: #1b4332;
+    }
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      border-radius: 4px;
+    }
+    .legend-card {
+      background-color: #f7fafc;
+      border: 1px solid #edf2f7;
+      padding: 1.25rem;
+      border-radius: 8px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.75rem;
+      font-size: 0.95rem;
+    }
+    .marker-box {
+      width: 18px;
+      height: 18px;
+      margin-right: 12px;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>Agroforestry Opportunity Zones: UNESCO Dyfi Biosphere</h1>
+      <p class="lead">Interactive spatial suitability analysis identifying strategic agroforestry interventions that reconnect fragmented ancient native rainforest across the Dyfi catchment.</p>
+    </header>
+
+    <!-- Interactive Web Map Embed -->
+    <div class="map-wrapper">
+      <iframe 
+        src="qgis2web-export/index.html" 
+        title="Interactive Map - Dyfi Biosphere Agroforestry Opportunities"
+        loading="lazy"
+        allowfullscreen>
+      </iframe>
+    </div>
+
+    <div class="grid">
+      <main>
+        <h2>Project Overview</h2>
+        <p>This project models optimal landscape-scale opportunities for agroforestry, keyline shelterbelts, and silvopastoral schemes across the 80,000-hectare UNESCO Dyfi Biosphere Reserve (<em>Biosffer Dyfi</em>). By analyzing topography, satellite vegetative vigor, hydrology, and ancient broadleaf inventory buffers, this model identifies unconstrained farmland where agroforestry acts as an ecological corridor between disconnected woodland remnants.</p>
+
+        <h2>Methodology & Analytical Criteria</h2>
+        <p>All source layers were standardized to the <strong>British National Grid (EPSG:27700)</strong> at a 10-meter raster cell resolution to align with Sentinel-2 L2A ground pixel fidelity.</p>
+        
+        <table>
+          <thead>
+            <tr>
+              <th>Measured Variable</th>
+              <th>Constraint Threshold</th>
+              <th>Ecological / Operational Justification</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Vegetation Health (NDVI)</strong></td>
+              <td>0.25 &ndash; 0.50</td>
+              <td>Isolates degraded pasture and open grassland; excludes bare rock/water (&lt;0.25) and existing mature forest canopy (&gt;0.50).</td>
+            </tr>
+            <tr>
+              <td><strong>Workable Slope</strong></td>
+              <td>2&deg; &ndash; 15&deg;</td>
+              <td>Targets accessible hillsides while filtering out saturated, low-gradient valley bottoms (&lt;2&deg;) and steep machinery hazards (&gt;15&deg;).</td>
+            </tr>
+            <tr>
+              <td><strong>Riparian Buffer</strong></td>
+              <td>20-meter exclusion</td>
+              <td>Prevents soil erosion, protects water quality along salmonid streams, and respects statutory drainage easements.</td>
+            </tr>
+            <tr>
+              <td><strong>Connectivity Buffer</strong></td>
+              <td>500-meter corridor</td>
+              <td>Restricts targets to fields capable of facilitating bird, mammal, and seed dispersal between ancient woodland blocks.</td>
+            </tr>
+            <tr>
+              <td><strong>Ancient Woodland</strong></td>
+              <td>Strict Exclusion</td>
+              <td>Directly excludes protected Ancient Semi-Natural Woodland (ASNW) to prevent disturbing mature native canopy.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>Intervention Tiers</h2>
+        <ul>
+          <li><strong>Commercial Agroforestry (&gt; 5 ha):</strong> Large, contiguous field parcels suitable for commercial alley cropping, silvopasture, and machinery access.</li>
+          <li><strong>Silviculture &amp; Micro-Corridors (1 &ndash; 5 ha):</strong> Niche planting zones ideal for keyline swales, living windbreaks, and community forest gardens.</li>
+          <li><strong>Macro-Hubs (100 ha Clusters):</strong> High-density aggregations of viable parcels identifying multi-farm regional cooperation priorities.</li>
+        </ul>
+      </main>
+
+      <aside>
+        <div class="legend-card">
+          <h3>Map Legend</h3>
+          
+          <div class="legend-item">
+            <div class="marker-box" style="background-color: #55a630; transform: rotate(45deg); width: 14px; height: 14px; margin-left: 2px;"></div>
+            <span><strong>Commercial Candidates (&gt;5 ha)</strong></span>
+          </div>
+
+          <div class="legend-item">
+            <div class="marker-box" style="background-color: #f77f00; border-radius: 50%;"></div>
+            <span><strong>Silviculture / Smallholding (1&ndash;5 ha)</strong></span>
+          </div>
+
+          <div class="legend-item">
+            <div class="marker-box" style="background-color: #b7e4c7; border: 1px solid #2d6a4f;"></div>
+            <span><strong>Target Macro-Hubs (100 ha)</strong></span>
+          </div>
+
+          <div class="legend-item">
+            <div class="marker-box" style="border: 2px dashed #40916c; background: transparent;"></div>
+            <span><strong>500m Habitat Corridor Buffer</strong></span>
+          </div>
+
+          <div class="legend-item">
+            <div class="marker-box" style="border: 2px solid #1b4332; background: transparent;"></div>
+            <span><strong>Existing Ancient Broadleaf</strong></span>
+          </div>
+
+          <div class="legend-item">
+            <div class="marker-box" style="background-color: #1f78b4; height: 3px; margin-top: 7px;"></div>
+            <span><strong>Main Watercourses</strong></span>
+          </div>
+
+          <div class="legend-item">
+            <div class="marker-box" style="border: 2px dotted #4a0e4e; background: transparent;"></div>
+            <span><strong>Dyfi Biosphere Boundary</strong></span>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+</body>
+</html>
