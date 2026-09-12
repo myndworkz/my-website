@@ -6,8 +6,6 @@
         <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
         <meta name="mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-capable" content="yes">
-        
-        <!-- Leaflet Core & Plugin Stylesheets -->
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
         <link rel="stylesheet" href="css/L.Control.Layers.Tree.css">
         <link rel="stylesheet" href="css/L.Control.Locate.min.css">
@@ -16,12 +14,8 @@
         <link rel="stylesheet" href="css/leaflet.photon.css">
         <link rel="stylesheet" href="css/leaflet-measure.css">
 
-        <!-- Leaflet.markercluster CSS -->
-        <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
-        <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
-
         <style>
-          /* 1. Full-frame viewport */
+          /* 1. Responsive full-frame sizing */
           html, body, #map {
             width: 100% !important;
             height: 100% !important;
@@ -30,14 +24,14 @@
             overflow: hidden !important;
           }
 
-          /* 2. Anchor controls top right */
+          /* 2. Anchor controls firmly */
           .leaflet-top.leaflet-right {
             top: 10px !important;
             right: 10px !important;
             z-index: 10000 !important;
           }
 
-          /* 3. Popup styling */
+          /* 3. Clean Leaflet Popup Card */
           .leaflet-popup-content-wrapper {
             background: #ffffff !important;
             border-radius: 12px !important;
@@ -66,31 +60,7 @@
             color: #1c1917 !important;
           }
 
-          /* 4. On-Canvas Guidance Card */
-          .map-info-card {
-            position: absolute;
-            bottom: 24px;
-            left: 14px;
-            z-index: 1000;
-            background: rgba(255, 255, 255, 0.96);
-            border: 1.5px solid #059669;
-            border-radius: 8px;
-            padding: 10px 14px;
-            max-width: 290px;
-            box-shadow: 0 4px 14px rgba(0,0,0,0.15);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            font-size: 12px;
-            color: #1f2937;
-            line-height: 1.4;
-          }
-          .map-info-card strong {
-            color: #047857;
-            display: block;
-            margin-bottom: 3px;
-            font-size: 13px;
-          }
-
-          /* 5. Layer control button */
+          /* 4. Vector SVG Layers Icon for Collapsed State */
           .leaflet-control-layers-toggle {
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23059669' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolygon points='12 2 2 7 12 12 22 7 12 2'%3E%3C/polygon%3E%3Cpolyline points='2 17 12 22 22 17'%3E%3C/polyline%3E%3Cpolyline points='2 12 12 17 22 12'%3E%3C/polyline%3E%3C/svg%3E") !important;
             background-repeat: no-repeat !important;
@@ -104,7 +74,7 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18) !important;
           }
 
-          /* 6. Layer control menu flyout */
+          /* 5. Responsive Flyout when Clicked / Tapped */
           .leaflet-control-layers-expanded {
             max-width: 82vw !important;
             max-height: 70vh !important;
@@ -120,15 +90,8 @@
         <title>Dyfi Biosphere Map</title>
     </head>
     <body>
-        <div id="map"></div>
-
-        <!-- Explanatory note anchored on map canvas -->
-        <div class="map-info-card">
-          <strong>Understanding the Numbers</strong>
-          The circular badges show parcel density in that area. Zooming in breaks the clusters down into smaller groups until individual field centroids appear.
+        <div id="map">
         </div>
-
-        <!-- Leaflet Core & Plugins Scripts -->
         <script src="js/qgis2web_expressions.js"></script>
         <script src="js/leaflet.js"></script>
         <script src="js/L.Control.Layers.Tree.min.js"></script>
@@ -143,11 +106,6 @@
         <script src="js/labels.js"></script>
         <script src="js/leaflet.photon.js"></script>
         <script src="js/leaflet-measure.js"></script>
-
-        <!-- Leaflet.markercluster Library -->
-        <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
-
-        <!-- Vector Data Files -->
         <script src="data/500mHabitatConnectivityCorridor_0.js"></script>
         <script src="data/MainWatercourses_3.js"></script>
         <script src="data/UNESCODyfiBiosphereBoundary_4.js"></script>
@@ -155,36 +113,58 @@
         <script src="data/ExistingAncientNativeWoodland_6.js"></script>
         <script src="data/SilvicultureMicroCorridorCandidates15ha_7.js"></script>
         <script src="data/CommercialAgroforestryCandidates5ha_8.js"></script>
-
         <script>
+		<!-- Leaflet.markercluster CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+
+<!-- Leaflet.markercluster JS -->
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
         var highlightLayer;
         function highlightFeature(e) {
             highlightLayer = e.target;
             highlightLayer.openPopup();
         }
-
         var map = L.map('map', {
-            zoomControl: false, 
-            maxZoom: 18, 
-            minZoom: 8
+            zoomControl:false, maxZoom:18, minZoom:8
         }).fitBounds([[52.53512292851365,-3.9887143279838773],[52.7392026414465,-3.477148179629126]]);
-
         var hash = new L.Hash(map);
-        map.attributionControl.setPrefix('<a href="https://github.com/qgis2web/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        map.attributionControl.setPrefix('<a href="https://github.com/qgis2web/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
         var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
         
         function removeEmptyRowsFromPopupContent(content, feature) {
+         var tempDiv = document.createElement('div');
+         tempDiv.innerHTML = content;
+         var rows = tempDiv.querySelectorAll('tr');
+         for (var i = 0; i < rows.length; i++) {
+             var td = rows[i].querySelector('td.visible-with-data');
+             var key = td ? td.id : '';
+             if (td && td.classList.contains('visible-with-data') && feature.properties[key] == null) {
+                 rows[i].parentNode.removeChild(rows[i]);
+             }
+         }
+         return tempDiv.innerHTML;
+        }
+
+        function addClassToPopupIfMedia(content, popup) {
             var tempDiv = document.createElement('div');
             tempDiv.innerHTML = content;
-            var rows = tempDiv.querySelectorAll('tr');
-            for (var i = 0; i < rows.length; i++) {
-                var td = rows[i].querySelector('td.visible-with-data');
-                var key = td ? td.id : '';
-                if (td && td.classList.contains('visible-with-data') && feature.properties[key] == null) {
-                    rows[i].parentNode.removeChild(rows[i]);
+            var imgTd = tempDiv.querySelector('td img');
+            if (imgTd) {
+                var src = imgTd.getAttribute('src');
+                if (/\.(jpg|jpeg|png|gif|bmp|webp|avif)$/i.test(src)) {
+                    popup._contentNode.classList.add('media');
+                    var img = popup._contentNode.querySelector('td img');
+                    if (img) {
+                        if (img.complete && img.naturalHeight > 0) {
+                            popup.update();
+                        } else {
+                            img.addEventListener('load', function() { popup.update(); });
+                            img.addEventListener('error', function() { popup.update(); });
+                        }
+                    }
                 }
             }
-            return tempDiv.innerHTML;
         }
 
         var zoomControl = L.control.zoom({ position: 'topleft' }).addTo(map);
@@ -201,7 +181,6 @@
         var bounds_group = new L.featureGroup([]);
         function setBounds() {}
 
-        // --- 0. 500m Habitat Corridor ---
         function pop_500mHabitatConnectivityCorridor_0(feature, layer) {
             layer.on({ mouseout: function(e) { layer.closePopup(); }, mouseover: highlightFeature });
             var popupContent = '<table>\
@@ -235,18 +214,14 @@
         bounds_group.addLayer(layer_500mHabitatConnectivityCorridor_0);
         map.addLayer(layer_500mHabitatConnectivityCorridor_0);
 
-        // --- 1. Topographic Basemap (OpenTopoMap) ---
         map.createPane('pane_Basemap_1');
         map.getPane('pane_Basemap_1').style.zIndex = 401;
-        var layer_Basemap_1 = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
-            pane: 'pane_Basemap_1',
-            attribution: 'Map: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, SRTM | Style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a>',
-            minZoom: 8,
-            maxZoom: 17
-        });
-        map.addLayer(layer_Basemap_1);
+       var layer_Basemap_1 = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+    attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)',
+    maxZoom: 17
+});
+map.addLayer(layer_Basemap_1);
 
-        // --- 2. Terrain Topography (Esri Hillshade Overlay) ---
         map.createPane('pane_TerrainTopography_2');
         map.getPane('pane_TerrainTopography_2').style.zIndex = 402;
         map.getPane('pane_TerrainTopography_2').style['mix-blend-mode'] = 'multiply';
@@ -260,7 +235,6 @@
         bounds_group.addLayer(layer_TerrainTopography_2);
         map.addLayer(layer_TerrainTopography_2);
 
-        // --- 3. Main Watercourses ---
         function pop_MainWatercourses_3(feature, layer) {
             layer.on({ mouseout: function(e) { layer.closePopup(); }, mouseover: highlightFeature });
             var popupContent = '<table><tr><th scope="row">Watercourse</th><td>' + (feature.properties['WCRS_NAME'] !== null ? autolinker.link(String(feature.properties['WCRS_NAME'])) : '') + '</td></tr></table>';
@@ -288,7 +262,6 @@
         bounds_group.addLayer(layer_MainWatercourses_3);
         map.addLayer(layer_MainWatercourses_3);
 
-        // --- 4. Biosphere Boundary ---
         function pop_UNESCODyfiBiosphereBoundary_4(feature, layer) {
             layer.on({ mouseout: function(e) { layer.closePopup(); }, mouseover: highlightFeature });
             var popupContent = '<table><tr><th scope="row">Zone</th><td>' + (feature.properties['zone'] !== null ? autolinker.link(String(feature.properties['zone'])) : '') + '</td></tr></table>';
@@ -317,7 +290,6 @@
         bounds_group.addLayer(layer_UNESCODyfiBiosphereBoundary_4);
         map.addLayer(layer_UNESCODyfiBiosphereBoundary_4);
 
-        // --- 5. Target Macro Hubs ---
         function pop_TargetAgroforestryMacroHubs_5(feature, layer) {
             layer.on({ mouseout: function(e) { layer.closePopup(); }, mouseover: highlightFeature });
             var popupContent = '<div class="custom-map-popup"><div class="popup-title">Target Macro-Hub</div></div>';
@@ -346,7 +318,6 @@
         bounds_group.addLayer(layer_TargetAgroforestryMacroHubs_5);
         map.addLayer(layer_TargetAgroforestryMacroHubs_5);
 
-        // --- 6. Existing Ancient Native Woodland ---
         function pop_ExistingAncientNativeWoodland_6(feature, layer) {
             layer.on({ mouseout: function(e) { layer.closePopup(); }, mouseover: highlightFeature });
             var rawArea = parseFloat(feature.properties['area_hectares']);
@@ -381,7 +352,6 @@
         bounds_group.addLayer(layer_ExistingAncientNativeWoodland_6);
         map.addLayer(layer_ExistingAncientNativeWoodland_6);
 
-        // --- 7. Micro-Corridors (1-5 ha) ---
         function pop_SilvicultureMicroCorridorCandidates15ha_7(feature, layer) {
             layer.on({ mouseout: function(e) { layer.closePopup(); }, mouseover: highlightFeature });
             var rawArea = parseFloat(feature.properties['area_ha']);
@@ -414,7 +384,6 @@
         bounds_group.addLayer(layer_SilvicultureMicroCorridorCandidates15ha_7);
         map.addLayer(layer_SilvicultureMicroCorridorCandidates15ha_7);
 
-        // --- 8. Commercial Candidates (> 5 ha) with Leaflet.markercluster ---
         function pop_CommercialAgroforestryCandidates5ha_8(feature, layer) {
             layer.on({ mouseout: function(e) { layer.closePopup(); }, mouseover: highlightFeature });
             var rawArea = parseFloat(feature.properties['area_ha']);
@@ -429,19 +398,18 @@
         function style_CommercialAgroforestryCandidates5ha_8_0() {
             return {
                 pane: 'pane_CommercialAgroforestryCandidates5ha_8',
-                radius: 6.0,
+                radius: 8.0,
                 opacity: 1,
                 color: 'rgba(255,255,255,1.0)',
-                weight: 1.5,
+                weight: 2.0,
                 fill: true,
                 fillOpacity: 0.85,
-                fillColor: 'rgba(27,45,154,0.85)',
+                fillColor: 'rgba(27,45,154,0.725)',
                 interactive: true,
             }
         }
         map.createPane('pane_CommercialAgroforestryCandidates5ha_8');
         map.getPane('pane_CommercialAgroforestryCandidates5ha_8').style.zIndex = 408;
-
         var layer_CommercialAgroforestryCandidates5ha_8 = new L.geoJson(json_CommercialAgroforestryCandidates5ha_8, {
             pane: 'pane_CommercialAgroforestryCandidates5ha_8',
             onEachFeature: pop_CommercialAgroforestryCandidates5ha_8,
@@ -449,19 +417,9 @@
                 return L.circleMarker(latlng, style_CommercialAgroforestryCandidates5ha_8_0(feature));
             },
         });
+        bounds_group.addLayer(layer_CommercialAgroforestryCandidates5ha_8);
+        map.addLayer(layer_CommercialAgroforestryCandidates5ha_8);
 
-        // Group candidate points into dynamic clusters
-        var cluster_CommercialAgroforestryCandidates5ha_8 = new L.MarkerClusterGroup({
-            showCoverageOnHover: false,
-            spiderfyOnMaxZoom: true,
-            maxClusterRadius: 45,
-            disableClusteringAtZoom: 15
-        });
-        cluster_CommercialAgroforestryCandidates5ha_8.addLayer(layer_CommercialAgroforestryCandidates5ha_8);
-        bounds_group.addLayer(cluster_CommercialAgroforestryCandidates5ha_8);
-        map.addLayer(cluster_CommercialAgroforestryCandidates5ha_8);
-
-        // Zoom threshold listener for micro-corridor polygons
         map.on("zoomend", function(e) {
             if (map.getZoom() <= 18 && map.getZoom() >= 12) {
                 map.addLayer(layer_SilvicultureMicroCorridorCandidates15ha_7);
@@ -470,9 +428,8 @@
             }
         });
 
-        // Layer Switcher Hierarchy
         var overlaysTree = [
-            {label: '<img src="legend/CommercialAgroforestryCandidates5ha_8.png" /> Commercial Agroforestry Candidates (> 5 ha)', layer: cluster_CommercialAgroforestryCandidates5ha_8},
+            {label: '<img src="legend/CommercialAgroforestryCandidates5ha_8.png" /> Commercial Agroforestry Candidates (> 5 ha)', layer: layer_CommercialAgroforestryCandidates5ha_8},
             {label: '<img src="legend/SilvicultureMicroCorridorCandidates15ha_7.png" /> Silviculture / Micro-Corridor Candidates (1–5 ha)', layer: layer_SilvicultureMicroCorridorCandidates15ha_7},
             {label: '<img src="legend/ExistingAncientNativeWoodland_6.png" /> Existing Ancient Native Woodland', layer: layer_ExistingAncientNativeWoodland_6},
             {label: '<img src="legend/TargetAgroforestryMacroHubs_5.png" /> Target Agroforestry Macro-Hubs', layer: layer_TargetAgroforestryMacroHubs_5},
