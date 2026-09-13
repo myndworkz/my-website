@@ -11,6 +11,39 @@
       background-image: radial-gradient(circle at 80% 20%, rgba(5, 150, 105, 0.08) 0%, transparent 40%),
                         radial-gradient(circle at 15% 70%, rgba(20, 184, 166, 0.08) 0%, transparent 50%);
     }
+	/* Video Modal Zoom Overlay */
+    .video-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(6px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease-out;
+    }
+    .video-modal-backdrop.is-active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .video-modal-container {
+      background: #0f172a;
+      border-radius: 20px;
+      max-width: 900px;
+      width: 100%;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(52, 211, 153, 0.4);
+      overflow: hidden;
+      transform: scale(0.9);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .video-modal-backdrop.is-active .video-modal-container {
+      transform: scale(1);
+    }
     .bubble-emerald-3d {
       background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.95) 0%, rgba(52, 211, 153, 0.5) 45%, rgba(5, 150, 105, 0.8) 85%, rgba(6, 78, 59, 0.95) 100%);
       box-shadow: 0 15px 35px -5px rgba(5, 150, 105, 0.35), 
@@ -54,16 +87,22 @@
       
      <!-- 3D Bubble Frame -->
       <div class="flex flex-col items-center">
-        <div id="journal-video-sphere" class="w-64 h-64 sm:w-72 sm:h-72 rounded-full bubble-emerald-3d flex flex-col items-center justify-center text-center p-2 border border-emerald-600/30 overflow-hidden relative shadow-xl">
+        <div id="journal-video-sphere" class="w-64 h-64 sm:w-72 sm:h-72 rounded-full bubble-emerald-3d flex flex-col items-center justify-center text-center p-2 border border-emerald-600/30 overflow-hidden relative shadow-xl cursor-pointer group" title="Click to zoom video" onclick="openVideoModal()">
           <video 
-            src="media/videos/Bryn_Elle_repo_100MB.mp4" 
-            controls 
+            id="sphere-video"
+            src="media/videos/bryn & Elle’s adventure.mp4" 
             playsinline 
+            muted
+            autoplay
+            loop
             preload="metadata"
-            class="w-full h-full object-cover rounded-full z-10"
-            title="Bryn &amp; Elle’s Adventure">
+            class="w-full h-full object-cover rounded-full z-10 pointer-events-none">
             Your browser does not support HTML video.
           </video>
+          <!-- Hover overlay prompt -->
+          <div class="absolute inset-0 bg-emerald-950/30 opacity-0 group-hover:opacity-100 transition-opacity z-20 flex items-center justify-center rounded-full pointer-events-none">
+            <span class="text-white text-xs font-bold uppercase tracking-wider bg-emerald-900/80 px-3 py-1 rounded-full shadow">Click to Expand</span>
+          </div>
         </div>
       </div>
 
