@@ -52,14 +52,18 @@
     <!-- LEFT COLUMN -->
     <div class="md:col-span-5 lg:col-span-4 space-y-10 flex flex-col items-center md:items-stretch">
       
-      <!-- 3D Bubble Frame -->
+     <!-- 3D Bubble Frame -->
       <div class="flex flex-col items-center">
-        <div class="w-64 h-64 sm:w-72 sm:h-72 rounded-full bubble-emerald-3d flex flex-col items-center justify-center text-center p-6 border border-emerald-600/30">
-          <svg class="w-12 h-12 text-emerald-100 drop-shadow mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-          </svg>
-          <span class="text-xs font-black uppercase tracking-widest text-emerald-50 drop-shadow">Field Journal</span>
-          <span class="text-[10px] font-bold text-emerald-200/90 mt-1">London to Wales</span>
+        <div id="journal-video-sphere" class="w-64 h-64 sm:w-72 sm:h-72 rounded-full bubble-emerald-3d flex flex-col items-center justify-center text-center p-2 border border-emerald-600/30 overflow-hidden relative shadow-xl">
+          <video 
+            src="bryn & Elle’s adventure.mp4" 
+            controls 
+            playsinline 
+            preload="metadata"
+            class="w-full h-full object-cover rounded-full z-10"
+            title="Bryn &amp; Elle’s Adventure">
+            Your browser does not support HTML video.
+          </video>
         </div>
       </div>
 
@@ -150,6 +154,10 @@
 
         <p class="text-stone-700 leading-relaxed">
           That possible future will unfold itself on these pages, but if you’ve read this far you might be interested in who we are, and what our plans are. To find out who we are, have a look at our bios. To understand our plan, then we need to go back in time a bit. About a year I think. Then, we had no real plan, no jobs, and were soon to be homeless, as we had to leave Geneva and return to London. Fortunately, despite these circumstances we were not penniless, and we had many options - our task was to choose between them. After discarding many we came up with one we could agree on. We decided to go to COP 30, in Belém (Brazil).
+		  <p class="pt-1">
+          <a href="#journal-video-sphere" class="inline-flex items-center gap-1.5 text-sm font-bold text-emerald-800 hover:text-emerald-950 underline underline-offset-4 decoration-emerald-400 hover:decoration-emerald-700 transition">
+            <span>▶ Watch: Bryn &amp; Elle’s Adventure</span>
+          </a>
         </p>
 
         <p class="font-bold text-stone-900 text-base pt-2">
