@@ -1,0 +1,12 @@
+UID,Local_Authority,Change_Type,Category,Previous_Category,Easting,Northing
+T86437,Blaenau Gwent,Category Change,B,A,319905,212886
+T19074,Blaenau Gwent,Category Change,B,A,320001,212597
+T60852,Caerphilly,Boundary Revision,A,A,316182,198774
+T50660,Merthyr Tydfil,Boundary Revision,C,C,305001,204416
+T34811,Merthyr Tydfil,Boundary Revision,C,C,304764,204268
+T56945,Rhondda Cynon Taf,Tip Removed,,B,299705,196458
+T44524,Rhondda Cynon Taf,Boundary Revision,A,A,299944,199406
+T13393,Rhondda Cynon Taf,Boundary Revision,C,C,299272,204394
+T53566,Rhondda Cynon Taf,Category Change,B,A,304794,194635
+T85546,Rhondda Cynon Taf,Category Change,B,A,306844,193041
+T87630,Swansea,Category Change,B,A,255943,193563
