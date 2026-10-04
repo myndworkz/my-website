@@ -227,6 +227,11 @@ html, body {
   position: relative;
   box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.18), inset 0 -8px 15px rgba(0, 0, 0, 0.15);
 }
+
+.sphere,
+.sphere * {
+  color: #000 !important;
+}
 /* Greayed-out inactive sphere */
     .theme-inactive {
       background: radial-gradient(circle at 35% 35%, #f1f5f9 0%, #cbd5e1 45%, #94a3b8 85%, #64748b 100%) !important;
