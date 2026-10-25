@@ -262,29 +262,7 @@
 
     const GRAPH = [
       {
-        id: 'natphil', size: 'sphere--lg', theme: 'theme-natphil', anchor: [0.50, 0.48],
-        aria: 'Natural Philosophy',
-        html: `${BOOK_ICON}<span class="sphere__label">Natural<br>Philosophy</span>`,
-        children: [
-          { id: 'natphil-events',  label: 'Events',      href: 'events.html',             chip: 'chip--amber' },
-          { id: 'natphil-what',    label: 'What It Is',  href: 'what-is-it.html',         chip: 'chip--orange' },
-          { id: 'natphil-history', label: 'History',     href: 'history-philosophy.html', chip: 'chip--amberdeep' }
-        ]
-      },
-      {
-                id: 'perma', size: 'sphere--md', theme: 'theme-inactive', anchor: [0.22, 0.58],
-        aria: 'Permaculture (Under Construction)',
-        html: `<span class="sphere__glyph" style="opacity:0.6">Ⓐ</span><span class="sphere__label" style="color:#475569">Permaculture</span>`,
-        children: []
-      },
-          /* TEMPORARILY DISABLED SUB-PAGES - UNCOMMENT WHEN READY TO RETRIEVE:
-          { id: 'perma-data',   label: 'Data',   href: 'permaculture-data.html', chip: 'chip--rose' },
-          { id: 'perma-action', label: 'Action', href: 'action.html',            chip: 'chip--indigo' }
-          */
-       
-     
-      {
-        id: 'natforest', size: 'sphere--md', theme: 'theme-natforest', anchor: [0.78, 0.58],
+        id: 'natforest', size: 'sphere--md', theme: 'theme-natforest', anchor: [0.50, 0.52],
         aria: 'Natural Forestry',
         html: `${LEAF_ICON}<span class="sphere__label">Natural<br>Forestry</span>`,
         children: [
@@ -481,9 +459,7 @@
       edges.push(...root.children.map(c => ({ from: root.id, to: c.id, kind: 'child' })));
     });
 
-    edges.push({ from: 'natphil', to: 'perma',     kind: 'root' });
-    edges.push({ from: 'natphil', to: 'natforest', kind: 'root' });
-    edges.push({ from: 'perma',   to: 'natforest', kind: 'thick' });
+    // Root-to-root links disabled while only Natural Forestry is shown.
 
     edges.forEach(edge => {
       const path = document.createElementNS(SVG_NS, 'path');
@@ -917,14 +893,14 @@
     // Initial Bloom & Retract
     window.addEventListener('load', () => {
       setTimeout(() => {
-        ['natphil', 'perma', 'natforest'].forEach((id, idx) => {
+        ['natforest'].forEach((id, idx) => {
           setTimeout(() => {
             if (!expanded.has(id)) toggleCluster(id, true);
           }, idx * 160);
         });
 
         setTimeout(() => {
-          ['natphil', 'perma', 'natforest'].forEach((id, idx) => {
+          ['natforest'].forEach((id, idx) => {
             setTimeout(() => {
               if (expanded.has(id)) toggleCluster(id, true);
             }, idx * 120);
@@ -998,21 +974,17 @@
 
     window.addEventListener('click', e => {
       if (isModalOpen || e.target.closest('.node') || e.target.closest('.tree-modal-card') || e.target.closest('#speed-toggle-pill')) return;
-
-      let clickedBall = null;
+      let targetBall = null;
       for (let i = balls.length - 1; i >= 0; i--) {
-        if (Math.hypot(balls[i].x - e.clientX, balls[i].y - e.clientY) <= balls[i].radius) {
-          clickedBall = balls[i];
+        const b = balls[i];
+        if (Math.hypot(b.x - e.clientX, b.y - e.clientY) <= b.radius) {
+          targetBall = b;
           break;
         }
       }
-
-      if (clickedBall && clickedBall.data) {
-        openModal(clickedBall.data);
-        return;
+      if (targetBall) {
+        openModal(targetBall.data);
       }
-
-      cycleSpeed(e);
     });
   </script>
 </body>
