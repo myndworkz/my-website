@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kinetic Clarinet</title>
+<style>
+  :root {
+    --bg: #111115;
+    --panel: #191920;
+    --text: #e2e2e8;
+    --muted: #6c6c7a;
+    --accent: #d4a373;
+  }
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  #stage-container {
+    position: relative;
+    flex: 1;
+    width: 100%;
+    overflow: hidden;
+  }
+  canvas#stage {
+    width: 100%;
+    height: 100%;
+    display: block;
+    cursor: crosshair;
+  }
+  #hud {
+    position: absolute;
+    top: 20px;
+    left: 24px;
+    right: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    pointer-events: none;
+  }
+  .hint {
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    background: rgba(25, 25, 32, 0.75);
+    padding: 8px 14px;
+    border-radius: 20px;
+    backdrop-filter: blur(6px);
+  }
+  .controls {
+    display: flex;
+    gap: 8px;
+    pointer-events: auto;
+  }
+  button {
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--text);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    padding: 7px 14px;
+    border-radius: 18px;
+    font-size: 12px;
+    letter-spacing: 0.03em;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(6px);
+  }
+  button:hover {
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.28);
+  }
+  #sheet-wrapper {
+    height: 270px;
+    background: var(--panel);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    overflow-x: auto;
+    overflow-y: hidden;
+    position: relative;
+    scroll-behavior: smooth;
+  }
+  #sheet-wrapper::-webkit-scrollbar {
+    height: 6px;
+  }
+  #sheet-wrapper::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 3px;
+  }
+  canvas#sheet {
+    height: 100%;
+    display: block;
+  }
+</style>
+</head>
+<body>
+
+<div id="stage-container">
+  <canvas id="stage"></canvas>
+  <div id="hud">
+    <div class="hint" id="status-hint">Click anywhere to spawn an orb &bull; Drag shapes to arrange</div>
+    <div class="controls">
+      <button id="btn-mode">Mode: Bounce</button>
+      <button id="btn-clear-orbs">Reset Orbs</button>
+      <button id="btn-clear-sheet">Clear Score</button>
+    </div>
+  </div>
+</div>
+
+<div id="sheet-wrapper" id="sheet-scroll">
+  <canvas id="sheet"></canvas>
+</div>
+
+<script>
+// --- CLARINET NOTES & FINGERING DATA (Böhm System) ---
+// Fingerings: R = Register key, T = Left Thumb, L1-L3 = Left Hand 1-3, R1-R3 = Right Hand 1-3, Pinky = Low E/F/C# key
+const CLARINET_NOTES = [
+  {
+    name: 'E4', freq: 329.63, staffStep: 0, color: '#e07a5f', sides: 3,
+    f: { R:0, T:1, L1:1, L2:0, L3:0, R1:0, R2:0, R3:0, key:'' }
+  },
+  {
+    name: 'F4', freq: 349.23, staffStep: 1, color: '#f2cc8f', sides: 4,
+    f: { R:0, T:1, L1:0, L2:0, L3:0, R1:0, R2:0, R3:0, key:'' }
+  },
+  {
+    name: 'G4', freq: 392.00, staffStep: 2, color: '#81b29a', sides: 5,
+    f: { R:0, T:0, L1:0, L2:0, L3:0, R1:0, R2:0, R3:0, key:'' }
+  },
+  {
+    name: 'A4', freq: 440.00, staffStep: 3, color: '#6495ed', sides: 6,
+    f: { R:0, T:0, L1:0, L2:0, L3:0, R1:0, R2:0, R3:0, key:'A' }
+  },
+  {
+    name: 'B4', freq: 493.88, staffStep: 4, color: '#9b72cf', sides: 3,
+    f: { R:1, T:1, L1:1, L2:1, L3:1, R1:1, R2:1, R3:1, key:'B' }
+  },
+  {
+    name: 'C5', freq: 523.25, staffStep: 5, color: '#e56b6f', sides: 4,
+    f: { R:1, T:1, L1:1, L2:1, L3:1, R1:1, R2:1, R3:1, key:'C' }
+  },
+  {
+    name: 'D5', freq: 587.33, staffStep: 6, color: '#4ea8de', sides: 5,
+    f: { R:1, T:1, L1:1, L2:1, L3:1, R1:1, R2:1, R3:0, key:'' }
+  },
+  {
+    name: 'E5', freq: 659.25, staffStep: 7, color: '#56cfe1', sides: 6,
+    f: { R:1, T:1, L1:1, L2:1, L3:1, R1:1, R2:0, R3:0, key:'' }
+  }
+];
+
+// --- WEB AUDIO CLARINET SYNTHESIZER ---
+let audioCtx = null;
+function initAudio() {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  if (audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+}
+
+function playClarinet(freq) {
+  initAudio();
+  const now = audioCtx.currentTime;
+
+  // Clarinet acoustic signature: predominantly odd harmonics (cylindrical closed pipe)
+  const real = new Float32Array([0, 1.0, 0.05, 0.75, 0.05, 0.5, 0.02, 0.3, 0.01, 0.15, 0, 0.08]);
+  const imag = new Float32Array(real.length);
+  const wave = audioCtx.createPeriodicWave(real, imag);
+
+  const osc = audioCtx.createOscillator();
+  osc.setPeriodicWave(wave);
+  osc.frequency.setValueAtTime(freq, now);
+
+  // Subtle vibrato
+  const vibrato = audioCtx.createOscillator();
+  const vibratoGain = audioCtx.createGain();
+  vibrato.frequency.value = 5.2;
+  vibratoGain.gain.value = 2.0;
+  vibrato.connect(vibratoGain);
+  vibratoGain.connect(osc.frequency);
+
+  // Warm woodwind resonant filter
+  const filter = audioCtx.createBiquadFilter();
+  filter.type = 'lowpass';
+  filter.frequency.setValueAtTime(freq * 3.8, now);
+  filter.Q.value = 1.2;
+
+  // Breath envelope with gentle pluck attack
+  const env = audioCtx.createGain();
+  env.gain.setValueAtTime(0.0001, now);
+  env.gain.linearRampToValueAtTime(0.28, now + 0.035);
+  env.gain.exponentialRampToValueAtTime(0.18, now + 0.16);
+  env.gain.exponentialRampToValueAtTime(0.0001, now + 0.75);
+
+  osc.connect(filter);
+  filter.connect(env);
+  env.connect(audioCtx.destination);
+
+  osc.start(now);
+  vibrato.start(now);
+  osc.stop(now + 0.78);
+  vibrato.stop(now + 0.78);
+}
+
+// --- STAGE & SIMULATION STATE ---
+const stageCanvas = document.getElementById('stage');
+const sCtx = stageCanvas.getContext('2d');
+const sheetCanvas = document.getElementById('sheet');
+const shCtx = sheetCanvas.getContext('2d');
+const sheetWrapper = document.getElementById('sheet-wrapper');
+
+let shapes = [];
+let orbs = [];
+let ripples = [];
+let recordedNotes = [];
+let passThroughMode = false;
+let draggedShape = null;
+let dragOffset = { x: 0, y: 0 };
+let pointerDownPos = { x: 0, y: 0 };
+
+function resizeStage() {
+  stageCanvas.width = stageCanvas.clientWidth * window.devicePixelRatio;
+  stageCanvas.height = stageCanvas.clientHeight * window.devicePixelRatio;
+  sCtx.scale(window.devicePixelRatio, window.devicePixelRatio);
+  if (shapes.length === 0) initShapes();
+  renderSheet();
+}
+
+function initShapes() {
+  const w = stageCanvas.clientWidth;
+  const h = stageCanvas.clientHeight;
+  shapes = CLARINET_NOTES.map((note, idx) => {
+    const cols = 4;
+    const row = Math.floor(idx / cols);
+    const col = idx % cols;
+    const spacingX = w / (cols + 1);
+    const spacingY = h / 3;
+    return {
+      x: spacingX * (col + 1) + (row % 2 === 0 ? -25 : 25),
+      y: spacingY * (row + 1),
+      radius: 36,
+      angle: Math.random() * Math.PI * 2,
+      spin: (idx % 2 === 0 ? 1 : -1) * 0.006,
+      pulse: 0,
+      note: note
+    };
+  });
+
+  // Start with two gentle orbs
+  spawnOrb(w * 0.25, h * 0.2, 3.2, 2.6);
+  spawnOrb(w * 0.75, h * 0.8, -2.8, -3.1);
+}
+
+function spawnOrb(x, y, vx, vy) {
+  const angle = Math.random() * Math.PI * 2;
+  const speed = 3.6;
+  orbs.push({
+    x,
+    y,
+    vx: vx !== undefined ? vx : Math.cos(angle) * speed,
+    vy: vy !== undefined ? vy : Math.sin(angle) * speed,
+    r: 7,
+    trail: [],
+    cooldowns: new Map()
+  });
+}
+
+// --- INTERACTION EVENTS ---
+stageCanvas.addEventListener('pointerdown', (e) => {
+  initAudio();
+  const rect = stageCanvas.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+  pointerDownPos = { x, y };
+
+  for (let i = shapes.length - 1; i >= 0; i--) {
+    const s = shapes[i];
+    if (Math.hypot(x - s.x, y - s.y) <= s.radius + 6) {
+      draggedShape = s;
+      dragOffset.x = x - s.x;
+      dragOffset.y = y - s.y;
+      // Pluck immediately on direct touch too
+      triggerShape(s);
+      return;
+    }
+  }
+});
+
+window.addEventListener('pointermove', (e) => {
+  if (!draggedShape) return;
+  const rect = stageCanvas.getBoundingClientRect();
+  draggedShape.x = Math.max(40, Math.min(rect.width - 40, e.clientX - rect.left - dragOffset.x));
+  draggedShape.y = Math.max(40, Math.min(rect.height - 40, e.clientY - rect.top - dragOffset.y));
+});
+
+window.addEventListener('pointerup', (e) => {
+  if (draggedShape) {
+    draggedShape = null;
+    return;
+  }
+  const rect = stageCanvas.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+  if (Math.hypot(x - pointerDownPos.x, y - pointerDownPos.y) < 10 &&
+      x >= 0 && x <= rect.width && y >= 0 && y <= rect.height) {
+    spawnOrb(x, y);
+  }
+});
+
+document.getElementById('btn-mode').addEventListener('click', (e) => {
+  passThroughMode = !passThroughMode;
+  e.target.textContent = `Mode: ${passThroughMode ? 'Pass-Through' : 'Bounce'}`;
+});
+
+document.getElementById('btn-clear-orbs').addEventListener('click', () => {
+  orbs = [];
+  const w = stageCanvas.clientWidth;
+  const h = stageCanvas.clientHeight;
+  spawnOrb(w * 0.5, h * 0.5);
+});
+
+document.getElementById('btn-clear-sheet').addEventListener('click', () => {
+  recordedNotes = [];
+  renderSheet();
+});
+
+function triggerShape(shape) {
+  shape.pulse = 1.0;
+  playClarinet(shape.note.freq);
+  ripples.push({
+    x: shape.x,
+    y: shape.y,
+    r: shape.radius,
+    color: shape.note.color,
+    alpha: 0.85
+  });
+  recordedNotes.push({
+    note: shape.note,
+    time: performance.now()
+  });
+  renderSheet();
+  // Auto-scroll score to latest note
+  sheetWrapper.scrollLeft = sheetWrapper.scrollWidth;
+}
+
+// --- MAIN LOOP ---
+function updateAndDrawStage() {
+  const w = stageCanvas.clientWidth;
+  const h = stageCanvas.clientHeight;
+  sCtx.clearRect(0, 0, w, h);
+
+  // Ripples
+  for (let i = ripples.length - 1; i >= 0; i--) {
+    const rp = ripples[i];
+    rp.r += 2.2;
+    rp.alpha -= 0.022;
+    if (rp.alpha <= 0) {
+      ripples.splice(i, 1);
+      continue;
+    }
+    sCtx.save();
+    sCtx.beginPath();
+    sCtx.arc(rp.x, rp.y, rp.r, 0, Math.PI * 2);
+    sCtx.strokeStyle = rp.color;
+    sCtx.globalAlpha = rp.alpha;
+    sCtx.lineWidth = 2;
+    sCtx.stroke();
+    sCtx.restore();
+  }
+
+  // Shapes
+  for (const s of shapes) {
+    s.angle += s.spin;
+    if (s.pulse > 0) s.pulse = Math.max(0, s.pulse - 0.04);
+
+    const drawRadius = s.radius + s.pulse * 9;
+    sCtx.save();
+    sCtx.translate(s.x, s.y);
+
+    // Polygon
+    sCtx.save();
+    sCtx.rotate(s.angle);
+    sCtx.beginPath();
+    for (let i = 0; i < s.note.sides; i++) {
+      const theta = (i / s.note.sides) * Math.PI * 2;
+      const px = Math.cos(theta) * drawRadius;
+      const py = Math.sin(theta) * drawRadius;
+      if (i === 0) sCtx.moveTo(px, py);
+      else sCtx.lineTo(px, py);
+    }
+    sCtx.closePath();
+    sCtx.fillStyle = s.note.color + (s.pulse > 0.2 ? '44' : '22');
+    sCtx.fill();
+    sCtx.lineWidth = 2 + s.pulse * 2.5;
+    sCtx.strokeStyle = s.note.color;
+    sCtx.stroke();
+    sCtx.restore();
+
+    // Note Label
+    sCtx.fillStyle = '#ffffff';
+    sCtx.font = '600 13px -apple-system, BlinkMacSystemFont, sans-serif';
+    sCtx.textAlign = 'center';
+    sCtx.textBaseline = 'middle';
+    sCtx.fillText(s.note.name, 0, 0);
+
+    sCtx.restore();
+  }
+
+  // Orbs
+  const now = performance.now();
+  for (const orb of orbs) {
+    orb.trail.push({ x: orb.x, y: orb.y });
+    if (orb.trail.length > 18) orb.trail.shift();
+
+    orb.x += orb.vx;
+    orb.y += orb.vy;
+
+    // Wall bounce
+    if (orb.x < orb.r) { orb.x = orb.r; orb.vx *= -1; }
+    if (orb.x > w - orb.r) { orb.x = w - orb.r; orb.vx *= -1; }
+    if (orb.y < orb.r) { orb.y = orb.r; orb.vy *= -1; }
+    if (orb.y > h - orb.r) { orb.y = h - orb.r; orb.vy *= -1; }
+
+    // Shape collision / pass-through detection
+    for (const s of shapes) {
+      const dx = orb.x - s.x;
+      const dy = orb.y - s.y;
+      const dist = Math.hypot(dx, dy);
+      const minDist = orb.r + s.radius;
+
+      if (dist < minDist) {
+        const lastHit = orb.cooldowns.get(s) || 0;
+        if (now - lastHit > 240) {
+          orb.cooldowns.set(s, now);
+          triggerShape(s);
+        }
+        if (!passThroughMode) {
+          const nx = dx / (dist || 1);
+          const ny = dy / (dist || 1);
+          const dot = orb.vx * nx + orb.vy * ny;
+          if (dot < 0) {
+            orb.vx -= 2 * dot * nx;
+            orb.vy -= 2 * dot * ny;
+          }
+          // Separate slightly to prevent sticking
+          orb.x = s.x + nx * (minDist + 1);
+          orb.y = s.y + ny * (minDist + 1);
+        }
+      }
+    }
+
+    // Draw trail
+    for (let i = 0; i < orb.trail.length; i++) {
+      const pt = orb.trail[i];
+      const ratio = (i + 1) / orb.trail.length;
+      sCtx.beginPath();
+      sCtx.arc(pt.x, pt.y, orb.r * ratio * 0.85, 0, Math.PI * 2);
+      sCtx.fillStyle = `rgba(255, 255, 255, ${ratio * 0.25})`;
+      sCtx.fill();
+    }
+
+    // Draw orb
+    sCtx.beginPath();
+    sCtx.arc(orb.x, orb.y, orb.r, 0, Math.PI * 2);
+    sCtx.fillStyle = '#ffffff';
+    sCtx.shadowColor = '#ffffff';
+    sCtx.shadowBlur = 10;
+    sCtx.fill();
+    sCtx.shadowBlur = 0;
+  }
+
+  requestAnimationFrame(updateAndDrawStage);
+}
+
+// --- SHEET MUSIC & CLARINET FINGERING RENDERER ---
+function renderSheet() {
+  const dpr = window.devicePixelRatio || 1;
+  const noteSpacing = 68;
+  const startX = 95;
+  const minWidth = sheetWrapper.clientWidth;
+  const dynamicWidth = Math.max(minWidth, startX + recordedNotes.length * noteSpacing + 80);
+
+  sheetCanvas.style.width = dynamicWidth + 'px';
+  sheetCanvas.width = dynamicWidth * dpr;
+  sheetCanvas.height = sheetWrapper.clientHeight * dpr;
+  shCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+  const w = dynamicWidth;
+  const h = sheetWrapper.clientHeight;
+  shCtx.clearRect(0, 0, w, h);
+
+  // Staff geometry (5 lines: E4, G4, B4, D5, F5)
+  const lineGap = 11;
+  const bottomLineY = 82; // E4 line
+  const topLineY = bottomLineY - 4 * lineGap; // F5 line
+
+  // Draw 5 staff lines
+  shCtx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+  shCtx.lineWidth = 1;
+  for (let i = 0; i < 5; i++) {
+    const y = bottomLineY - i * lineGap;
+    shCtx.beginPath();
+    shCtx.moveTo(24, y);
+    shCtx.lineTo(w - 24, y);
+    shCtx.stroke();
+  }
+
+  // Draw Treble Clef
+  shCtx.fillStyle = 'rgba(255, 255, 255, 0.75)';
+  shCtx.font = '52px serif';
+  shCtx.textBaseline = 'alphabetic';
+  shCtx.fillText('𝄞', 34, bottomLineY - 4);
+
+  // Placeholder if empty
+  if (recordedNotes.length === 0) {
+    shCtx.fillStyle = 'rgba(255, 255, 255, 0.25)';
+    shCtx.font = '13px -apple-system, BlinkMacSystemFont, sans-serif';
+    shCtx.fillText('Notes & clarinet fingerings will appear here as orbs cross shapes...', 100, bottomLineY - 18);
+    return;
+  }
+
+  // Draw each recorded note + its clarinet fingering diagram below
+  recordedNotes.forEach((item, index) => {
+    const n = item.note;
+    const x = startX + index * noteSpacing;
+    const y = bottomLineY - n.staffStep * (lineGap / 2);
+
+    // Measure bar line every 4 notes
+    if (index > 0 && index % 4 === 0) {
+      const barX = x - noteSpacing / 2;
+      shCtx.strokeStyle = 'rgba(255, 255, 255, 0.14)';
+      shCtx.beginPath();
+      shCtx.moveTo(barX, topLineY);
+      shCtx.lineTo(barX, bottomLineY);
+      shCtx.stroke();
+    }
+
+    // Note stem
+    shCtx.strokeStyle = n.color;
+    shCtx.lineWidth = 1.8;
+    shCtx.beginPath();
+    if (n.staffStep >= 4) {
+      // Stem down on left side
+      shCtx.moveTo(x - 6, y);
+      shCtx.lineTo(x - 6, y + 30);
+    } else {
+      // Stem up on right side
+      shCtx.moveTo(x + 6, y);
+      shCtx.lineTo(x + 6, y - 30);
+    }
+    shCtx.stroke();
+
+    // Note head (tilted oval)
+    shCtx.save();
+    shCtx.translate(x, y);
+    shCtx.rotate(-0.32);
+    shCtx.beginPath();
+    shCtx.ellipse(0, 0, 7.2, 5.2, 0, 0, Math.PI * 2);
+    shCtx.fillStyle = n.color;
+    shCtx.fill();
+    shCtx.restore();
+
+    // Note name
+    shCtx.fillStyle = '#d8d8e2';
+    shCtx.font = '600 11px -apple-system, BlinkMacSystemFont, sans-serif';
+    shCtx.textAlign = 'center';
+    shCtx.fillText(n.name, x, bottomLineY + 26);
+
+    // --- CLARINET FINGERING CHART ---
+    drawFingeringDiagram(shCtx, x, bottomLineY + 42, n.f, n.color);
+  });
+}
+
+function drawFingeringDiagram(ctx, cx, topY, f, accentColor) {
+  ctx.save();
+
+  // Clarinet body pill background
+  const bodyW = 30;
+  const bodyH = 128;
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.03)';
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.roundRect(cx - bodyW / 2, topY, bodyW, bodyH, 8);
+  ctx.fill();
+  ctx.stroke();
+
+  // Helper to draw a tone hole / key
+  const drawHole = (hx, hy, r, closed, isTear = false) => {
+    ctx.beginPath();
+    if (isTear) {
+      ctx.ellipse(hx, hy, r * 0.75, r * 1.3, 0, 0, Math.PI * 2);
+    } else {
+      ctx.arc(hx, hy, r, 0, Math.PI * 2);
+    }
+    if (closed) {
+      ctx.fillStyle = accentColor;
+      ctx.fill();
+    } else {
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
+      ctx.lineWidth = 1.2;
+      ctx.stroke();
+    }
+  };
+
+  // Register Key (R) & Thumb Hole (T) offset to the left
+  drawHole(cx - 8, topY + 13, 3.2, f.R === 1, true);
+  drawHole(cx - 8, topY + 25, 3.6, f.T === 1, false);
+
+  // Left-hand throat A key indicator if used
+  if (f.key === 'A') {
+    ctx.fillStyle = accentColor;
+    ctx.font = 'bold 9px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('A', cx + 6, topY + 20);
+  }
+
+  // Left Hand main holes (L1, L2, L3)
+  const lhStart = topY + 40;
+  const holeGap = 13;
+  drawHole(cx + 2, lhStart, 4.2, f.L1 === 1);
+  drawHole(cx + 2, lhStart + holeGap, 4.2, f.L2 === 1);
+  drawHole(cx + 2, lhStart + holeGap * 2, 4.2, f.L3 === 1);
+
+  // Bridge dividing line between Upper & Lower joint
+  const bridgeY = lhStart + holeGap * 2 + 10;
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.28)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(cx - 10, bridgeY);
+  ctx.lineTo(cx + 10, bridgeY);
+  ctx.stroke();
+
+  // Right Hand main holes (R1, R2, R3)
+  const rhStart = bridgeY + 10;
+  drawHole(cx + 2, rhStart, 4.2, f.R1 === 1);
+  drawHole(cx + 2, rhStart + holeGap, 4.2, f.R2 === 1);
+  drawHole(cx + 2, rhStart + holeGap * 2, 4.2, f.R3 === 1);
+
+  // Pinky key indicator (e.g. B4 or C5)
+  if (f.key === 'B' || f.key === 'C') {
+    ctx.fillStyle = accentColor;
+    ctx.font = 'bold 9px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(f.key, cx, topY + bodyH - 5);
+  }
+
+  ctx.restore();
+}
+
+window.addEventListener('resize', resizeStage);
+resizeStage();
+requestAnimationFrame(updateAndDrawStage);
+</script>
+</body>
+</html>
