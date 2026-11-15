@@ -199,7 +199,7 @@
         <div id="modal-latin" class="tree-modal-latin">Scientific Name</div>
         <p id="modal-desc" class="tree-modal-desc">Description of species.</p>
         <div class="tree-modal-footer">
-          <a id="modal-link" class="tree-modal-link" href="#" target="_blank" rel="noopener noreferrer">Database Profile →</a>
+          <a id="modal-link" class="tree-modal-link" href="#" target="_blank" rel="noopener noreferrer">Learn more →</a>
           <button id="modal-close" class="tree-modal-close-btn" type="button">Close</button>
         </div>
       </div>
@@ -409,7 +409,7 @@
       modalCat.textContent = data.category || '';
       modalTitle.textContent = data.name || data.title || '';
       modalLatin.textContent = data.latin || '';
-      modalDesc.textContent = data.description || 'Native & Agroforestry key species with integral ecological support functions.';
+      modalDesc.textContent = data.description || '';
       if (data.detailUrl) {
         modalLink.href = data.detailUrl;
         modalLink.style.display = 'inline-flex';
@@ -725,89 +725,98 @@
     }
 
     const flagsDb = [
-      { 
-        name: "Wales", 
-        latin: "Cymru / Wales", 
-        category: "National Flag", 
+      {
+        name: "Wales",
+        latin: "Cymru / Wales",
+        category: "National Flag",
         imgUrl: "https://flagcdn.com/w160/gb-wls.png",
         largeImg: "https://flagcdn.com/w640/gb-wls.png",
-        description: "Y Ddraig Goch (The Red Dragon) of Wales, reflecting the Atlantic temperate rainforests of the Dyfi Biosphere.",
+        description: "Y Ddraig Goch (The Red Dragon), the flag of Wales.",
         detailUrl: "https://en.wikipedia.org/wiki/Flag_of_Wales"
+      },
+      {
+        name: "London",
+        latin: "City of London",
+        category: "City Badge",
+        imgUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Coat_of_arms_of_the_City_of_London.svg?width=160",
+        largeImg: "https://commons.wikimedia.org/wiki/Special:FilePath/Coat_of_arms_of_the_City_of_London.svg?width=640",
+        description: "The arms of the City of London.",
+        detailUrl: "https://en.wikipedia.org/wiki/Coat_of_arms_of_the_City_of_London"
+      },
+      {
+        name: "Geneva",
+        latin: "Genève / Geneva",
+        category: "City Flag",
+        imgUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Geneva.svg?width=160",
+        largeImg: "https://commons.wikimedia.org/wiki/Special:FilePath/Flag_of_Geneva.svg?width=640",
+        description: "The flag of the city of Geneva.",
+        detailUrl: "https://en.wikipedia.org/wiki/Flag_of_Geneva"
       }
     ];
 
-    const treesDb = [
-      { 
-        name: "Sessile Oak", 
-        latin: "Quercus petraea (Deri)", 
-        category: "Welsh Rainforest", 
-        imgUrl: "https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?auto=format&fit=crop&w=160&q=80",
-        largeImg: "https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?auto=format&fit=crop&w=1200&q=85",
-        description: "The primary native canopy tree of upland Welsh temperate rainforests, hosting hundreds of epiphytic lichens, bryophytes, and insect communities.",
-        detailUrl: "https://www.woodlandtrust.org.uk/trees-woods-and-wildlife/british-trees/a-z-of-british-trees/sessile-oak/"
+    const philosophersDb = [
+      {
+        name: "Aristotle",
+        latin: "384–322 BC",
+        category: "Ancient",
+        imgUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Aristotle_Altemps_Inv8575.jpg?width=160",
+        largeImg: "https://commons.wikimedia.org/wiki/Special:FilePath/Aristotle_Altemps_Inv8575.jpg?width=800",
+        description: "Student of Plato and founder of the Lyceum; a pioneer of logic, ethics and the study of nature.",
+        detailUrl: "https://en.wikipedia.org/wiki/Aristotle"
       },
-      { 
-        name: "Scots Pine", 
-        latin: "Pinus sylvestris", 
-        category: "Welsh Native", 
-        imgUrl: "https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?auto=format&fit=crop&w=160&q=80",
-        largeImg: "https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?auto=format&fit=crop&w=1200&q=85",
-        description: "An ancient native conifer capable of thriving on poor upland soils, providing crucial shelter and habitat for biodiversity.",
-        detailUrl: "https://www.woodlandtrust.org.uk/trees-woods-and-wildlife/british-trees/a-z-of-british-trees/scots-pine/"
+      {
+        name: "Socrates",
+        latin: "c. 470–399 BC",
+        category: "Ancient",
+        imgUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Socrates_Louvre.jpg?width=160",
+        largeImg: "https://commons.wikimedia.org/wiki/Special:FilePath/Socrates_Louvre.jpg?width=800",
+        description: "Athenian philosopher whose method of questioning in conversation shaped Western philosophy.",
+        detailUrl: "https://en.wikipedia.org/wiki/Socrates"
       },
-      { 
-        name: "Silver Birch", 
-        latin: "Betula pendula (Bedwen)", 
-        category: "Welsh Pioneer", 
-        imgUrl: "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=160&q=80",
-        largeImg: "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1200&q=85",
-        description: "Fast-growing light-demanding pioneer tree that enriches soil structure and prepares clearings for climax broadleaf succession.",
-        detailUrl: "https://www.woodlandtrust.org.uk/trees-woods-and-wildlife/british-trees/a-z-of-british-trees/silver-birch/"
+      {
+        name: "Friedrich Nietzsche",
+        latin: "1844–1900",
+        category: "Modern",
+        imgUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Nietzsche187a.jpg?width=160",
+        largeImg: "https://commons.wikimedia.org/wiki/Special:FilePath/Nietzsche187a.jpg?width=800",
+        description: "German philosopher known for perspectivism, the will to power and the critique of morality.",
+        detailUrl: "https://en.wikipedia.org/wiki/Friedrich_Nietzsche"
       },
-      { 
-        name: "Rowan / Mountain Ash", 
-        latin: "Sorbus aucuparia (Cerddinen)", 
-        category: "Welsh Upland", 
-        imgUrl: "https://images.unsplash.com/photo-1473448912268-2022ce9509d8?auto=format&fit=crop&w=160&q=80",
-        largeImg: "https://images.unsplash.com/photo-1473448912268-2022ce9509d8?auto=format&fit=crop&w=1200&q=85",
-        description: "Hardy high-altitude tree celebrated in Celtic folklore; produces nutrient-rich red autumn berries vital for resident and migratory birds.",
-        detailUrl: "https://www.woodlandtrust.org.uk/trees-woods-and-wildlife/british-trees/a-z-of-british-trees/rowan/"
+      {
+        name: "Bertrand Russell",
+        latin: "1872–1970",
+        category: "Modern",
+        imgUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Bertrand_Russell_1957.jpg?width=160",
+        largeImg: "https://commons.wikimedia.org/wiki/Special:FilePath/Bertrand_Russell_1957.jpg?width=800",
+        description: "British philosopher and logician, co-author of Principia Mathematica and a public campaigner.",
+        detailUrl: "https://en.wikipedia.org/wiki/Bertrand_Russell"
       },
-      { 
-        name: "Ice Cream Bean", 
-        latin: "Inga edulis (Guaba)", 
-        category: "Amazon Agroforestry", 
-        imgUrl: "https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=160&q=80",
-        largeImg: "https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=1200&q=85",
-        description: "Fast-growing leguminous canopy tree used in syntropic agroforestry systems for heavy biomass production, deep taproots, and active nitrogen fixation.",
-        detailUrl: "https://tropical.theferns.info/viewtropical.php?id=Inga+edulis"
+      {
+        name: "Daniel Dennett",
+        latin: "1942–2024",
+        category: "Contemporary",
+        imgUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Daniel_Dennett_Oct2008.jpg?width=160",
+        largeImg: "https://commons.wikimedia.org/wiki/Special:FilePath/Daniel_Dennett_Oct2008.jpg?width=800",
+        description: "American philosopher of mind and science, known for work on consciousness and evolution.",
+        detailUrl: "https://en.wikipedia.org/wiki/Daniel_Dennett"
       },
-      { 
-        name: "Brazil Nut Tree", 
-        latin: "Bertholletia excelsa (Castanheira)", 
-        category: "Amazon Canopy", 
-        imgUrl: "https://images.unsplash.com/photo-1426604966848-d7adac402bff?auto=format&fit=crop&w=160&q=80",
-        largeImg: "https://images.unsplash.com/photo-1426604966848-d7adac402bff?auto=format&fit=crop&w=1200&q=85",
-        description: "One of the largest emergent trees of the Amazon rainforest, dependent on pristine primary forest networks and specialized native bee pollinators.",
-        detailUrl: "https://tropical.theferns.info/viewtropical.php?id=Bertholletia+excelsa"
+      {
+        name: "Jerry Fodor",
+        latin: "1935–2017",
+        category: "Contemporary",
+        imgUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Jerry_Fodor.jpg?width=160",
+        largeImg: "https://commons.wikimedia.org/wiki/Special:FilePath/Jerry_Fodor.jpg?width=800",
+        description: "American philosopher of mind and cognitive science, known for the language of thought hypothesis.",
+        detailUrl: "https://en.wikipedia.org/wiki/Jerry_Fodor"
       },
-      { 
-        name: "Paraná Pine", 
-        latin: "Araucaria angustifolia (Curi)", 
-        category: "Atlantic Rainforest", 
-        imgUrl: "https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?auto=format&fit=crop&w=160&q=80",
-        largeImg: "https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?auto=format&fit=crop&w=1200&q=85",
-        description: "Critically endangered evergreen conifer of the southern Brazilian highlands; an essential keystone species providing edible pine nuts (pinhão).",
-        detailUrl: "https://tropical.theferns.info/viewtropical.php?id=Araucaria+angustifolia"
-      },
-      { 
-        name: "Pink Peppercorn", 
-        latin: "Schinus molle (Aguaribay)", 
-        category: "Andean Slope", 
-        imgUrl: "https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?auto=format&fit=crop&w=160&q=80",
-        largeImg: "https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?auto=format&fit=crop&w=1200&q=85",
-        description: "Drought-tolerant Andean tree celebrated for aromatic leaves, soil conservation on dry slopes, and culinary pink peppercorn berries.",
-        detailUrl: "https://pfaf.org/user/Plant.aspx?LatinName=Schinus+molle"
+      {
+        name: "Ludwig Wittgenstein",
+        latin: "1889–1951",
+        category: "Modern",
+        imgUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Ludwig_Wittgenstein.jpg?width=160",
+        largeImg: "https://commons.wikimedia.org/wiki/Special:FilePath/Ludwig_Wittgenstein.jpg?width=800",
+        description: "Austrian-British philosopher of language and logic, author of the Tractatus and Philosophical Investigations.",
+        detailUrl: "https://en.wikipedia.org/wiki/Ludwig_Wittgenstein"
       }
     ];
 
@@ -821,7 +830,7 @@
       }
       return preloaded[url];
     }
-    [...flagsDb, ...treesDb].forEach(d => {
+    [...flagsDb, ...philosophersDb].forEach(d => {
       preload(d.imgUrl);
       if (d.largeImg) preload(d.largeImg);
     });
@@ -858,9 +867,9 @@
         const s = Math.random() * 1.5 + 1.2;
         this.vx = Math.cos(a) * s;
         this.vy = Math.sin(a) * s;
-        this.data = Math.random() < 0.12
+        this.data = Math.random() < 0.25
           ? flagsDb[Math.floor(Math.random() * flagsDb.length)]
-          : treesDb[Math.floor(Math.random() * treesDb.length)];
+          : philosophersDb[Math.floor(Math.random() * philosophersDb.length)];
         this.img = preload(this.data.imgUrl);
       }
       update(dt) {
@@ -891,10 +900,17 @@
         ctx.fillRect(x, y, w, h);
 
         ctx.shadowColor = 'transparent';
-        ctx.drawImage(this.img, x + 3, y + 3, w - 6, h - 6);
+        const iw = this.img.naturalWidth, ih = this.img.naturalHeight;
+        const dw = w - 6, dh = h - 6;
+        const sc = Math.max(dw / iw, dh / ih);
+        const sw = dw / sc, sh = dh / sc;
+        ctx.beginPath();
+        ctx.rect(x + 3, y + 3, dw, dh);
+        ctx.clip();
+        ctx.drawImage(this.img, (iw - sw) / 2, 0, sw, sh, x + 3, y + 3, dw, dh);
 
         ctx.lineWidth = 2.0;
-        ctx.strokeStyle = this.data.category === 'National Flag' ? '#dc2626' : '#059669';
+        ctx.strokeStyle = this.data.category.includes('Flag') || this.data.category.includes('Badge') ? '#dc2626' : '#0f766e';
         ctx.strokeRect(x, y, w, h);
 
         ctx.restore();
