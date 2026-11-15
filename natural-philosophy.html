@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Natural Philosophy : Natural Forestry</title>
+  <title>Natural Philosophy</title>
   <link rel="stylesheet" href="style.css">
   <style>
     /* Layer hierarchy: canvas behind, nodes and modals in front */
@@ -175,7 +175,7 @@
 
   <!-- Floating UI Header -->
   <header class="ui-header">
-    <h1 class="ui-header__title">Natural Philosophy : Natural Forestry</h1>
+    <h1 class="ui-header__title">Natural Philosophy</h1>
     <p class="ui-header__desc">
       Click a root sphere to <strong>expand / collapse</strong> branches. Click any floating tree box for details. Click background to cycle speed:
       <span id="speed-indicator" class="speed-badge">Moderate</span>
@@ -216,15 +216,10 @@
 
   <noscript>
     <nav style="position:fixed;bottom:1rem;left:1rem;z-index:50;font-size:0.875rem">
-      <a href="permaculture-data.html">Permaculture Data</a> ·
-      <a href="action.html">Action</a> ·
       <a href="events.html">Events</a> ·
       <a href="what-is-it.html">What It Is ?</a> ·
       <a href="history-philosophy.html">History</a> ·
-      <a href="philosophy-archive.html">Archive</a> ·
-      <a href="journal.html">Journal</a> ·
-      <a href="forest-data.html">Forest Data</a> ·
-      <a href="forest-history.html">Forest History</a>
+      <a href="philosophy-archive.html">Archive</a>
     </nav>
   </noscript>
 
@@ -333,32 +328,11 @@
           { id: 'natphil-what',    label: 'What Is It?', href: 'what-is-it.html',         chip: 'chip--orange' },
           { id: 'natphil-history', label: 'History',     href: 'history-philosophy.html', chip: 'chip--amberdeep' }
         ]
-      },
-      {
-        id: 'perma', size: 'sphere--md', theme: 'theme-perma', anchor: [0.22, 0.58],
-        aria: 'Permaculture',
-        html: `<span class="sphere__glyph">Ⓐ</span><span class="sphere__label" style="color:#ffe4e6">Permaculture</span>`,
-        children: [
-          { id: 'perma-data',   label: 'Data',   href: 'permaculture-data.html', chip: 'chip--rose' },
-          { id: 'perma-action', label: 'Action', href: 'action.html',            chip: 'chip--indigo' }
-        ]
-      },
-      {
-        id: 'natforest', size: 'sphere--md', theme: 'theme-natforest', anchor: [0.78, 0.58],
-        aria: 'Natural Forestry',
-        html: `${LEAF_ICON}<span class="sphere__label" style="color:#ecfdf5">Natural<br>Forestry</span>`,
-        children: [
-          { id: 'natforest-journal', label: 'Journal', href: 'journal.html',        chip: 'chip--emerald' },
-          { id: 'natforest-data',    label: 'Data',    href: 'forest-data.html',    chip: 'chip--teal' },
-          { id: 'natforest-history', label: 'History', href: 'forest-history.html', chip: 'chip--emerdeep' }
-        ]
       }
     ];
 
     const TOOLTIP_TEXT = {
-      natphil: "This is the term I am adopting for the philosophy that we do in person, in real time and with others.",
-      natforest: "This is what we're learning, and where we will add things as we go",
-      perma: "This is the big picture, where we will try to pull everything together"
+      natphil: "This is the term I am adopting for the philosophy that we do in person, in real time and with others."
     };
 
     const ballTooltip = document.getElementById('ball-tooltip');
@@ -541,9 +515,6 @@
       edges.push(...root.children.map(c => ({ from: root.id, to: c.id, kind: 'child' })));
     });
 
-    edges.push({ from: 'natphil', to: 'perma',     kind: 'root' });
-    edges.push({ from: 'natphil', to: 'natforest', kind: 'root' });
-    edges.push({ from: 'perma',   to: 'natforest', kind: 'thick' });
 
     edges.forEach(edge => {
       const path = document.createElementNS(SVG_NS, 'path');
